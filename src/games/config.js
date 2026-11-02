@@ -1,5 +1,8 @@
 import { bosses as hkBosses } from "../data/bosses";
-import { silksongBossImages } from "../data/silksong-images";
+import {
+  silksongBossImages,
+  silksongLocationImages,
+} from "../data/silksong-images";
 import { silksongBosses } from "../data/silksong-bosses";
 import { charms as hkCharms } from "../data/charms";
 import { bossImages, charmImages, locationImages } from "../data/images";
@@ -39,7 +42,7 @@ export const games = {
     items: [],
     bossImages: silksongBossImages,
     itemImages: {},
-    locationImages: {},
+    locationImages: silksongLocationImages,
   },
 };
 
