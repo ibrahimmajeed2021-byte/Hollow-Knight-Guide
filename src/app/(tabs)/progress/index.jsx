@@ -3,6 +3,7 @@ import { Alert, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '../../../components/hollow/app-text';
 import { Button } from '../../../components/hollow/button';
+import { ProgressBar } from '../../../components/hollow/progress-bar';
 import { Screen } from '../../../components/hollow/screen';
 import { Body, Title } from '../../../components/hollow/section-text';
 import { bosses } from '../../../data/bosses';
@@ -23,14 +24,7 @@ function ProgressRow({ label, done, total, onPress, big }) {
         <AppText style={big ? styles.bigLabel : styles.label}>{label}</AppText>
         <AppText style={big ? styles.bigPct : styles.pct}>{pct}%</AppText>
       </View>
-      <View
-        style={[styles.track, { backgroundColor: colors.border }]}
-        accessibilityRole="progressbar"
-        accessibilityLabel={`${label} progress`}
-        accessibilityValue={{ min: 0, max: 100, now: pct }}
-      >
-        <View style={[styles.fill, { width: `${pct}%`, backgroundColor: colors.button }]} />
-      </View>
+      <ProgressBar pct={pct} label={`${label} progress`} />
       <AppText style={[styles.count, { color: colors.muted }]}>
         {done} / {total}
       </AppText>
@@ -97,8 +91,6 @@ const styles = StyleSheet.create({
   pct: { fontSize: 18, fontWeight: 'bold' },
   bigLabel: { fontSize: 22, fontWeight: 'bold' },
   bigPct: { fontSize: 28, fontWeight: 'bold' },
-  track: { height: 10, borderRadius: 5, overflow: 'hidden' },
-  fill: { height: '100%', borderRadius: 5 },
   count: { fontSize: 14 },
   gap: { marginTop: 8 },
 });

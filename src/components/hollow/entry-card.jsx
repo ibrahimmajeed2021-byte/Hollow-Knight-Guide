@@ -1,6 +1,7 @@
 import { Image } from 'expo-image';
 import { memo, useState } from 'react';
 import { LayoutAnimation, Pressable, StyleSheet, View } from 'react-native';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { HKFont } from '../../constants/hollow';
 import { useHaptics, useSettings } from '../../settings/settings-context';
@@ -42,10 +43,10 @@ function EntryCardBase({ image, name, summary, description, children }) {
         <AppText style={[styles.chevron, { color: colors.muted }]}>{expanded ? '▲' : '▼'}</AppText>
       </View>
       {expanded && (
-        <View>
+        <Animated.View entering={settings.reduceMotion ? undefined : FadeIn.duration(250)}>
           <AppText style={styles.description}>{description}</AppText>
           {children}
-        </View>
+        </Animated.View>
       )}
     </Pressable>
   );

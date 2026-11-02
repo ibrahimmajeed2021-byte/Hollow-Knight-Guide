@@ -1,13 +1,14 @@
-import { Image } from 'expo-image';
-import { router } from 'expo-router';
-import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import { Image } from "expo-image";
+import { router } from "expo-router";
+import { useState } from "react";
+import { Pressable, StyleSheet, Switch, TextInput, View } from "react-native";
 
-import { photoUri, useJournal } from '../../journal/journal-context';
-import { takePhoto } from '../../journal/take-photo';
-import { useHaptics, useSettings } from '../../settings/settings-context';
-import { AppText } from './app-text';
-import { Button } from './button';
-import { Stat } from './entry-card';
+import { photoUri, useJournal } from "../../journal/journal-context";
+import { takePhoto } from "../../journal/take-photo";
+import { useHaptics, useSettings } from "../../settings/settings-context";
+import { AppText } from "./app-text";
+import { Button } from "./button";
+import { Stat } from "./entry-card";
 
 export function BossSummary({ name, health }) {
   const { defeated } = useJournal();
@@ -16,7 +17,9 @@ export function BossSummary({ name, health }) {
     <>
       <Stat label="Health" value={health} />
       {defeated[name] ? (
-        <AppText style={[styles.badge, { color: colors.accent }]}>✓ Defeated</AppText>
+        <AppText style={[styles.badge, { color: colors.accent }]}>
+          ✓ Defeated
+        </AppText>
       ) : null}
     </>
   );
@@ -25,12 +28,16 @@ export function BossSummary({ name, health }) {
 export function BossExtras({ name }) {
   const { colors } = useSettings();
   const triggerHaptic = useHaptics();
-  const { defeated, toggleDefeated, photos, addPhoto } = useJournal();
-  const bossPhotos = photos.filter((p) => p.tag?.type === 'boss' && p.tag.name === name);
+  const { defeated, toggleDefeated, photos, addPhoto, notes, setNote } =
+    useJournal();
+  const [draft, setDraft] = useState(notes[name] ?? "");
+  const bossPhotos = photos.filter(
+    (p) => p.tag?.type === "boss" && p.tag.name === name,
+  );
 
   const attach = async () => {
     const uri = await takePhoto();
-    if (uri) addPhoto(uri, { tag: { type: 'boss', name } });
+    if (uri) addPhoto(uri, { tag: { type: "boss", name } });
   };
 
   return (
@@ -55,21 +62,52 @@ export function BossExtras({ name }) {
             accessibilityRole="button"
             accessibilityLabel={`Open photo of ${name}`}
           >
-            <Image source={{ uri: photoUri(photo) }} style={styles.thumb} contentFit="cover" />
+            <Image
+              source={{ uri: photoUri(photo) }}
+              style={styles.thumb}
+              contentFit="cover"
+            />
           </Pressable>
         ))}
       </View>
+      <AppText style={styles.label}>My strategy notes</AppText>
+      <TextInput
+        value={draft}
+        onChangeText={setDraft}
+        onEndEditing={() => setNote(name, draft)}
+        onBlur={() => setNote(name, draft)}
+        placeholder="Tips, nail upgrades, charms that worked…"
+        placeholderTextColor={colors.muted}
+        multiline
+        accessibilityLabel={`Strategy notes for ${name}`}
+        style={[
+          styles.notes,
+          { color: colors.text, borderColor: colors.border },
+        ]}
+      />
       <Button label="Add photo" variant="outline" onPress={attach} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  badge: { marginTop: 2, fontSize: 14, fontWeight: 'bold' },
+  badge: { marginTop: 2, fontSize: 14, fontWeight: "bold" },
   wrap: { marginTop: 14, gap: 10 },
-  row: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  label: { fontWeight: 'bold', fontSize: 15 },
-  photos: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  row: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  label: { fontWeight: "bold", fontSize: 15 },
+  photos: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
+  notes: {
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    fontSize: 15,
+    minHeight: 70,
+    textAlignVertical: "top",
+  },
   thumb: { width: 64, height: 64, borderRadius: 8 },
 });
 
@@ -80,7 +118,9 @@ export function CharmSummary({ name, notches }) {
     <>
       <Stat label="Notches" value={notches} />
       {collected[name] ? (
-        <AppText style={[styles.badge, { color: colors.accent }]}>✓ Collected</AppText>
+        <AppText style={[styles.badge, { color: colors.accent }]}>
+          ✓ Collected
+        </AppText>
       ) : null}
     </>
   );

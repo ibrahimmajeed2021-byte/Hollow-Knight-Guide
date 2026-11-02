@@ -5,7 +5,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 const STORAGE_KEY = 'hollow-knight-guide:journal';
 const JournalContext = createContext(null);
 
-const emptyState = { photos: [], defeated: {}, collected: {} };
+const emptyState = { photos: [], defeated: {}, collected: {}, notes: {} };
 
 function journalDir() {
   const dir = new Directory(Paths.document, 'journal');
@@ -95,14 +95,30 @@ export function JournalProvider({ children }) {
     [commit],
   );
 
+  const setNote = useCallback(
+    (name, text) =>
+      commit((prev) => {
+        const notes = { ...prev.notes };
+        if (text.trim()) notes[name] = text;
+        else delete notes[name];
+        return { ...prev, notes };
+      }),
+    [commit],
+  );
+
   const resetProgress = useCallback(
     () => commit((prev) => ({ ...prev, defeated: {}, collected: {} })),
     [commit],
   );
 
   const restoreProgress = useCallback(
-    ({ defeated, collected }) =>
-      commit((prev) => ({ ...prev, defeated: defeated ?? {}, collected: collected ?? {} })),
+    ({ defeated, collected, notes }) =>
+      commit((prev) => ({
+        ...prev,
+        defeated: defeated ?? {},
+        collected: collected ?? {},
+        notes: notes ?? {},
+      })),
     [commit],
   );
 
@@ -112,6 +128,8 @@ export function JournalProvider({ children }) {
       photos: state.photos,
       defeated: state.defeated,
       collected: state.collected,
+      notes: state.notes,
+      setNote,
       toggleCollected,
       resetProgress,
       addPhoto,
@@ -119,7 +137,7 @@ export function JournalProvider({ children }) {
       removePhoto,
       toggleDefeated,
     }),
-    [state, addPhoto, updatePhoto, removePhoto, toggleDefeated, toggleCollected, resetProgress, restoreProgress],
+    [state, addPhoto, updatePhoto, removePhoto, toggleDefeated, toggleCollected, resetProgress, restoreProgress, setNote],
   );
 
   return <JournalContext.Provider value={value}>{children}</JournalContext.Provider>;

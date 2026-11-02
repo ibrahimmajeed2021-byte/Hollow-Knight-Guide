@@ -14,7 +14,7 @@ const isObject = (value) => value !== null && typeof value === 'object' && !Arra
 
 export function BackupSection() {
   const { colors, settings, update } = useSettings();
-  const { defeated, collected, restoreProgress } = useJournal();
+  const { defeated, collected, notes, restoreProgress } = useJournal();
   const { loadouts, replaceLoadouts } = useLoadouts();
 
   const exportBackup = async () => {
@@ -23,7 +23,7 @@ export function BackupSection() {
         app: APP_ID,
         version: 1,
         settings,
-        progress: { defeated, collected },
+        progress: { defeated, collected, notes },
         loadouts,
       };
       const file = new File(Paths.cache, 'hollow-knight-backup.json');
@@ -49,6 +49,7 @@ export function BackupSection() {
     restoreProgress({
       defeated: isObject(backup.progress?.defeated) ? backup.progress.defeated : {},
       collected: isObject(backup.progress?.collected) ? backup.progress.collected : {},
+      notes: isObject(backup.progress?.notes) ? backup.progress.notes : {},
     });
     replaceLoadouts(Array.isArray(backup.loadouts) ? backup.loadouts : []);
     Alert.alert('Backup restored', 'Your settings, progress and loadouts have been restored.');

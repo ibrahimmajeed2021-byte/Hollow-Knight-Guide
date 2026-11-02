@@ -1,47 +1,114 @@
-import { Linking, StyleSheet } from 'react-native';
-import { Body, Title } from '../../components/hollow/section-text';
-import { Screen } from '../../components/hollow/screen';
+import { router } from 'expo-router';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
+
 import { AppText } from '../../components/hollow/app-text';
+import { Button } from '../../components/hollow/button';
+import { ProgressBar } from '../../components/hollow/progress-bar';
+import { Screen } from '../../components/hollow/screen';
+import { Body, Title } from '../../components/hollow/section-text';
+import { bosses } from '../../data/bosses';
+import { charms } from '../../data/charms';
+import { tips } from '../../data/tips';
+import { useJournal } from '../../journal/journal-context';
+import { useLoadouts } from '../../loadouts/loadouts-context';
 import { useSettings } from '../../settings/settings-context';
+
+const tip = tips[Math.floor(Math.random() * tips.length)];
 const EMAIL = 'apolohcr2@outlook.com';
+
+function Card({ children, onPress, label }) {
+  const { colors } = useSettings();
+  const style = [styles.card, { backgroundColor: colors.card, borderColor: colors.border }];
+  if (!onPress) return <View style={style}>{children}</View>;
+  return (
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} style={style}>
+      {children}
+    </Pressable>
+  );
+}
+
 export default function HomeScreen() {
   const { colors } = useSettings();
+  const { defeated, collected } = useJournal();
+  const { loadouts } = useLoadouts();
+
+  const bossDone = bosses.filter((b) => defeated[b.name]).length;
+  const charmDone = charms.filter((c) => collected[c.name]).length;
+  const total = bosses.length + charms.length;
+  const pct = Math.round(((bossDone + charmDone) / total) * 100);
+  const nextBoss = bosses.find((b) => !defeated[b.name]);
+  const lastLoadout = loadouts[0];
+
   return (
     <Screen>
-      <Title style={styles.big}>Welcome to this guide!</Title>
+      <Title style={styles.big}>Your journey</Title>
+      <View style={styles.list}>
+        <Card onPress={() => router.push('/progress')} label={`Overall progress ${pct}%`}>
+          <View style={styles.row}>
+            <AppText style={styles.cardTitle}>Overall progress</AppText>
+            <AppText style={styles.cardTitle}>{pct}%</AppText>
+          </View>
+          <ProgressBar pct={pct} label="Overall progress" />
+          <AppText style={[styles.small, { color: colors.muted }]}>
+            {bossDone}/{bosses.length} bosses · {charmDone}/{charms.length} charms
+          </AppText>
+        </Card>
+
+        <Card onPress={() => router.push('/bosses')} label="Next boss">
+          <AppText style={[styles.small, { color: colors.muted }]}>Next undefeated boss</AppText>
+          <AppText style={styles.cardTitle}>
+            {nextBoss ? nextBoss.name : 'All bosses defeated! 🎉'}
+          </AppText>
+        </Card>
+
+        <Card>
+          <AppText style={[styles.small, { color: colors.muted }]}>Charm loadout</AppText>
+          <AppText style={styles.cardTitle}>
+            {lastLoadout ? lastLoadout.name : 'No loadouts yet'}
+          </AppText>
+          {lastLoadout ? (
+            <AppText style={[styles.small, { color: colors.muted }]}>
+              {lastLoadout.charms.length} charms
+            </AppText>
+          ) : null}
+          <Button
+            label={lastLoadout ? 'Open loadouts' : 'Build a loadout'}
+            variant="outline"
+            onPress={() => router.push('/charms/loadout')}
+          />
+        </Card>
+
+        <Card>
+          <AppText style={[styles.small, { color: colors.muted }]}>Tip</AppText>
+          <AppText style={styles.tip}>{tip}</AppText>
+        </Card>
+      </View>
+
+      <Title style={[styles.big, styles.gap]}>Welcome!</Title>
       <Body>
-        This is a guide to help you in Hollow Knight! This app is designed to help you as you
-        progress along the game. It is split into multiple sections which you can find using the
-        tabs at the bottom. If you don&apos;t want to get spoiled then I would recommend you to only
-        use this app if you absolutely need it or have already beaten the game and are looking to
-        100% the game. If you do want to get spoiled then please enjoy! This app is a work in
-        progress so please expect some things to be missing or not working. I will try to update it
-        as often as possible so please check back often! If you have any questions or comments
-        please email me at{' '}
+        This guide helps you as you play Hollow Knight. Use the tabs at the bottom to explore. If
+        you don&apos;t want to be spoiled, only use it when you really need it. It&apos;s a work in
+        progress, so please check back often! Questions or comments? Email{' '}
         <AppText
           style={[styles.link, { color: colors.accent }]}
           onPress={() => Linking.openURL(`mailto:${EMAIL}`)}
         >
           {EMAIL}
         </AppText>
-        . Thank you for using this app! Have fun playing Hollow Knight!
-      </Body>
-      <Title style={[styles.big, styles.gap]}>Hollow Knight</Title>
-      <Body>
-        Hollow Knight is a beautifully crafted action-adventure game set in the haunting, hand-drawn
-        world of Hallownest, a once-great kingdom now fallen into ruin. Players take control of a
-        silent, mysterious knight as they explore vast underground caverns, uncover hidden secrets,
-        and battle a wide variety of challenging enemies and bosses. With precise combat, fluid
-        movement, and a deep sense of exploration, the game rewards curiosity and skill while slowly
-        revealing its rich lore through environmental storytelling. Its atmospheric soundtrack and
-        striking art style combine to create an immersive and emotional experience that stays with
-        players long after their journey ends.
+        . Have fun!
       </Body>
     </Screen>
   );
 }
+
 const styles = StyleSheet.create({
   big: { fontSize: 32 },
-  gap: { marginTop: 32 },
+  gap: { marginTop: 24 },
+  list: { padding: 16, gap: 12 },
+  card: { borderWidth: 1, borderRadius: 12, padding: 14, gap: 8 },
+  row: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  cardTitle: { fontSize: 18, fontWeight: 'bold' },
+  small: { fontSize: 13 },
+  tip: { fontSize: 15, lineHeight: 22 },
   link: { textDecorationLine: 'underline' },
 });
