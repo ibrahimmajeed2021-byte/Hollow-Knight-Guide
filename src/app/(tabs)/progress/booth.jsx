@@ -28,6 +28,7 @@ function Frame() {
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
       <View style={styles.frameBorder} />
       <Text style={styles.frameTitle}>HALLOWNEST</Text>
+      <Text style={styles.frameCredit}>Hollow Knight Guide · By Ibrahim · All rights reserved</Text>
     </View>
   );
 }
@@ -173,13 +174,21 @@ const styles = StyleSheet.create({
   },
   frameTitle: {
     position: 'absolute',
-    bottom: 22,
+    bottom: 28,
     width: '100%',
     textAlign: 'center',
     color: '#fff',
     fontFamily: HKFont,
     fontSize: 20,
     letterSpacing: 6,
+  },
+  frameCredit: {
+    position: 'absolute',
+    bottom: 16,
+    width: '100%',
+    textAlign: 'center',
+    color: 'rgba(255,255,255,0.7)',
+    fontSize: 8,
   },
   hint: { textAlign: 'center', marginTop: 12, fontSize: 14 },
   palette: { gap: 10, paddingVertical: 10 },

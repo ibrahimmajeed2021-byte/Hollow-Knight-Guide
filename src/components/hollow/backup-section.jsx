@@ -22,6 +22,7 @@ export function BackupSection() {
       const backup = {
         app: APP_ID,
         version: 1,
+        credit: 'Hollow Knight Guide by Ibrahim. All rights reserved.',
         settings,
         progress: { defeated, collected, notes },
         loadouts,

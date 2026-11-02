@@ -392,6 +392,7 @@ export default function LoadoutScreen() {
             })}
           </View>
           <AppText style={styles.shareFoot}>Hollow Knight Guide</AppText>
+          <AppText style={styles.shareCredit}>By Ibrahim · All rights reserved</AppText>
         </View>
       </View>
     </Screen>
@@ -420,6 +421,7 @@ const styles = StyleSheet.create({
   shareImg: { width: 64, height: 64 },
   shareName: { color: "#ffffff", fontSize: 12, textAlign: "center" },
   shareCost: { color: "#b8b8cc", fontSize: 11 },
+  shareCredit: { color: '#8a8aa0', fontSize: 9, textAlign: 'center' },
   shareFoot: {
     color: "#8a8aa0",
     fontSize: 11,
