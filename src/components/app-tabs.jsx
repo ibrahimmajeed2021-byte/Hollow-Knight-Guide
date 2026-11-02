@@ -1,9 +1,14 @@
+import { usePathname } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
 import { useSettings } from '../settings/settings-context';
 export default function AppTabs() {
   const { colors } = useSettings();
+  const pathname = usePathname();
+  const hideTabBar = pathname.startsWith('/journal/');
   return (
     <NativeTabs
+      hidden={hideTabBar}
+      minimizeBehavior="onScrollDown"
       backgroundColor={colors.tabBar}
       indicatorColor={colors.background}
       iconColor={{ default: colors.muted, selected: colors.text }}
