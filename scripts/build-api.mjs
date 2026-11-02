@@ -25,12 +25,17 @@ const bosses = await load("bosses.js", "bosses");
 const charms = await load("charms.js", "charms");
 const silksongBosses = await load("silksong-bosses.js", "silksongBosses");
 const silksongItems = await load("silksong-items.js", "silksongItems");
+const silksongCollectibles = await load(
+  "silksong-collectibles.js",
+  "silksongCollectibles",
+);
 const tips = await load("tips.js", "tips");
 
 write("hollow/bosses.json", bosses);
 write("hollow/items.json", charms);
 write("silksong/bosses.json", silksongBosses);
 write("silksong/items.json", silksongItems);
+write("silksong/collectibles.json", silksongCollectibles);
 write("tips.json", tips);
 write("index.json", {
   updatedAt: new Date().toISOString(),
@@ -39,6 +44,7 @@ write("index.json", {
     "hollow/items.json",
     "silksong/bosses.json",
     "silksong/items.json",
+    "silksong/collectibles.json",
     "tips.json",
   ],
 });

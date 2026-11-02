@@ -1,7 +1,14 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Platform, Pressable, StyleSheet, Switch, TextInput, View } from "react-native";
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Switch,
+  TextInput,
+  View,
+} from "react-native";
 
 import { photoUri, useJournal } from "../../journal/journal-context";
 import { takePhoto } from "../../journal/take-photo";
@@ -55,20 +62,21 @@ export function BossExtras({ name }) {
         />
       </View>
       <View style={styles.photos}>
-        {Platform.OS !== 'web' && bossPhotos.map((photo) => (
-          <Pressable
-            key={photo.id}
-            onPress={() => router.push(`/progress/photo/${photo.id}`)}
-            accessibilityRole="button"
-            accessibilityLabel={`Open photo of ${name}`}
-          >
-            <Image
-              source={{ uri: photoUri(photo) }}
-              style={styles.thumb}
-              contentFit="cover"
-            />
-          </Pressable>
-        ))}
+        {Platform.OS !== "web" &&
+          bossPhotos.map((photo) => (
+            <Pressable
+              key={photo.id}
+              onPress={() => router.push(`/progress/photo/${photo.id}`)}
+              accessibilityRole="button"
+              accessibilityLabel={`Open photo of ${name}`}
+            >
+              <Image
+                source={{ uri: photoUri(photo) }}
+                style={styles.thumb}
+                contentFit="cover"
+              />
+            </Pressable>
+          ))}
       </View>
       <AppText style={styles.label}>My strategy notes</AppText>
       <TextInput
@@ -85,7 +93,9 @@ export function BossExtras({ name }) {
           { color: colors.text, borderColor: colors.border },
         ]}
       />
-      {Platform.OS !== 'web' && <Button label="Add photo" variant="outline" onPress={attach} />}
+      {Platform.OS !== "web" && (
+        <Button label="Add photo" variant="outline" onPress={attach} />
+      )}
     </View>
   );
 }
@@ -111,13 +121,13 @@ const styles = StyleSheet.create({
   thumb: { width: 64, height: 64, borderRadius: 8 },
 });
 
-export function CharmSummary({ name, notches }) {
+export function CharmSummary({ name, notches, id = name }) {
   const { collected } = useJournal();
   const { colors } = useSettings();
   return (
     <>
-      <Stat label="Notches" value={notches} />
-      {collected[name] ? (
+      {notches != null ? <Stat label="Notches" value={notches} /> : null}
+      {collected[id] ? (
         <AppText style={[styles.badge, { color: colors.accent }]}>
           ✓ Collected
         </AppText>
@@ -126,7 +136,7 @@ export function CharmSummary({ name, notches }) {
   );
 }
 
-export function CharmExtras({ name }) {
+export function CharmExtras({ name, id = name }) {
   const { colors } = useSettings();
   const triggerHaptic = useHaptics();
   const { collected, toggleCollected } = useJournal();
@@ -134,10 +144,10 @@ export function CharmExtras({ name }) {
     <View style={[styles.wrap, styles.row]}>
       <AppText style={styles.label}>Collected</AppText>
       <Switch
-        value={!!collected[name]}
+        value={!!collected[id]}
         onValueChange={() => {
           triggerHaptic();
-          toggleCollected(name);
+          toggleCollected(id);
         }}
         accessibilityLabel={`Mark ${name} as collected`}
         trackColor={{ true: colors.button }}

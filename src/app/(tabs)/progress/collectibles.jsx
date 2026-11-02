@@ -1,0 +1,122 @@
+import { router } from "expo-router";
+import { useMemo, useState } from "react";
+import { FlatList } from "react-native";
+
+import { Button } from "../../../components/hollow/button";
+import { EntryCard, Stat } from "../../../components/hollow/entry-card";
+import {
+  CharmExtras,
+  CharmSummary,
+} from "../../../components/hollow/progress-extras";
+import { AppText } from "../../../components/hollow/app-text";
+import { SearchFilter } from "../../../components/hollow/search-filter";
+import { Screen } from "../../../components/hollow/screen";
+import { Body, Title } from "../../../components/hollow/section-text";
+import { useTabInset } from "../../../hooks/use-tab-inset";
+import { useJournal } from "../../../journal/journal-context";
+import {
+  silksongCollectibleGroups,
+  silksongCollectibles,
+} from "../../../data/silksong-collectibles";
+
+const FILTERS = [
+  { value: "all", label: "All" },
+  { value: "todo", label: "Not collected" },
+  { value: "done", label: "Collected" },
+];
+
+const keyOf = (item) => `c:${item.name}`;
+
+export default function CollectiblesScreen() {
+  const { collected } = useJournal();
+  const inset = useTabInset();
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [group, setGroup] = useState(silksongCollectibleGroups[0].id);
+
+  const groupFilters = useMemo(
+    () =>
+      silksongCollectibleGroups.map((g) => {
+        const items = silksongCollectibles.filter((i) => i.group === g.id);
+        const done = items.filter((i) => collected[keyOf(i)]).length;
+        return { value: g.id, label: `${g.title} ${done}/${items.length}` };
+      }),
+    [collected],
+  );
+  const current = silksongCollectibleGroups.find((g) => g.id === group);
+
+  const data = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return silksongCollectibles.filter(
+      (i) =>
+        i.group === group &&
+        (!q ||
+          i.name.toLowerCase().includes(q) ||
+          (i.location ?? "").toLowerCase().includes(q)) &&
+        (filter === "all" || (filter === "done") === !!collected[keyOf(i)]),
+    );
+  }, [group, query, filter, collected]);
+
+  const header = (
+    <>
+      <Title>Collectibles</Title>
+      <Body>{current.blurb}</Body>
+      <Button
+        label="Back to progress"
+        variant="outline"
+        onPress={() => router.back()}
+        style={{ marginHorizontal: 16, marginTop: 8 }}
+      />
+      <SearchFilter
+        filters={groupFilters}
+        filter={group}
+        onFilter={setGroup}
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Search collectibles"
+      />
+      <SearchFilter
+        hideSearch
+        filters={FILTERS}
+        filter={filter}
+        onFilter={setFilter}
+      />
+    </>
+  );
+
+  return (
+    <Screen scroll={false}>
+      <FlatList
+        data={data}
+        keyExtractor={(item) => item.name}
+        ListHeaderComponent={header}
+        ListEmptyComponent={<Body>Nothing matches.</Body>}
+        contentContainerStyle={{ paddingBottom: inset }}
+        initialNumToRender={8}
+        renderItem={({ item }) => (
+          <EntryCard
+            name={item.name}
+            description={item.description ?? ""}
+            summary={
+              <>
+                {item.kind ? <Stat label="Type" value={item.kind} /> : null}
+                {item.act ? <Stat label="Act" value={item.act} /> : null}
+                <CharmSummary id={keyOf(item)} name={item.name} />
+              </>
+            }
+          >
+            {item.location ? (
+              <Stat label="Location" value={item.location} />
+            ) : null}
+            {item.requires ? (
+              <Stat label="Requires" value={item.requires} />
+            ) : null}
+            {item.reward ? <Stat label="Reward" value={item.reward} /> : null}
+            {item.quote ? <AppText>{item.quote}</AppText> : null}
+            <CharmExtras id={keyOf(item)} name={item.name} />
+          </EntryCard>
+        )}
+      />
+    </Screen>
+  );
+}
