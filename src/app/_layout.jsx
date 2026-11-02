@@ -2,6 +2,7 @@ import { useFonts } from 'expo-font';
 import { DarkTheme, DefaultTheme, ThemeProvider, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useRef } from 'react';
+import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { LoadingScreen } from '../components/hollow/loading-screen';
@@ -26,8 +27,10 @@ function AppShell() {
 
   return (
     <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-      <LoadingScreen />
-      <AppTabs />
+      <View style={{ flex: 1 }}>
+        <AppTabs />
+        <LoadingScreen />
+      </View>
     </ThemeProvider>
   );
 }
