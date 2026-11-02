@@ -1,10 +1,12 @@
+import { router } from 'expo-router';
 import { FlatList } from 'react-native';
-import { EntryCard } from '../../components/hollow/entry-card';
-import { CharmExtras, CharmSummary } from '../../components/hollow/progress-extras';
-import { Screen } from '../../components/hollow/screen';
-import { Body, Title } from '../../components/hollow/section-text';
-import { charms } from '../../data/charms';
-import { charmImages } from '../../data/images';
+import { Button } from '../../../components/hollow/button';
+import { EntryCard } from '../../../components/hollow/entry-card';
+import { CharmExtras, CharmSummary } from '../../../components/hollow/progress-extras';
+import { Screen } from '../../../components/hollow/screen';
+import { Body, Title } from '../../../components/hollow/section-text';
+import { charms } from '../../../data/charms';
+import { charmImages } from '../../../data/images';
 export default function CharmsScreen() {
   return (
     <Screen scroll={false}>
@@ -19,6 +21,11 @@ export default function CharmsScreen() {
         ListHeaderComponent={
           <>
             <Title>Charms</Title>
+            <Button
+              label="Loadout builder"
+              onPress={() => router.push('/charms/loadout')}
+              style={{ marginHorizontal: 16, marginTop: 12 }}
+            />
             <Body>
               Charms are a very important component in Hollow Knight. Equipping charms can alter
               your gameplay and can help you when you are stuck. Charms allow players to have

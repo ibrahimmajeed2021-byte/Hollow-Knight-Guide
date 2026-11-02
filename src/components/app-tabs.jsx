@@ -4,7 +4,10 @@ import { useSettings } from '../settings/settings-context';
 export default function AppTabs() {
   const { colors } = useSettings();
   const pathname = usePathname();
-  const hideTabBar = pathname.startsWith('/progress/photo') || pathname === '/progress/booth';
+  const hideTabBar =
+    pathname.startsWith('/progress/photo') ||
+    pathname === '/progress/booth' ||
+    pathname === '/charms/loadout';
   return (
     <NativeTabs
       hidden={hideTabBar}
