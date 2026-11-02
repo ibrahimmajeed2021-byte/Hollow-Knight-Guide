@@ -161,6 +161,12 @@ export default function SettingsScreen() {
           value={settings.reduceMotion}
           onChange={(reduceMotion) => update({ reduceMotion })}
         />
+        <ToggleRow
+          label="Remember my game"
+          hint="Off: always show the game menu on launch. On: reopen the last game you picked"
+          value={settings.rememberGame}
+          onChange={(rememberGame) => update({ rememberGame })}
+        />
       </Section>
 
       <Pressable

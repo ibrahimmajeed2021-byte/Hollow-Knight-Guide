@@ -4,6 +4,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { games } from './config';
 
 const STORAGE_KEY = 'hollow-knight-guide:game';
+const SETTINGS_KEY = 'hollow-knight-guide:settings';
 const GameContext = createContext(null);
 
 export function GameProvider({ children }) {
@@ -11,9 +12,10 @@ export function GameProvider({ children }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((raw) => {
-        if (raw && games[raw]) setGameId(raw);
+    Promise.all([AsyncStorage.getItem(SETTINGS_KEY), AsyncStorage.getItem(STORAGE_KEY)])
+      .then(([settingsRaw, raw]) => {
+        const remember = settingsRaw ? JSON.parse(settingsRaw).rememberGame === true : false;
+        if (remember && raw && games[raw]) setGameId(raw);
       })
       .catch(() => {})
       .finally(() => setLoaded(true));

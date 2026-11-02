@@ -68,6 +68,7 @@ export const defaultSettings = {
   hapticsEnabled: true,
   hapticsIntensity: 'default',
   reduceMotion: false,
+  rememberGame: false,
   startExpanded: false,
   highContrast: false,
 };
