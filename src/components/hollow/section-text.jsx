@@ -1,16 +1,11 @@
 import { StyleSheet, Text } from 'react-native';
-import type { TextProps } from 'react-native';
-
-import { HK, HKFont } from '@/constants/hollow';
-
-export function Title(props: TextProps) {
+import { HK, HKFont } from '../../constants/hollow';
+export function Title(props) {
   return <Text {...props} style={[styles.title, props.style]} />;
 }
-
-export function Body(props: TextProps) {
+export function Body(props) {
   return <Text {...props} style={[styles.body, props.style]} />;
 }
-
 const styles = StyleSheet.create({
   title: {
     color: HK.text,

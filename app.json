@@ -8,7 +8,10 @@
     "scheme": "hollowknightguide",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/expo.icon",
+      "infoPlist": {
+        "CADisableMinimumFrameRateOnPhone": true
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -35,7 +38,6 @@
       ]
     ],
     "experiments": {
-      "typedRoutes": true,
       "reactCompiler": true
     }
   }

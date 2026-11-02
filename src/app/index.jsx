@@ -1,11 +1,8 @@
 import { Linking, StyleSheet, Text } from 'react-native';
-
-import { Body, Title } from '@/components/hollow/section-text';
-import { Screen } from '@/components/hollow/screen';
-import { HK } from '@/constants/hollow';
-
+import { Body, Title } from '../components/hollow/section-text';
+import { Screen } from '../components/hollow/screen';
+import { HK } from '../constants/hollow';
 const EMAIL = 'apolohcr2@outlook.com';
-
 export default function HomeScreen() {
   return (
     <Screen>
@@ -26,19 +23,18 @@ export default function HomeScreen() {
       </Body>
       <Title style={[styles.big, styles.gap]}>Hollow Knight</Title>
       <Body>
-        Hollow Knight is a beautifully crafted action-adventure game set in the haunting,
-        hand-drawn world of Hallownest, a once-great kingdom now fallen into ruin. Players take
-        control of a silent, mysterious knight as they explore vast underground caverns, uncover
-        hidden secrets, and battle a wide variety of challenging enemies and bosses. With precise
-        combat, fluid movement, and a deep sense of exploration, the game rewards curiosity and
-        skill while slowly revealing its rich lore through environmental storytelling. Its
-        atmospheric soundtrack and striking art style combine to create an immersive and emotional
-        experience that stays with players long after their journey ends.
+        Hollow Knight is a beautifully crafted action-adventure game set in the haunting, hand-drawn
+        world of Hallownest, a once-great kingdom now fallen into ruin. Players take control of a
+        silent, mysterious knight as they explore vast underground caverns, uncover hidden secrets,
+        and battle a wide variety of challenging enemies and bosses. With precise combat, fluid
+        movement, and a deep sense of exploration, the game rewards curiosity and skill while slowly
+        revealing its rich lore through environmental storytelling. Its atmospheric soundtrack and
+        striking art style combine to create an immersive and emotional experience that stays with
+        players long after their journey ends.
       </Body>
     </Screen>
   );
 }
-
 const styles = StyleSheet.create({
   big: { fontSize: 32 },
   gap: { marginTop: 32 },

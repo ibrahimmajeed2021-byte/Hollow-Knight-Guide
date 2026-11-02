@@ -1,8 +1,6 @@
-import { Tabs, TabList, TabTrigger, TabSlot, TabTriggerSlotProps } from 'expo-router/ui';
+import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-
-import { HK } from '@/constants/hollow';
-
+import { HK } from '../constants/hollow';
 export default function AppTabs() {
   return (
     <Tabs>
@@ -26,15 +24,13 @@ export default function AppTabs() {
     </Tabs>
   );
 }
-
-function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps) {
+function TabButton({ children, isFocused, ...props }) {
   return (
     <Pressable {...props} style={styles.button}>
       <Text style={[styles.label, isFocused && styles.focused]}>{children}</Text>
     </Pressable>
   );
 }
-
 const styles = StyleSheet.create({
   tabList: {
     flexDirection: 'row',

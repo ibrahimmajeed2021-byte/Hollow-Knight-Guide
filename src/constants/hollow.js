@@ -7,6 +7,5 @@ export const HK = {
   text: '#0f0f1b',
   muted: '#565a75',
   accent: '#565a75',
-} as const;
-
+};
 export const HKFont = 'TrajanPro';

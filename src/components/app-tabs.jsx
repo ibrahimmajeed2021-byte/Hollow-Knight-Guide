@@ -1,14 +1,13 @@
 import { NativeTabs } from 'expo-router/native-tabs';
-
-import { HK } from '@/constants/hollow';
-
+import { HK } from '../constants/hollow';
 export default function AppTabs() {
   return (
     <NativeTabs
       backgroundColor={HK.tabBar}
       indicatorColor={HK.background}
       iconColor={{ default: HK.muted, selected: HK.text }}
-      labelStyle={{ default: { color: HK.muted }, selected: { color: HK.text } }}>
+      labelStyle={{ default: { color: HK.muted }, selected: { color: HK.text } }}
+    >
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={{ default: 'house', selected: 'house.fill' }} md="home" />

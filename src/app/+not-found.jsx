@@ -1,8 +1,6 @@
 import { StyleSheet, Text } from 'react-native';
-
-import { Screen } from '@/components/hollow/screen';
-import { HK } from '@/constants/hollow';
-
+import { Screen } from '../components/hollow/screen';
+import { HK } from '../constants/hollow';
 export default function NotFound() {
   return (
     <Screen>
@@ -10,7 +8,6 @@ export default function NotFound() {
     </Screen>
   );
 }
-
 const styles = StyleSheet.create({
   text: { color: HK.text, fontSize: 24, textAlign: 'center', marginTop: 40 },
 });

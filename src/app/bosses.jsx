@@ -1,14 +1,11 @@
 import { Image } from 'expo-image';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-
-import { AppFooter } from '@/components/hollow/app-footer';
-import { EntryCard, Stat } from '@/components/hollow/entry-card';
-import { Screen } from '@/components/hollow/screen';
-import { Body, Title } from '@/components/hollow/section-text';
-import { HK } from '@/constants/hollow';
-import { bosses } from '@/data/bosses';
-import { bossImages, locationImages } from '@/data/images';
-
+import { EntryCard, Stat } from '../components/hollow/entry-card';
+import { Screen } from '../components/hollow/screen';
+import { Body, Title } from '../components/hollow/section-text';
+import { HK } from '../constants/hollow';
+import { bosses } from '../data/bosses';
+import { bossImages, locationImages } from '../data/images';
 export default function BossesScreen() {
   return (
     <Screen scroll={false}>
@@ -22,11 +19,11 @@ export default function BossesScreen() {
             <Title>Bosses</Title>
             <Body>
               Bosses in Hollow Knight play a crucial role in shaping the game&apos;s challenge,
-              progression, and storytelling, acting as major skill checks that test a
-              player&apos;s mastery of movement, timing, and combat. Each boss introduces unique
-              attack patterns and mechanics, which can feel overwhelming for new players. This
-              guide breaks down every boss and where they can be found so you can improve faster,
-              build confidence, and enjoy the game without feeling stuck.
+              progression, and storytelling, acting as major skill checks that test a player&apos;s
+              mastery of movement, timing, and combat. Each boss introduces unique attack patterns
+              and mechanics, which can feel overwhelming for new players. This guide breaks down
+              every boss and where they can be found so you can improve faster, build confidence,
+              and enjoy the game without feeling stuck.
             </Body>
           </>
         }
@@ -50,12 +47,10 @@ export default function BossesScreen() {
             ))}
           </EntryCard>
         )}
-        ListFooterComponent={<AppFooter />}
       />
     </Screen>
   );
 }
-
 const styles = StyleSheet.create({
   locationLabel: { marginTop: 8, fontWeight: 'bold', color: HK.muted, fontSize: 15 },
   location: { marginTop: 6, alignItems: 'center', gap: 4 },

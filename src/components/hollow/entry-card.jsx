@@ -1,21 +1,7 @@
 import { Image } from 'expo-image';
-import type { ImageSource } from 'expo-image';
-import type { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-
-import { HK, HKFont } from '@/constants/hollow';
-
-export function EntryCard({
-  image,
-  name,
-  description,
-  children,
-}: {
-  image: ImageSource | number;
-  name: string;
-  description: string;
-  children?: ReactNode;
-}) {
+import { HK, HKFont } from '../../constants/hollow';
+export function EntryCard({ image, name, description, children }) {
   return (
     <View style={styles.card}>
       <View style={styles.top}>
@@ -27,8 +13,7 @@ export function EntryCard({
     </View>
   );
 }
-
-export function Stat({ label, value }: { label: string; value: string }) {
+export function Stat({ label, value }) {
   return (
     <Text style={styles.stat}>
       <Text style={styles.statLabel}>{label}: </Text>
@@ -36,7 +21,6 @@ export function Stat({ label, value }: { label: string; value: string }) {
     </Text>
   );
 }
-
 const styles = StyleSheet.create({
   card: {
     backgroundColor: HK.card,
