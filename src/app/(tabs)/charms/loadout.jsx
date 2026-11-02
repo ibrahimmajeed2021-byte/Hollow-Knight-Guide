@@ -30,6 +30,11 @@ const TILE = (Dimensions.get('window').width - 32 - GAP * (COLUMNS - 1)) / COLUM
 const MIN_LIMIT = 3;
 const MAX_LIMIT = 11;
 const DEFAULT_LIMIT = 5;
+const SORTS = [
+  { value: 'default', label: 'Default' },
+  { value: 'asc', label: 'Lowest first' },
+  { value: 'desc', label: 'Highest first' },
+];
 const cost = (name) => Number(charms.find((c) => c.name === name)?.notches ?? 0);
 
 export default function LoadoutScreen() {
@@ -42,10 +47,17 @@ export default function LoadoutScreen() {
   const [name, setName] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [onlyCollected, setOnlyCollected] = useState(false);
+  const [sort, setSort] = useState('default');
 
   const used = selected.reduce((sum, n) => sum + cost(n), 0);
   const over = used > limit;
-  const data = onlyCollected ? charms.filter((c) => collected[c.name]) : charms;
+  const filtered = onlyCollected ? charms.filter((c) => collected[c.name]) : charms;
+  const data =
+    sort === 'default'
+      ? filtered
+      : [...filtered].sort((a, b) =>
+          sort === 'asc' ? Number(a.notches) - Number(b.notches) : Number(b.notches) - Number(a.notches),
+        );
 
   const toggle = (charm) => {
     triggerHaptic();
@@ -147,6 +159,35 @@ export default function LoadoutScreen() {
                 trackColor={{ true: colors.button }}
               />
             </View>
+
+            <AppText style={styles.label}>Sort by notch cost</AppText>
+            <View style={styles.sortRow} accessibilityRole="radiogroup">
+              {SORTS.map((o) => {
+                const on = sort === o.value;
+                return (
+                  <Pressable
+                    key={o.value}
+                    onPress={() => {
+                      triggerHaptic();
+                      setSort(o.value);
+                    }}
+                    accessibilityRole="radio"
+                    accessibilityState={{ selected: on }}
+                    style={[
+                      styles.sortOption,
+                      { borderColor: colors.border },
+                      on && { backgroundColor: colors.button, borderColor: colors.button },
+                    ]}
+                  >
+                    <AppText
+                      style={[styles.sortText, on && { color: colors.buttonText, fontWeight: 'bold' }]}
+                    >
+                      {o.label}
+                    </AppText>
+                  </Pressable>
+                );
+              })}
+            </View>
           </View>
 
           {data.length === 0 ? (
@@ -244,6 +285,15 @@ const styles = StyleSheet.create({
   overText: { color: '#c0392b', fontWeight: 'bold' },
   small: { fontSize: 13 },
   empty: { textAlign: 'center', marginTop: 16 },
+  sortRow: { flexDirection: 'row', gap: 8 },
+  sortOption: {
+    flex: 1,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingVertical: 8,
+    alignItems: 'center',
+  },
+  sortText: { fontSize: 14, textAlign: 'center' },
   grid: { flexDirection: 'row', flexWrap: 'wrap', gap: GAP },
   tile: {
     width: TILE,
