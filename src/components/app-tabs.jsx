@@ -1,10 +1,12 @@
 import { usePathname } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
 import { isTabBarHidden } from '../hooks/use-tab-inset';
+import { useGame } from '../games/game-context';
 import { useSettings } from '../settings/settings-context';
 export default function AppTabs() {
   const { colors } = useSettings();
   const pathname = usePathname();
+  const { config } = useGame();
   const hideTabBar = isTabBarHidden(pathname);
   return (
     <NativeTabs
@@ -21,7 +23,7 @@ export default function AppTabs() {
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="charms">
-        <NativeTabs.Trigger.Label>Charms</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Label>{config.itemsLabel}</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf={{ default: 'seal', selected: 'seal.fill' }} md="stars" />
       </NativeTabs.Trigger>
 

@@ -2,6 +2,7 @@ import { router, usePathname } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useGame } from '../../games/game-context';
 import { HKFont } from '../../constants/hollow';
 import { useHaptics, useSettings } from '../../settings/settings-context';
 import { AppText } from './app-text';
@@ -10,6 +11,7 @@ export function AppHeader() {
   const { top } = useSafeAreaInsets();
   const { colors } = useSettings();
   const triggerHaptic = useHaptics();
+  const { config, clearGame } = useGame();
   const onSettings = usePathname() === '/settings';
 
   const press = () => {
@@ -20,7 +22,16 @@ export function AppHeader() {
 
   return (
     <View style={[styles.container, { paddingTop: top + 8, backgroundColor: colors.header }]}>
-      <AppText style={[styles.title, { color: colors.headerText }]}>Hollow Knight Guide</AppText>
+      <Pressable
+        onPress={() => {
+          triggerHaptic();
+          clearGame();
+        }}
+        accessibilityRole="button"
+        accessibilityLabel={`${config.guideTitle}. Tap to switch game`}
+      >
+        <AppText style={[styles.title, { color: colors.headerText }]}>{config.guideTitle}</AppText>
+      </Pressable>
       <Pressable
         onPress={press}
         hitSlop={12}

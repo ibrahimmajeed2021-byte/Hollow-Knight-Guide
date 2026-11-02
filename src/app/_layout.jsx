@@ -5,6 +5,8 @@ import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
+import { GameSelect } from '../components/hollow/game-select';
+import { GameProvider, useGame } from '../games/game-context';
 import { LoadingScreen } from '../components/hollow/loading-screen';
 import { HKFont } from '../constants/hollow';
 import { JournalProvider } from '../journal/journal-context';
@@ -30,9 +32,21 @@ function AppShell() {
     <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
       <View style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }} />
+        <GameSelect />
         <LoadingScreen />
       </View>
     </ThemeProvider>
+  );
+}
+
+function GameData() {
+  const { config } = useGame();
+  return (
+    <JournalProvider key={config.id} suffix={config.storageSuffix}>
+      <LoadoutsProvider key={config.id} suffix={config.storageSuffix}>
+        <AppShell />
+      </LoadoutsProvider>
+    </JournalProvider>
   );
 }
 
@@ -46,11 +60,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SettingsProvider>
-        <JournalProvider>
-          <LoadoutsProvider>
-            <AppShell />
-          </LoadoutsProvider>
-        </JournalProvider>
+        <GameProvider>
+          <GameData />
+        </GameProvider>
       </SettingsProvider>
     </GestureHandlerRootView>
   );

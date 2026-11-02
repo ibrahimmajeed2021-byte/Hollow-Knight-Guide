@@ -6,8 +6,7 @@ import { Button } from '../../../components/hollow/button';
 import { ProgressBar } from '../../../components/hollow/progress-bar';
 import { Screen } from '../../../components/hollow/screen';
 import { Body, Title } from '../../../components/hollow/section-text';
-import { bosses } from '../../../data/bosses';
-import { charms } from '../../../data/charms';
+import { useGame } from '../../../games/game-context';
 import { useJournal } from '../../../journal/journal-context';
 import { useSettings } from '../../../settings/settings-context';
 
@@ -40,11 +39,14 @@ function ProgressRow({ label, done, total, onPress, big }) {
 
 export default function ProgressScreen() {
   const { defeated, collected, photos, resetProgress } = useJournal();
+  const { config } = useGame();
+  const bosses = config.bosses;
+  const charms = config.items;
   const bossDone = bosses.filter((b) => defeated[b.name]).length;
   const charmDone = charms.filter((c) => collected[c.name]).length;
 
   const confirmReset = () =>
-    Alert.alert('Reset progress?', 'This clears all defeated bosses and collected charms.', [
+    Alert.alert('Reset progress?', `This clears all defeated bosses and collected ${config.itemsLabel.toLowerCase()}.`, [
       { text: 'Cancel', style: 'cancel' },
       { text: 'Reset', style: 'destructive', onPress: resetProgress },
     ]);
@@ -52,7 +54,7 @@ export default function ProgressScreen() {
   return (
     <Screen>
       <Title>Progress</Title>
-      <Body>Tick bosses and charms on their pages to track your run.</Body>
+      <Body>Tick bosses and {config.itemsLabel.toLowerCase()} on their pages to track your run.</Body>
       <View style={styles.list}>
         <ProgressRow
           big
@@ -67,7 +69,7 @@ export default function ProgressScreen() {
           onPress={() => router.push('/bosses')}
         />
         <ProgressRow
-          label="Charms"
+          label={config.itemsLabel}
           done={charmDone}
           total={charms.length}
           onPress={() => router.push('/charms')}

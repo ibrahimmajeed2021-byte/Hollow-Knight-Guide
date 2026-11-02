@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Directory, File, Paths } from 'expo-file-system';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-const STORAGE_KEY = 'hollow-knight-guide:journal';
+const BASE_KEY = 'hollow-knight-guide:journal';
 const JournalContext = createContext(null);
 
 const emptyState = { photos: [], defeated: {}, collected: {}, notes: {} };
@@ -17,7 +17,8 @@ export function photoUri(photo) {
   return new File(journalDir(), photo.file).uri;
 }
 
-export function JournalProvider({ children }) {
+export function JournalProvider({ children, suffix = '' }) {
+  const STORAGE_KEY = BASE_KEY + suffix;
   const [state, setState] = useState(emptyState);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ export function JournalProvider({ children }) {
         if (raw) setState({ ...emptyState, ...JSON.parse(raw) });
       })
       .catch(() => {});
-  }, []);
+  }, [STORAGE_KEY]);
 
   const commit = useCallback((updater) => {
     setState((prev) => {
@@ -34,7 +35,7 @@ export function JournalProvider({ children }) {
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
       return next;
     });
-  }, []);
+  }, [STORAGE_KEY]);
 
   const addPhoto = useCallback(
     (sourceUri, { tag = null, note = '' } = {}) => {

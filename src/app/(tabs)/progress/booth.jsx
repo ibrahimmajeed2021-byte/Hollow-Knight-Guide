@@ -10,7 +10,7 @@ import { Button } from '../../../components/hollow/button';
 import { Screen } from '../../../components/hollow/screen';
 import { Sticker } from '../../../components/hollow/sticker';
 import { HKFont } from '../../../constants/hollow';
-import { bossImages, charmImages } from '../../../data/images';
+import { useGame } from '../../../games/game-context';
 import { useJournal } from '../../../journal/journal-context';
 import { saveToLibrary } from '../../../journal/save-to-library';
 import { useSettings } from '../../../settings/settings-context';
@@ -18,23 +18,23 @@ import { useSettings } from '../../../settings/settings-context';
 const STAGE_WIDTH = Dimensions.get('window').width - 32;
 const STAGE_HEIGHT = (STAGE_WIDTH * 4) / 3;
 
-const stickerOptions = [
-  ...Object.entries(bossImages).map(([key, source]) => ({ key: `boss-${key}`, source })),
-  ...Object.entries(charmImages).map(([key, source]) => ({ key: `charm-${key}`, source })),
-];
-
-function Frame() {
+function Frame({ title, guide }) {
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
       <View style={styles.frameBorder} />
-      <Text style={styles.frameTitle}>HALLOWNEST</Text>
-      <Text style={styles.frameCredit}>Hollow Knight Guide · By Ibrahim · All rights reserved</Text>
+      <Text style={styles.frameTitle}>{title}</Text>
+      <Text style={styles.frameCredit}>{guide} · By Ibrahim · All rights reserved</Text>
     </View>
   );
 }
 
 export default function BoothScreen() {
   const { colors } = useSettings();
+  const { config } = useGame();
+  const stickerOptions = [
+    ...Object.entries(config.bossImages).map(([key, source]) => ({ key: `boss-${key}`, source })),
+    ...Object.entries(config.itemImages).map(([key, source]) => ({ key: `charm-${key}`, source })),
+  ];
   const { addPhoto } = useJournal();
   const [permission, requestPermission] = useCameraPermissions();
   const [facing, setFacing] = useState('front');
@@ -103,7 +103,7 @@ export default function BoothScreen() {
             <CameraView ref={camera} style={StyleSheet.absoluteFill} facing={facing} />
           )}
           {photo && stickers.map((s) => <Sticker key={s.id} source={s.source} />)}
-          <Frame />
+          <Frame title={config.tagline.toUpperCase()} guide={config.guideTitle} />
         </View>
 
         {photo ? (

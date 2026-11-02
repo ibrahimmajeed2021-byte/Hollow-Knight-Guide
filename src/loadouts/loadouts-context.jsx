@@ -1,10 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
-const STORAGE_KEY = 'hollow-knight-guide:loadouts';
+const BASE_KEY = 'hollow-knight-guide:loadouts';
 const LoadoutsContext = createContext(null);
 
-export function LoadoutsProvider({ children }) {
+export function LoadoutsProvider({ children, suffix = '' }) {
+  const STORAGE_KEY = BASE_KEY + suffix;
   const [loadouts, setLoadouts] = useState([]);
 
   useEffect(() => {
@@ -13,7 +14,7 @@ export function LoadoutsProvider({ children }) {
         if (raw) setLoadouts(JSON.parse(raw));
       })
       .catch(() => {});
-  }, []);
+  }, [STORAGE_KEY]);
 
   const commit = useCallback((updater) => {
     setLoadouts((prev) => {
@@ -21,7 +22,7 @@ export function LoadoutsProvider({ children }) {
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
       return next;
     });
-  }, []);
+  }, [STORAGE_KEY]);
 
   const saveLoadout = useCallback(
     (loadout) => {

@@ -10,8 +10,7 @@ import { useJournal } from '../../journal/journal-context';
 import { useTabInset } from '../../hooks/use-tab-inset';
 import { useSettings } from '../../settings/settings-context';
 import { BossExtras, BossSummary } from '../../components/hollow/progress-extras';
-import { bosses } from '../../data/bosses';
-import { bossImages, locationImages } from '../../data/images';
+import { useGame } from '../../games/game-context';
 const FILTERS = [
   { value: 'all', label: 'All' },
   { value: 'todo', label: 'Not defeated' },
@@ -22,6 +21,8 @@ export default function BossesScreen() {
   const { colors } = useSettings();
   const inset = useTabInset();
   const { defeated } = useJournal();
+  const { config } = useGame();
+  const { bosses, bossImages, locationImages } = config;
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const data = useMemo(() => {
@@ -31,7 +32,7 @@ export default function BossesScreen() {
         (!q || b.name.toLowerCase().includes(q)) &&
         (filter === 'all' || (filter === 'done') === !!defeated[b.name]),
     );
-  }, [query, filter, defeated]);
+  }, [bosses, query, filter, defeated]);
   return (
     <Screen scroll={false}>
       <SearchFilter

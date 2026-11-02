@@ -1,8 +1,10 @@
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useGame } from '../games/game-context';
 import { useSettings } from '../settings/settings-context';
 export default function AppTabs() {
   const { colors } = useSettings();
+  const { config } = useGame();
   return (
     <Tabs>
       <TabSlot style={{ flex: 1 }} />
@@ -12,7 +14,7 @@ export default function AppTabs() {
             <TabButton>Home</TabButton>
           </TabTrigger>
           <TabTrigger name="charms" href="/charms" asChild>
-            <TabButton>Charms</TabButton>
+            <TabButton>{config.itemsLabel}</TabButton>
           </TabTrigger>
           <TabTrigger name="bosses" href="/bosses" asChild>
             <TabButton>Bosses</TabButton>

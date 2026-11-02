@@ -15,20 +15,19 @@ import {
 import { AppText } from '../../../../components/hollow/app-text';
 import { Button } from '../../../../components/hollow/button';
 import { Screen } from '../../../../components/hollow/screen';
-import { bosses } from '../../../../data/bosses';
-import { charms } from '../../../../data/charms';
+import { useGame } from '../../../../games/game-context';
 import { photoUri, useJournal } from '../../../../journal/journal-context';
 import { saveToLibrary } from '../../../../journal/save-to-library';
 import { useSettings } from '../../../../settings/settings-context';
 
-const tagTypes = [
-  { type: 'boss', label: 'Boss', items: bosses },
-  { type: 'charm', label: 'Charm', items: charms },
-];
-
 export default function PhotoScreen() {
   const { id } = useLocalSearchParams();
   const { colors } = useSettings();
+  const { config } = useGame();
+  const tagTypes = [
+    { type: 'boss', label: 'Boss', items: config.bosses },
+    { type: 'charm', label: config.itemLabel, items: config.items },
+  ];
   const { photos, updatePhoto, removePhoto } = useJournal();
   const photo = photos.find((p) => p.id === id);
   const [pickerType, setPickerType] = useState(photo?.tag?.type ?? 'boss');
