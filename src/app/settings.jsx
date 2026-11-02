@@ -13,6 +13,8 @@ const THEMES = [
   { value: "default", label: "Default" },
   { value: "dark", label: "Dark" },
   { value: "system", label: "System" },
+  { value: "hollowknight", label: "Hollow Knight" },
+  { value: "silksong", label: "Silksong" },
 ];
 const FONT_SIZES = [
   { value: "small", label: "Small" },

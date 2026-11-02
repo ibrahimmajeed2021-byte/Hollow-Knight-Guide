@@ -1,11 +1,23 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import * as Haptics from 'expo-haptics';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useColorScheme } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Haptics from "expo-haptics";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useColorScheme } from "react-native";
 
-import { defaultSettings, fontScales, highContrast, palettes } from '../constants/hollow';
+import {
+  defaultSettings,
+  fontScales,
+  highContrast,
+  palettes,
+} from "../constants/hollow";
 
-const STORAGE_KEY = 'hollow-knight-guide:settings';
+const STORAGE_KEY = "hollow-knight-guide:settings";
 const SettingsContext = createContext(null);
 
 export function SettingsProvider({ children }) {
@@ -33,11 +45,18 @@ export function SettingsProvider({ children }) {
   const reset = useCallback(() => update(defaultSettings), [update]);
 
   const value = useMemo(() => {
+    const darkThemes = ["dark", "hollowknight", "silksong"];
     const isDark =
-      settings.theme === 'dark' || (settings.theme === 'system' && systemScheme === 'dark');
+      darkThemes.includes(settings.theme) ||
+      (settings.theme === "system" && systemScheme === "dark");
+    const paletteKey = ["hollowknight", "silksong"].includes(settings.theme)
+      ? settings.theme
+      : isDark
+        ? "dark"
+        : "default";
     const colors = settings.highContrast
-      ? highContrast[isDark ? 'dark' : 'light']
-      : palettes[isDark ? 'dark' : 'default'];
+      ? highContrast[isDark ? "dark" : "light"]
+      : palettes[paletteKey];
     return {
       settings,
       update,
@@ -49,7 +68,11 @@ export function SettingsProvider({ children }) {
   }, [settings, systemScheme, update, reset]);
 
   if (!loaded) return null;
-  return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
+  return (
+    <SettingsContext.Provider value={value}>
+      {children}
+    </SettingsContext.Provider>
+  );
 }
 
 export function useSettings() {
@@ -67,7 +90,7 @@ export function useHaptics() {
   const { hapticsEnabled, hapticsIntensity } = settings;
   return useCallback(() => {
     if (!hapticsEnabled) return;
-    if (hapticsIntensity === 'default') Haptics.selectionAsync();
+    if (hapticsIntensity === "default") Haptics.selectionAsync();
     else Haptics.impactAsync(impactStyles[hapticsIntensity]);
   }, [hapticsEnabled, hapticsIntensity]);
 }
