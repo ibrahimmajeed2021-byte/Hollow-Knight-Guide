@@ -1,98 +1,46 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { Linking, StyleSheet, Text } from 'react-native';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { Body, Title } from '@/components/hollow/section-text';
+import { Screen } from '@/components/hollow/screen';
+import { HK } from '@/constants/hollow';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+const EMAIL = 'apolohcr2@outlook.com';
 
 export default function HomeScreen() {
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+    <Screen>
+      <Title style={styles.big}>Welcome to this guide!</Title>
+      <Body>
+        This is a guide to help you in Hollow Knight! This app is designed to help you as you
+        progress along the game. It is split into multiple sections which you can find using the
+        tabs at the bottom. If you don&apos;t want to get spoiled then I would recommend you to only
+        use this app if you absolutely need it or have already beaten the game and are looking to
+        100% the game. If you do want to get spoiled then please enjoy! This app is a work in
+        progress so please expect some things to be missing or not working. I will try to update it
+        as often as possible so please check back often! If you have any questions or comments
+        please email me at{' '}
+        <Text style={styles.link} onPress={() => Linking.openURL(`mailto:${EMAIL}`)}>
+          {EMAIL}
+        </Text>
+        . Thank you for using this app! Have fun playing Hollow Knight!
+      </Body>
+      <Title style={[styles.big, styles.gap]}>Hollow Knight</Title>
+      <Body>
+        Hollow Knight is a beautifully crafted action-adventure game set in the haunting,
+        hand-drawn world of Hallownest, a once-great kingdom now fallen into ruin. Players take
+        control of a silent, mysterious knight as they explore vast underground caverns, uncover
+        hidden secrets, and battle a wide variety of challenging enemies and bosses. With precise
+        combat, fluid movement, and a deep sense of exploration, the game rewards curiosity and
+        skill while slowly revealing its rich lore through environmental storytelling. Its
+        atmospheric soundtrack and striking art style combine to create an immersive and emotional
+        experience that stays with players long after their journey ends.
+      </Body>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
-  },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
-  },
-  title: {
-    textAlign: 'center',
-  },
-  code: {
-    textTransform: 'uppercase',
-  },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
-  },
+  big: { fontSize: 32 },
+  gap: { marginTop: 32 },
+  link: { color: HK.accent, textDecorationLine: 'underline' },
 });
