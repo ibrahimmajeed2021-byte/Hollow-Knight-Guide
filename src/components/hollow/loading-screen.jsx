@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 
+import { useGame } from '../../games/game-context';
 import { HKFont } from '../../constants/hollow';
 import { useSettings } from '../../settings/settings-context';
 
@@ -11,6 +12,9 @@ const HOLD_MS = 1200;
 
 export function LoadingScreen() {
   const { settings } = useSettings();
+  const { config } = useGame();
+  const words = config.guideTitle.toUpperCase().split(' ');
+  const subtitle = words.pop();
   const [visible, setVisible] = useState(true);
   const reduce = settings.reduceMotion;
 
@@ -36,8 +40,8 @@ export function LoadingScreen() {
         />
       </Animated.View>
       <Animated.View entering={reduce ? undefined : FadeIn.delay(250).duration(600)}>
-        <Text style={styles.title}>HOLLOW KNIGHT</Text>
-        <Text style={styles.subtitle}>GUIDE</Text>
+        <Text style={styles.title}>{words.join(' ')}</Text>
+        <Text style={styles.subtitle}>{subtitle}</Text>
       </Animated.View>
     </Animated.View>
   );

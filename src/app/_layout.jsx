@@ -17,6 +17,7 @@ SplashScreen.preventAutoHideAsync();
 
 function AppShell() {
   const { isDark } = useSettings();
+  const { gameId } = useGame();
   const triggerHaptic = useHaptics();
   const pathname = usePathname();
   const previousPath = useRef(pathname);
@@ -33,7 +34,7 @@ function AppShell() {
       <View style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }} />
         <GameSelect />
-        <LoadingScreen />
+        <LoadingScreen key={gameId ?? 'launch'} />
       </View>
     </ThemeProvider>
   );
