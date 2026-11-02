@@ -42,7 +42,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "build:api": "node scripts/build-api.mjs"
   },
   "private": true,
   "devDependencies": {
