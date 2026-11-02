@@ -15,6 +15,13 @@ const STORAGE_KEY = "hollow-knight-guide:game";
 const SETTINGS_KEY = "hollow-knight-guide:settings";
 const GameContext = createContext(null);
 
+// Online entries win, but fields missing from an older API copy come from the bundled data.
+function mergeList(bundled, remote) {
+  if (!remote?.length) return bundled;
+  const byName = new Map(bundled.map((entry) => [entry.name, entry]));
+  return remote.map((entry) => ({ ...byName.get(entry.name), ...entry }));
+}
+
 export function GameProvider({ children }) {
   const [gameId, setGameId] = useState(null);
   const [loaded, setLoaded] = useState(false);
@@ -72,8 +79,8 @@ export function GameProvider({ children }) {
     const items = remote[`${id}/items.json`];
     const config = {
       ...base,
-      bosses: bosses?.length ? bosses : base.bosses,
-      items: items?.length ? items : base.items,
+      bosses: mergeList(base.bosses, bosses),
+      items: mergeList(base.items, items),
     };
     return { gameId, loaded, config, selectGame, clearGame };
   }, [gameId, loaded, remote, selectGame, clearGame]);
