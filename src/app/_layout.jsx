@@ -4,7 +4,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useRef } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
-import { AnimatedSplashOverlay } from '../components/animated-icon';
+import { LoadingScreen } from '../components/hollow/loading-screen';
 import AppTabs from '../components/app-tabs';
 import { HKFont } from '../constants/hollow';
 import { SettingsProvider, useHaptics, useSettings } from '../settings/settings-context';
@@ -26,7 +26,7 @@ function AppShell() {
 
   return (
     <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
+      <LoadingScreen />
       <AppTabs />
     </ThemeProvider>
   );
