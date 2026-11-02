@@ -15,7 +15,7 @@ import { useTabInset } from "../../hooks/use-tab-inset";
 import { useSettings } from "../../settings/settings-context";
 
 const MIN_SCALE = 1;
-const MAX_SCALE = 8;
+const MAX_SCALE = 20;
 const DOUBLE_TAP_SCALE = 3;
 const mapImage = require("../../../assets/hollow/map/HallownestMap.png");
 const { width: imgW, height: imgH } = RNImage.resolveAssetSource(mapImage);
