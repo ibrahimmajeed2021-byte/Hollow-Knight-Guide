@@ -17,9 +17,6 @@ export default function AppTabs() {
           <TabTrigger name="bosses" href="/bosses" asChild>
             <TabButton>Bosses</TabButton>
           </TabTrigger>
-          <TabTrigger name="map" href="/map" asChild>
-            <TabButton>Map</TabButton>
-          </TabTrigger>
           <TabTrigger name="progress" href="/progress" asChild>
             <TabButton>Progress</TabButton>
           </TabTrigger>

@@ -30,11 +30,6 @@ export default function AppTabs() {
         <NativeTabs.Trigger.Icon sf={{ default: 'flame', selected: 'flame.fill' }} md="whatshot" />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="map">
-        <NativeTabs.Trigger.Label>Map</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'map', selected: 'map.fill' }} md="map" />
-      </NativeTabs.Trigger>
-
       <NativeTabs.Trigger name="progress">
         <NativeTabs.Trigger.Label>Progress</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
