@@ -5,6 +5,7 @@ import { Screen } from '../components/hollow/screen';
 import { Body, Title } from '../components/hollow/section-text';
 import { AppText } from '../components/hollow/app-text';
 import { useSettings } from '../settings/settings-context';
+import { BossExtras, BossSummary } from '../components/hollow/boss-extras';
 import { bosses } from '../data/bosses';
 import { bossImages, locationImages } from '../data/images';
 export default function BossesScreen() {
@@ -37,7 +38,7 @@ export default function BossesScreen() {
             image={bossImages[item.image]}
             name={item.name}
             description={item.description}
-            summary={<Stat label="Health" value={item.health} />}
+            summary={<BossSummary name={item.name} health={item.health} />}
           >
             <Stat label="Reward" value={item.reward} />
             <AppText style={[styles.locationLabel, { color: colors.muted }]}>Location</AppText>
@@ -55,6 +56,7 @@ export default function BossesScreen() {
                 <AppText style={styles.locationName}>{loc.name}</AppText>
               </View>
             ))}
+            <BossExtras name={item.name} />
           </EntryCard>
         )}
       />

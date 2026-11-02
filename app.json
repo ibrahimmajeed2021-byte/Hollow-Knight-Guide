@@ -29,6 +29,25 @@
     "plugins": [
       "expo-router",
       [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Hollow Knight Guide to use the camera for the photo booth."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Hollow Knight Guide to access your photos for the journal.",
+          "cameraPermission": "Allow Hollow Knight Guide to take photos for your journal."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "Allow Hollow Knight Guide to save photos to your camera roll."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "backgroundColor": "#000000",

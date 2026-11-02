@@ -8,6 +8,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { LoadingScreen } from '../components/hollow/loading-screen';
 import AppTabs from '../components/app-tabs';
 import { HKFont } from '../constants/hollow';
+import { JournalProvider } from '../journal/journal-context';
 import { SettingsProvider, useHaptics, useSettings } from '../settings/settings-context';
 
 SplashScreen.preventAutoHideAsync();
@@ -45,7 +46,9 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SettingsProvider>
-        <AppShell />
+        <JournalProvider>
+          <AppShell />
+        </JournalProvider>
       </SettingsProvider>
     </GestureHandlerRootView>
   );
