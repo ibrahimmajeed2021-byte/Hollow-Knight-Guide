@@ -6,6 +6,7 @@ import { EntryCard } from '../../../components/hollow/entry-card';
 import { CharmExtras, CharmSummary } from '../../../components/hollow/progress-extras';
 import { AppText } from '../../../components/hollow/app-text';
 import { SearchFilter } from '../../../components/hollow/search-filter';
+import { useTabInset } from '../../../hooks/use-tab-inset';
 import { Screen } from '../../../components/hollow/screen';
 import { Body, Title } from '../../../components/hollow/section-text';
 import { charms } from '../../../data/charms';
@@ -19,6 +20,7 @@ const FILTERS = [
 
 export default function CharmsScreen() {
   const { collected } = useJournal();
+  const inset = useTabInset();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
   const data = useMemo(() => {
@@ -50,7 +52,7 @@ export default function CharmsScreen() {
         removeClippedSubviews
         windowSize={7}
         maxToRenderPerBatch={6}
-        contentContainerStyle={{ paddingTop: 16, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: inset + 16 }}
         ListHeaderComponent={
           <>
             <Title>Charms</Title>

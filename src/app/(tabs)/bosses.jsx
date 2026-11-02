@@ -7,6 +7,7 @@ import { Screen } from '../../components/hollow/screen';
 import { Body, Title } from '../../components/hollow/section-text';
 import { AppText } from '../../components/hollow/app-text';
 import { useJournal } from '../../journal/journal-context';
+import { useTabInset } from '../../hooks/use-tab-inset';
 import { useSettings } from '../../settings/settings-context';
 import { BossExtras, BossSummary } from '../../components/hollow/progress-extras';
 import { bosses } from '../../data/bosses';
@@ -19,6 +20,7 @@ const FILTERS = [
 
 export default function BossesScreen() {
   const { colors } = useSettings();
+  const inset = useTabInset();
   const { defeated } = useJournal();
   const [query, setQuery] = useState('');
   const [filter, setFilter] = useState('all');
@@ -49,7 +51,7 @@ export default function BossesScreen() {
         removeClippedSubviews
         windowSize={7}
         maxToRenderPerBatch={6}
-        contentContainerStyle={{ paddingTop: 16, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: inset + 16 }}
         ListHeaderComponent={
           <>
             <Title>Bosses</Title>

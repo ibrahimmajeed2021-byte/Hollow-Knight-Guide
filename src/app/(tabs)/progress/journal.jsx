@@ -8,6 +8,7 @@ import { Screen } from '../../../components/hollow/screen';
 import { Title } from '../../../components/hollow/section-text';
 import { photoUri, useJournal } from '../../../journal/journal-context';
 import { pickPhoto, takePhoto } from '../../../journal/take-photo';
+import { useTabInset } from '../../../hooks/use-tab-inset';
 import { useSettings } from '../../../settings/settings-context';
 
 const COLUMNS = 3;
@@ -16,6 +17,7 @@ const SIZE = (Dimensions.get('window').width - 32 - GAP * (COLUMNS - 1)) / COLUM
 
 export default function JournalScreen() {
   const { colors } = useSettings();
+  const inset = useTabInset();
   const { photos, addPhoto } = useJournal();
 
   const add = async (getPhoto) => {
@@ -33,7 +35,7 @@ export default function JournalScreen() {
         numColumns={COLUMNS}
         removeClippedSubviews
         windowSize={5}
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingBottom: inset + 16 }]}
         columnWrapperStyle={{ gap: GAP }}
         ListHeaderComponent={
           <View style={styles.header}>

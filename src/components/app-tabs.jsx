@@ -1,13 +1,11 @@
 import { usePathname } from 'expo-router';
 import { NativeTabs } from 'expo-router/native-tabs';
+import { isTabBarHidden } from '../hooks/use-tab-inset';
 import { useSettings } from '../settings/settings-context';
 export default function AppTabs() {
   const { colors } = useSettings();
   const pathname = usePathname();
-  const hideTabBar =
-    pathname.startsWith('/progress/photo') ||
-    pathname === '/progress/booth' ||
-    pathname === '/charms/loadout';
+  const hideTabBar = isTabBarHidden(pathname);
   return (
     <NativeTabs
       hidden={hideTabBar}

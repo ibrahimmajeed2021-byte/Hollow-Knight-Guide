@@ -1,36 +1,37 @@
-import { Image } from 'expo-image';
-import { useMemo, useState } from 'react';
-import { Image as RNImage, Pressable, StyleSheet, View } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { Image } from "expo-image";
+import { useMemo, useState } from "react";
+import { Image as RNImage, Pressable, StyleSheet, View } from "react-native";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDecay,
   withTiming,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
-import { AppText } from '../../components/hollow/app-text';
-import { Screen } from '../../components/hollow/screen';
-import { useSettings } from '../../settings/settings-context';
+import { AppText } from "../../components/hollow/app-text";
+import { Screen } from "../../components/hollow/screen";
+import { useTabInset } from "../../hooks/use-tab-inset";
+import { useSettings } from "../../settings/settings-context";
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 8;
 const DOUBLE_TAP_SCALE = 3;
-const mapImage = require('../../../assets/hollow/map/HallownestMap.png');
+const mapImage = require("../../../assets/hollow/map/HallownestMap.png");
 const { width: imgW, height: imgH } = RNImage.resolveAssetSource(mapImage);
 
 function clamp(value, min, max) {
-  'worklet';
+  "worklet";
   return Math.min(max, Math.max(min, value));
 }
 
 function maxOffset(scale, base, view) {
-  'worklet';
+  "worklet";
   return Math.max(0, (base * scale - view) / 2);
 }
 
 function animate(value, reduceMotion) {
-  'worklet';
+  "worklet";
   return reduceMotion ? value : withTiming(value);
 }
 
@@ -125,6 +126,7 @@ function createMapGesture({
 
 export default function MapScreen() {
   const { colors, settings } = useSettings();
+  const inset = useTabInset();
   const reduceMotion = settings.reduceMotion;
   const [size, setSize] = useState({ width: 0, height: 0 });
   const scale = useSharedValue(1);
@@ -156,17 +158,37 @@ export default function MapScreen() {
         lastFy,
         reduceMotion,
       }),
-    [W, H, baseW, baseH, scale, tx, ty, startTx, startTy, lastFx, lastFy, reduceMotion],
+    [
+      W,
+      H,
+      baseW,
+      baseH,
+      scale,
+      tx,
+      ty,
+      startTx,
+      startTy,
+      lastFx,
+      lastFy,
+      reduceMotion,
+    ],
   );
 
   const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: tx.value }, { translateY: ty.value }, { scale: scale.value }],
+    transform: [
+      { translateX: tx.value },
+      { translateY: ty.value },
+      { scale: scale.value },
+    ],
   }));
 
   return (
     <Screen scroll={false}>
       <View
-        style={[styles.container, { backgroundColor: colors.background }]}
+        style={[
+          styles.container,
+          { backgroundColor: colors.background, marginBottom: inset },
+        ]}
         onLayout={(e) => setSize(e.nativeEvent.layout)}
       >
         {W > 0 && (
@@ -175,7 +197,12 @@ export default function MapScreen() {
               <Animated.View
                 style={[
                   styles.canvas,
-                  { width: baseW, height: baseH, left: (W - baseW) / 2, top: (H - baseH) / 2 },
+                  {
+                    width: baseW,
+                    height: baseH,
+                    left: (W - baseW) / 2,
+                    top: (H - baseH) / 2,
+                  },
                   animatedStyle,
                 ]}
               >
@@ -191,13 +218,17 @@ export default function MapScreen() {
           </GestureDetector>
         )}
         <View style={styles.overlay} pointerEvents="box-none">
-          <AppText style={styles.hint}>Pinch to zoom · drag to move · double tap to zoom</AppText>
+          <AppText style={styles.hint}>
+            Pinch to zoom · drag to move · double tap to zoom
+          </AppText>
           <Pressable
             onPress={() => resetMap({ scale, tx, ty }, reduceMotion)}
             style={[styles.button, { backgroundColor: colors.button }]}
             accessibilityRole="button"
           >
-            <AppText style={[styles.buttonText, { color: colors.buttonText }]}>Reset</AppText>
+            <AppText style={[styles.buttonText, { color: colors.buttonText }]}>
+              Reset
+            </AppText>
           </Pressable>
         </View>
       </View>
@@ -206,29 +237,29 @@ export default function MapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, overflow: 'hidden' },
-  canvas: { position: 'absolute' },
+  container: { flex: 1, overflow: "hidden" },
+  canvas: { position: "absolute" },
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     left: 0,
     right: 0,
     bottom: 12,
-    alignItems: 'center',
+    alignItems: "center",
     gap: 8,
   },
   hint: {
-    color: '#ffffff',
-    backgroundColor: 'rgba(15,15,27,0.75)',
+    color: "#ffffff",
+    backgroundColor: "rgba(15,15,27,0.75)",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
     fontSize: 13,
-    overflow: 'hidden',
+    overflow: "hidden",
   },
   button: {
     paddingHorizontal: 24,
     paddingVertical: 8,
     borderRadius: 8,
   },
-  buttonText: { fontWeight: 'bold' },
+  buttonText: { fontWeight: "bold" },
 });
