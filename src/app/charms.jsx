@@ -33,9 +33,8 @@ export default function CharmsScreen() {
             image={charmImages[item.image]}
             name={item.name}
             description={item.description}
-          >
-            <Stat label="Notches" value={item.notches} />
-          </EntryCard>
+            summary={<Stat label="Notches" value={item.notches} />}
+          />
         )}
       />
     </Screen>

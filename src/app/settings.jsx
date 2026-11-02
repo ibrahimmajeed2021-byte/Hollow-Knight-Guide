@@ -141,6 +141,15 @@ export default function SettingsScreen() {
         )}
       </Section>
 
+      <Section title="Cards">
+        <ToggleRow
+          label="Start expanded"
+          hint="Show full details on boss and charm cards without tapping"
+          value={settings.startExpanded}
+          onChange={(startExpanded) => update({ startExpanded })}
+        />
+      </Section>
+
       <Section title="Motion">
         <ToggleRow
           label="Reduce motion"

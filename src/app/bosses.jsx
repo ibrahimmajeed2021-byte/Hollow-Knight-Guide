@@ -33,8 +33,12 @@ export default function BossesScreen() {
           </>
         }
         renderItem={({ item }) => (
-          <EntryCard image={bossImages[item.image]} name={item.name} description={item.description}>
-            <Stat label="Health" value={item.health} />
+          <EntryCard
+            image={bossImages[item.image]}
+            name={item.name}
+            description={item.description}
+            summary={<Stat label="Health" value={item.health} />}
+          >
             <Stat label="Reward" value={item.reward} />
             <AppText style={[styles.locationLabel, { color: colors.muted }]}>Location</AppText>
             {item.locations.map((loc) => (
