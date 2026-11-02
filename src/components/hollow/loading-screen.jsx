@@ -30,12 +30,12 @@ export function LoadingScreen() {
     <Animated.View
       exiting={reduce ? undefined : FadeOut.duration(300)}
       pointerEvents="auto"
-      style={styles.overlay}
+      style={[styles.overlay, { backgroundColor: config.loadingColor }]}
     >
       <Animated.View entering={reduce ? undefined : FadeIn.duration(500)}>
         <Image
-          source={require('../../../assets/hollow/bosses/HollowKnight.png')}
-          style={styles.image}
+          source={config.loadingImage}
+          style={config.loadingImageSize}
           contentFit="contain"
         />
       </Animated.View>
@@ -61,7 +61,6 @@ const styles = StyleSheet.create({
     zIndex: 1000,
     elevation: 1000,
   },
-  image: { width: 160, height: 144 },
   title: { color: '#fff', fontFamily: HKFont, fontSize: 26, letterSpacing: 4, textAlign: 'center' },
   subtitle: { color: '#aaa', fontFamily: HKFont, fontSize: 14, letterSpacing: 8, textAlign: 'center', marginTop: 4 },
 });
