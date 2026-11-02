@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { FlatList } from "react-native";
 import { Button } from "../../../components/hollow/button";
-import { EntryCard } from "../../../components/hollow/entry-card";
+import { EntryCard, Stat } from "../../../components/hollow/entry-card";
 import {
   CharmExtras,
   CharmSummary,
@@ -20,6 +20,25 @@ const FILTERS = [
   { value: "done", label: "Collected" },
 ];
 
+const KIND_FILTERS = [
+  { value: "all", label: "All" },
+  { value: "Crest", label: "Crests" },
+  { value: "Red Tool", label: "Red" },
+  { value: "Blue Tool", label: "Blue" },
+  { value: "Yellow Tool", label: "Yellow" },
+];
+
+function ItemDetails({ item }) {
+  return (
+    <>
+      {item.location ? <Stat label="Location" value={item.location} /> : null}
+      {Object.entries(item.details ?? {}).map(([label, value]) => (
+        <Stat key={label} label={label} value={value} />
+      ))}
+    </>
+  );
+}
+
 export default function CharmsScreen() {
   const { collected } = useJournal();
   const { config } = useGame();
@@ -28,14 +47,17 @@ export default function CharmsScreen() {
   const inset = useTabInset();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
+  const [kind, setKind] = useState("all");
+  const hasKinds = charms.some((c) => c.kind);
   const data = useMemo(() => {
     const q = query.trim().toLowerCase();
     return charms.filter(
       (c) =>
         (!q || c.name.toLowerCase().includes(q)) &&
+        (kind === "all" || c.kind === kind) &&
         (filter === "all" || (filter === "done") === !!collected[c.name]),
     );
-  }, [charms, query, filter, collected]);
+  }, [charms, query, filter, kind, collected]);
   return (
     <Screen scroll={false}>
       <SearchFilter
@@ -46,6 +68,14 @@ export default function CharmsScreen() {
         filter={filter}
         onFilter={setFilter}
       />
+      {hasKinds && (
+        <SearchFilter
+          filters={KIND_FILTERS}
+          filter={kind}
+          onFilter={setKind}
+          hideSearch
+        />
+      )}
       <FlatList
         data={data}
         keyboardShouldPersistTaps="handled"
@@ -73,7 +103,9 @@ export default function CharmsScreen() {
             <Body>
               {config.items.length === 0
                 ? `${config.title} ${config.itemsLabel.toLowerCase()} are coming soon.`
-                : `Charms are a very important component in Hollow Knight. Equipping charms can alter
+                : hasKinds
+                  ? `Crests change how Hornet fights and set how many tool and skill slots she has. Tools are red (active), blue (passive) or yellow (utility). Below is every crest and tool with how to get it.`
+                  : `Charms are a very important component in Hollow Knight. Equipping charms can alter
               your gameplay and can help you when you are stuck. Charms allow players to have
               freedom in the way they play. Charms can be found in various places across the game.
               However, with the amount of charms there are in the game it can be hard to figure out
@@ -87,8 +119,18 @@ export default function CharmsScreen() {
             image={charmImages[item.image]}
             name={item.name}
             description={item.description}
-            summary={<CharmSummary name={item.name} notches={item.notches} />}
+            summary={
+              item.kind ? (
+                <>
+                  <Stat label="Type" value={item.kind} />
+                  <CharmSummary name={item.name} />
+                </>
+              ) : (
+                <CharmSummary name={item.name} notches={item.notches} />
+              )
+            }
           >
+            {item.kind ? <ItemDetails item={item} /> : null}
             <CharmExtras name={item.name} />
           </EntryCard>
         )}

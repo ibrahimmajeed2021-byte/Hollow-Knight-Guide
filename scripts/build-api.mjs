@@ -24,12 +24,13 @@ const write = (path, data) => {
 const bosses = await load("bosses.js", "bosses");
 const charms = await load("charms.js", "charms");
 const silksongBosses = await load("silksong-bosses.js", "silksongBosses");
+const silksongItems = await load("silksong-items.js", "silksongItems");
 const tips = await load("tips.js", "tips");
 
 write("hollow/bosses.json", bosses);
 write("hollow/items.json", charms);
 write("silksong/bosses.json", silksongBosses);
-write("silksong/items.json", []);
+write("silksong/items.json", silksongItems);
 write("tips.json", tips);
 write("index.json", {
   updatedAt: new Date().toISOString(),

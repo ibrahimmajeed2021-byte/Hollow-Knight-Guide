@@ -2,7 +2,9 @@ import { bosses as hkBosses } from "../data/bosses";
 import {
   silksongBossImages,
   silksongLocationImages,
+  silksongItemImages,
 } from "../data/silksong-images";
+import { silksongItems } from "../data/silksong-items";
 import { silksongBosses } from "../data/silksong-bosses";
 import { charms as hkCharms } from "../data/charms";
 import { bossImages, charmImages, locationImages } from "../data/images";
@@ -32,16 +34,16 @@ export const games = {
     guideTitle: "Silksong Guide",
     tagline: "Pharloom",
     storageSuffix: ":silksong",
-    itemsLabel: "Tools",
+    itemsLabel: "Tools & Crests",
     itemLabel: "Tool",
     hasLoadouts: false,
     loadingImage: require("../../assets/hollow/silksong/Hornet.png"),
     loadingColor: "#2a0508",
     loadingImageSize: { width: 124, height: 144 },
     bosses: silksongBosses,
-    items: [],
+    items: silksongItems,
     bossImages: silksongBossImages,
-    itemImages: {},
+    itemImages: silksongItemImages,
     locationImages: silksongLocationImages,
   },
 };
