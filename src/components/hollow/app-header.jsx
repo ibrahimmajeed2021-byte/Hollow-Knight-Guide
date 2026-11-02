@@ -33,6 +33,18 @@ export function AppHeader() {
         <AppText style={[styles.title, { color: colors.headerText }]}>{config.guideTitle}</AppText>
       </Pressable>
       <Pressable
+        onPress={() => {
+          triggerHaptic();
+          clearGame();
+        }}
+        hitSlop={12}
+        accessibilityRole="button"
+        accessibilityLabel="Main menu, switch game"
+        style={[styles.action, { top: top + 8, left: 12, right: undefined }]}
+      >
+        <Text style={[styles.icon, { color: colors.headerText }]}>⇄</Text>
+      </Pressable>
+      <Pressable
         onPress={press}
         hitSlop={12}
         accessibilityRole="button"

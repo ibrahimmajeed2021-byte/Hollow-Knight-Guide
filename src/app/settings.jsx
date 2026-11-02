@@ -1,9 +1,11 @@
+import { router } from 'expo-router';
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { AppText } from '../components/hollow/app-text';
 import { BackupSection } from '../components/hollow/backup-section';
 import { Screen } from '../components/hollow/screen';
 import { Title } from '../components/hollow/section-text';
+import { useGame } from '../games/game-context';
 import { defaultSettings } from '../constants/hollow';
 import { useHaptics, useSettings } from '../settings/settings-context';
 
@@ -88,6 +90,7 @@ function ToggleRow({ label, hint, value, onChange }) {
 
 export default function SettingsScreen() {
   const { settings, update, reset, colors } = useSettings();
+  const { clearGame } = useGame();
   const triggerHaptic = useHaptics();
 
   return (
@@ -159,6 +162,19 @@ export default function SettingsScreen() {
           onChange={(reduceMotion) => update({ reduceMotion })}
         />
       </Section>
+
+      <Pressable
+        onPress={() => {
+          clearGame();
+          router.replace('/');
+        }}
+        accessibilityRole="button"
+        style={[styles.resetButton, { backgroundColor: colors.button }]}
+      >
+        <AppText style={[styles.resetText, { color: colors.buttonText }]}>
+          Main menu (switch game)
+        </AppText>
+      </Pressable>
 
       <BackupSection />
 
