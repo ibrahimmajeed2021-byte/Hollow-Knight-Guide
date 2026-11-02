@@ -1,20 +1,25 @@
-import { Image } from 'expo-image';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useState } from 'react';
-import { StyleSheet, Text } from 'react-native';
-import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { Image } from "expo-image";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
-import { useGame } from '../../games/game-context';
-import { HKFont } from '../../constants/hollow';
-import { useSettings } from '../../settings/settings-context';
+import { useGame } from "../../games/game-context";
+import { HKFont } from "../../constants/hollow";
+import { games } from "../../games/config";
+import { useSettings } from "../../settings/settings-context";
 
 const HOLD_MS = 1200;
 
 export function LoadingScreen() {
   const { settings } = useSettings();
-  const { config } = useGame();
-  const words = config.guideTitle.toUpperCase().split(' ');
-  const subtitle = words.pop();
+  const { config, gameId } = useGame();
+  const launch = !gameId;
+  const heroes = launch ? [games.hollow, games.silksong] : [config];
+  const words = launch
+    ? ["HOLLOW KNIGHT & SILKSONG"]
+    : config.guideTitle.toUpperCase().split(" ");
+  const subtitle = launch ? "GUIDE" : words.pop();
   const [visible, setVisible] = useState(true);
   const reduce = settings.reduceMotion;
 
@@ -30,17 +35,29 @@ export function LoadingScreen() {
     <Animated.View
       exiting={reduce ? undefined : FadeOut.duration(300)}
       pointerEvents="auto"
-      style={[styles.overlay, { backgroundColor: config.loadingColor }]}
+      style={[
+        styles.overlay,
+        { backgroundColor: launch ? "#000" : config.loadingColor },
+      ]}
     >
-      <Animated.View entering={reduce ? undefined : FadeIn.duration(500)}>
-        <Image
-          source={config.loadingImage}
-          style={config.loadingImageSize}
-          contentFit="contain"
-        />
+      <Animated.View
+        entering={reduce ? undefined : FadeIn.duration(500)}
+        style={styles.heroes}
+      >
+        {heroes.map((g) => (
+          <View key={g.id}>
+            <Image
+              source={g.loadingImage}
+              style={g.loadingImageSize}
+              contentFit="contain"
+            />
+          </View>
+        ))}
       </Animated.View>
-      <Animated.View entering={reduce ? undefined : FadeIn.delay(250).duration(600)}>
-        <Text style={styles.title}>{words.join(' ')}</Text>
+      <Animated.View
+        entering={reduce ? undefined : FadeIn.delay(250).duration(600)}
+      >
+        <Text style={styles.title}>{words.join(" ")}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
       </Animated.View>
     </Animated.View>
@@ -48,19 +65,38 @@ export function LoadingScreen() {
 }
 
 const styles = StyleSheet.create({
+  heroes: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    gap: 16,
+  },
   overlay: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#000",
+    alignItems: "center",
+    justifyContent: "center",
     gap: 20,
     zIndex: 1000,
     elevation: 1000,
   },
-  title: { color: '#fff', fontFamily: HKFont, fontSize: 26, letterSpacing: 4, textAlign: 'center' },
-  subtitle: { color: '#aaa', fontFamily: HKFont, fontSize: 14, letterSpacing: 8, textAlign: 'center', marginTop: 4 },
+  title: {
+    color: "#fff",
+    fontFamily: HKFont,
+    fontSize: 26,
+    letterSpacing: 4,
+    textAlign: "center",
+  },
+  subtitle: {
+    color: "#aaa",
+    fontFamily: HKFont,
+    fontSize: 14,
+    letterSpacing: 8,
+    textAlign: "center",
+    marginTop: 4,
+  },
 });
