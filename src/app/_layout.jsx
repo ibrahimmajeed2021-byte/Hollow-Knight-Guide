@@ -1,12 +1,11 @@
 import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, ThemeProvider, usePathname } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect, useRef } from 'react';
 import { View } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { LoadingScreen } from '../components/hollow/loading-screen';
-import AppTabs from '../components/app-tabs';
 import { HKFont } from '../constants/hollow';
 import { JournalProvider } from '../journal/journal-context';
 import { SettingsProvider, useHaptics, useSettings } from '../settings/settings-context';
@@ -29,7 +28,7 @@ function AppShell() {
   return (
     <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
       <View style={{ flex: 1 }}>
-        <AppTabs />
+        <Stack screenOptions={{ headerShown: false }} />
         <LoadingScreen />
       </View>
     </ThemeProvider>

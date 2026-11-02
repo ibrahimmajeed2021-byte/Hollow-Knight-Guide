@@ -4,7 +4,7 @@ import { useSettings } from '../settings/settings-context';
 export default function AppTabs() {
   const { colors } = useSettings();
   const pathname = usePathname();
-  const hideTabBar = pathname.startsWith('/journal/');
+  const hideTabBar = pathname.startsWith('/progress/photo') || pathname === '/progress/booth';
   return (
     <NativeTabs
       hidden={hideTabBar}
@@ -34,16 +34,11 @@ export default function AppTabs() {
         <NativeTabs.Trigger.Icon sf={{ default: 'map', selected: 'map.fill' }} md="map" />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="journal">
-        <NativeTabs.Trigger.Label>Journal</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon sf={{ default: 'camera', selected: 'camera.fill' }} md="photo_camera" />
-      </NativeTabs.Trigger>
-
-      <NativeTabs.Trigger name="settings">
-        <NativeTabs.Trigger.Label>Settings</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="progress">
+        <NativeTabs.Trigger.Label>Progress</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
-          sf={{ default: 'gearshape', selected: 'gearshape.fill' }}
-          md="settings"
+          sf={{ default: 'chart.bar', selected: 'chart.bar.fill' }}
+          md="bar_chart"
         />
       </NativeTabs.Trigger>
     </NativeTabs>

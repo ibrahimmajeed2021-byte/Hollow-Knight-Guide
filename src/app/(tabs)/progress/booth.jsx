@@ -5,15 +5,15 @@ import { useRef, useState } from 'react';
 import { Alert, Dimensions, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
-import { AppText } from '../../components/hollow/app-text';
-import { Button } from '../../components/hollow/button';
-import { Screen } from '../../components/hollow/screen';
-import { Sticker } from '../../components/hollow/sticker';
-import { HKFont } from '../../constants/hollow';
-import { bossImages, charmImages } from '../../data/images';
-import { useJournal } from '../../journal/journal-context';
-import { saveToLibrary } from '../../journal/save-to-library';
-import { useSettings } from '../../settings/settings-context';
+import { AppText } from '../../../components/hollow/app-text';
+import { Button } from '../../../components/hollow/button';
+import { Screen } from '../../../components/hollow/screen';
+import { Sticker } from '../../../components/hollow/sticker';
+import { HKFont } from '../../../constants/hollow';
+import { bossImages, charmImages } from '../../../data/images';
+import { useJournal } from '../../../journal/journal-context';
+import { saveToLibrary } from '../../../journal/save-to-library';
+import { useSettings } from '../../../settings/settings-context';
 
 const STAGE_WIDTH = Dimensions.get('window').width - 32;
 const STAGE_HEIGHT = (STAGE_WIDTH * 4) / 3;

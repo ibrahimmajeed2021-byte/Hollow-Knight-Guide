@@ -12,14 +12,14 @@ import {
   View,
 } from 'react-native';
 
-import { AppText } from '../../components/hollow/app-text';
-import { Button } from '../../components/hollow/button';
-import { Screen } from '../../components/hollow/screen';
-import { bosses } from '../../data/bosses';
-import { charms } from '../../data/charms';
-import { photoUri, useJournal } from '../../journal/journal-context';
-import { saveToLibrary } from '../../journal/save-to-library';
-import { useSettings } from '../../settings/settings-context';
+import { AppText } from '../../../../components/hollow/app-text';
+import { Button } from '../../../../components/hollow/button';
+import { Screen } from '../../../../components/hollow/screen';
+import { bosses } from '../../../../data/bosses';
+import { charms } from '../../../../data/charms';
+import { photoUri, useJournal } from '../../../../journal/journal-context';
+import { saveToLibrary } from '../../../../journal/save-to-library';
+import { useSettings } from '../../../../settings/settings-context';
 
 const tagTypes = [
   { type: 'boss', label: 'Boss', items: bosses },

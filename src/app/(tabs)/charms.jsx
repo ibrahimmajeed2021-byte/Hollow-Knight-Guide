@@ -1,9 +1,10 @@
 import { FlatList } from 'react-native';
-import { EntryCard, Stat } from '../components/hollow/entry-card';
-import { Screen } from '../components/hollow/screen';
-import { Body, Title } from '../components/hollow/section-text';
-import { charms } from '../data/charms';
-import { charmImages } from '../data/images';
+import { EntryCard } from '../../components/hollow/entry-card';
+import { CharmExtras, CharmSummary } from '../../components/hollow/progress-extras';
+import { Screen } from '../../components/hollow/screen';
+import { Body, Title } from '../../components/hollow/section-text';
+import { charms } from '../../data/charms';
+import { charmImages } from '../../data/images';
 export default function CharmsScreen() {
   return (
     <Screen scroll={false}>
@@ -33,8 +34,10 @@ export default function CharmsScreen() {
             image={charmImages[item.image]}
             name={item.name}
             description={item.description}
-            summary={<Stat label="Notches" value={item.notches} />}
-          />
+            summary={<CharmSummary name={item.name} notches={item.notches} />}
+          >
+            <CharmExtras name={item.name} />
+          </EntryCard>
         )}
       />
     </Screen>

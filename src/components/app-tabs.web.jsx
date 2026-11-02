@@ -20,11 +20,8 @@ export default function AppTabs() {
           <TabTrigger name="map" href="/map" asChild>
             <TabButton>Map</TabButton>
           </TabTrigger>
-          <TabTrigger name="journal" href="/journal" asChild>
-            <TabButton>Journal</TabButton>
-          </TabTrigger>
-          <TabTrigger name="settings" href="/settings" asChild>
-            <TabButton>Settings</TabButton>
+          <TabTrigger name="progress" href="/progress" asChild>
+            <TabButton>Progress</TabButton>
           </TabTrigger>
         </View>
       </TabList>

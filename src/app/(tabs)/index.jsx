@@ -1,14 +1,11 @@
 import { Linking, StyleSheet } from 'react-native';
-import { Body, Title } from '../components/hollow/section-text';
-import { Screen } from '../components/hollow/screen';
-import { AppText } from '../components/hollow/app-text';
-import { bosses } from '../data/bosses';
-import { useJournal } from '../journal/journal-context';
-import { useSettings } from '../settings/settings-context';
+import { Body, Title } from '../../components/hollow/section-text';
+import { Screen } from '../../components/hollow/screen';
+import { AppText } from '../../components/hollow/app-text';
+import { useSettings } from '../../settings/settings-context';
 const EMAIL = 'apolohcr2@outlook.com';
 export default function HomeScreen() {
   const { colors } = useSettings();
-  const { defeated } = useJournal();
   return (
     <Screen>
       <Title style={styles.big}>Welcome to this guide!</Title>
@@ -28,9 +25,6 @@ export default function HomeScreen() {
           {EMAIL}
         </AppText>
         . Thank you for using this app! Have fun playing Hollow Knight!
-      </Body>
-      <Body>
-        Progress: {Object.keys(defeated).length} / {bosses.length} bosses defeated
       </Body>
       <Title style={[styles.big, styles.gap]}>Hollow Knight</Title>
       <Body>

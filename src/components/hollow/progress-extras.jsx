@@ -51,7 +51,7 @@ export function BossExtras({ name }) {
         {bossPhotos.map((photo) => (
           <Pressable
             key={photo.id}
-            onPress={() => router.push(`/journal/${photo.id}`)}
+            onPress={() => router.push(`/progress/photo/${photo.id}`)}
             accessibilityRole="button"
             accessibilityLabel={`Open photo of ${name}`}
           >
@@ -72,3 +72,36 @@ const styles = StyleSheet.create({
   photos: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   thumb: { width: 64, height: 64, borderRadius: 8 },
 });
+
+export function CharmSummary({ name, notches }) {
+  const { collected } = useJournal();
+  const { colors } = useSettings();
+  return (
+    <>
+      <Stat label="Notches" value={notches} />
+      {collected[name] ? (
+        <AppText style={[styles.badge, { color: colors.accent }]}>✓ Collected</AppText>
+      ) : null}
+    </>
+  );
+}
+
+export function CharmExtras({ name }) {
+  const { colors } = useSettings();
+  const triggerHaptic = useHaptics();
+  const { collected, toggleCollected } = useJournal();
+  return (
+    <View style={[styles.wrap, styles.row]}>
+      <AppText style={styles.label}>Collected</AppText>
+      <Switch
+        value={!!collected[name]}
+        onValueChange={() => {
+          triggerHaptic();
+          toggleCollected(name);
+        }}
+        accessibilityLabel={`Mark ${name} as collected`}
+        trackColor={{ true: colors.button }}
+      />
+    </View>
+  );
+}

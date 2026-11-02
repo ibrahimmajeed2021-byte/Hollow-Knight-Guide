@@ -2,14 +2,13 @@ import { Image } from 'expo-image';
 import { router } from 'expo-router';
 import { Dimensions, FlatList, Pressable, StyleSheet, View } from 'react-native';
 
-import { AppText } from '../../components/hollow/app-text';
-import { Button } from '../../components/hollow/button';
-import { Screen } from '../../components/hollow/screen';
-import { Body, Title } from '../../components/hollow/section-text';
-import { bosses } from '../../data/bosses';
-import { photoUri, useJournal } from '../../journal/journal-context';
-import { pickPhoto, takePhoto } from '../../journal/take-photo';
-import { useSettings } from '../../settings/settings-context';
+import { AppText } from '../../../components/hollow/app-text';
+import { Button } from '../../../components/hollow/button';
+import { Screen } from '../../../components/hollow/screen';
+import { Title } from '../../../components/hollow/section-text';
+import { photoUri, useJournal } from '../../../journal/journal-context';
+import { pickPhoto, takePhoto } from '../../../journal/take-photo';
+import { useSettings } from '../../../settings/settings-context';
 
 const COLUMNS = 3;
 const GAP = 6;
@@ -17,14 +16,13 @@ const SIZE = (Dimensions.get('window').width - 32 - GAP * (COLUMNS - 1)) / COLUM
 
 export default function JournalScreen() {
   const { colors } = useSettings();
-  const { photos, defeated, addPhoto } = useJournal();
-  const defeatedCount = Object.keys(defeated).length;
+  const { photos, addPhoto } = useJournal();
 
   const add = async (getPhoto) => {
     const uri = await getPhoto();
     if (!uri) return;
     const id = addPhoto(uri);
-    router.push(`/journal/${id}`);
+    router.push(`/progress/photo/${id}`);
   };
 
   return (
@@ -39,10 +37,8 @@ export default function JournalScreen() {
         columnWrapperStyle={{ gap: GAP }}
         ListHeaderComponent={
           <View style={styles.header}>
+            <Button label="Back" variant="outline" onPress={() => router.back()} style={styles.back} />
             <Title>Journal</Title>
-            <Body>
-              {defeatedCount} / {bosses.length} bosses defeated
-            </Body>
             <View style={styles.row}>
               <Button label="Take photo" onPress={() => add(takePhoto)} style={styles.flex} />
               <Button
@@ -54,7 +50,7 @@ export default function JournalScreen() {
             </View>
             <Button
               label="Photo booth"
-              onPress={() => router.push('/journal/booth')}
+              onPress={() => router.push('/progress/booth')}
               style={styles.booth}
             />
           </View>
@@ -66,7 +62,7 @@ export default function JournalScreen() {
         }
         renderItem={({ item }) => (
           <Pressable
-            onPress={() => router.push(`/journal/${item.id}`)}
+            onPress={() => router.push(`/progress/photo/${item.id}`)}
             accessibilityRole="button"
             accessibilityLabel={item.tag ? `Photo of ${item.tag.name}` : 'Journal photo'}
           >
@@ -88,6 +84,7 @@ const styles = StyleSheet.create({
   header: { marginBottom: 16 },
   row: { flexDirection: 'row', gap: 10, marginTop: 16 },
   flex: { flex: 1 },
+  back: { alignSelf: 'flex-start', marginTop: 8 },
   booth: { marginTop: 10 },
   thumb: { width: SIZE, height: SIZE, borderRadius: 8, marginBottom: GAP },
   empty: { textAlign: 'center', marginTop: 24, paddingHorizontal: 20 },

@@ -9,14 +9,14 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { AppText } from '../components/hollow/app-text';
-import { Screen } from '../components/hollow/screen';
-import { useSettings } from '../settings/settings-context';
+import { AppText } from '../../components/hollow/app-text';
+import { Screen } from '../../components/hollow/screen';
+import { useSettings } from '../../settings/settings-context';
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 8;
 const DOUBLE_TAP_SCALE = 3;
-const mapImage = require('../../assets/hollow/map/HallownestMap.png');
+const mapImage = require('../../../assets/hollow/map/HallownestMap.png');
 const { width: imgW, height: imgH } = RNImage.resolveAssetSource(mapImage);
 
 function clamp(value, min, max) {

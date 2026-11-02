@@ -1,13 +1,13 @@
 import { Image } from 'expo-image';
 import { FlatList, StyleSheet, View } from 'react-native';
-import { EntryCard, Stat } from '../components/hollow/entry-card';
-import { Screen } from '../components/hollow/screen';
-import { Body, Title } from '../components/hollow/section-text';
-import { AppText } from '../components/hollow/app-text';
-import { useSettings } from '../settings/settings-context';
-import { BossExtras, BossSummary } from '../components/hollow/boss-extras';
-import { bosses } from '../data/bosses';
-import { bossImages, locationImages } from '../data/images';
+import { EntryCard, Stat } from '../../components/hollow/entry-card';
+import { Screen } from '../../components/hollow/screen';
+import { Body, Title } from '../../components/hollow/section-text';
+import { AppText } from '../../components/hollow/app-text';
+import { useSettings } from '../../settings/settings-context';
+import { BossExtras, BossSummary } from '../../components/hollow/progress-extras';
+import { bosses } from '../../data/bosses';
+import { bossImages, locationImages } from '../../data/images';
 export default function BossesScreen() {
   const { colors } = useSettings();
   return (
