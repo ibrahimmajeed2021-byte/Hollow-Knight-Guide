@@ -1,16 +1,17 @@
-import { bosses as hkBosses } from '../data/bosses';
-import { charms as hkCharms } from '../data/charms';
-import { bossImages, charmImages, locationImages } from '../data/images';
+import { bosses as hkBosses } from "../data/bosses";
+import { silksongBosses } from "../data/silksong-bosses";
+import { charms as hkCharms } from "../data/charms";
+import { bossImages, charmImages, locationImages } from "../data/images";
 
 export const games = {
   hollow: {
-    id: 'hollow',
-    title: 'Hollow Knight',
-    guideTitle: 'Hollow Knight Guide',
-    tagline: 'Hallownest',
-    storageSuffix: '',
-    itemsLabel: 'Charms',
-    itemLabel: 'Charm',
+    id: "hollow",
+    title: "Hollow Knight",
+    guideTitle: "Hollow Knight Guide",
+    tagline: "Hallownest",
+    storageSuffix: "",
+    itemsLabel: "Charms",
+    itemLabel: "Charm",
     hasLoadouts: true,
     bosses: hkBosses,
     items: hkCharms,
@@ -19,15 +20,15 @@ export const games = {
     locationImages,
   },
   silksong: {
-    id: 'silksong',
-    title: 'Hollow Knight: Silksong',
-    guideTitle: 'Silksong Guide',
-    tagline: 'Pharloom',
-    storageSuffix: ':silksong',
-    itemsLabel: 'Tools',
-    itemLabel: 'Tool',
+    id: "silksong",
+    title: "Hollow Knight: Silksong",
+    guideTitle: "Silksong Guide",
+    tagline: "Pharloom",
+    storageSuffix: ":silksong",
+    itemsLabel: "Tools",
+    itemLabel: "Tool",
     hasLoadouts: false,
-    bosses: [],
+    bosses: silksongBosses,
     items: [],
     bossImages: {},
     itemImages: {},

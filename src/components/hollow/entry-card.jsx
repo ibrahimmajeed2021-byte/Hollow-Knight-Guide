@@ -28,14 +28,16 @@ function EntryCardBase({ image, name, summary, description, children }) {
       style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
     >
       <View style={styles.top}>
-        <Image
-          source={image}
-          style={styles.image}
-          contentFit="contain"
-          cachePolicy="memory-disk"
-          recyclingKey={name}
-          accessible={false}
-        />
+        {image ? (
+          <Image
+            source={image}
+            style={styles.image}
+            contentFit="contain"
+            cachePolicy="memory-disk"
+            recyclingKey={name}
+            accessible={false}
+          />
+        ) : null}
         <View style={styles.titleBlock}>
           <AppText style={styles.name}>{name}</AppText>
           {summary}
