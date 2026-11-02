@@ -1,0 +1,6 @@
+[build]
+  command = "npx expo export --platform web && cp 'dist/+not-found.html' dist/404.html"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"
