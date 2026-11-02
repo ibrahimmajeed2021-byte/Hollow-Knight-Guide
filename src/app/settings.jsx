@@ -1,36 +1,47 @@
-import { router } from 'expo-router';
-import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import { router } from "expo-router";
+import { Pressable, StyleSheet, Switch, View } from "react-native";
 
-import { AppText } from '../components/hollow/app-text';
-import { BackupSection } from '../components/hollow/backup-section';
-import { Screen } from '../components/hollow/screen';
-import { Title } from '../components/hollow/section-text';
-import { useGame } from '../games/game-context';
-import { defaultSettings } from '../constants/hollow';
-import { useHaptics, useSettings } from '../settings/settings-context';
+import { AppText } from "../components/hollow/app-text";
+import { BackupSection } from "../components/hollow/backup-section";
+import { Screen } from "../components/hollow/screen";
+import { Title } from "../components/hollow/section-text";
+import { useGame } from "../games/game-context";
+import { defaultSettings } from "../constants/hollow";
+import { useHaptics, useSettings } from "../settings/settings-context";
 
 const THEMES = [
-  { value: 'default', label: 'Default' },
-  { value: 'dark', label: 'Dark' },
-  { value: 'system', label: 'System' },
+  { value: "default", label: "Default" },
+  { value: "dark", label: "Dark" },
+  { value: "system", label: "System" },
 ];
 const FONT_SIZES = [
-  { value: 'small', label: 'Small' },
-  { value: 'default', label: 'Default' },
-  { value: 'large', label: 'Large' },
-  { value: 'xlarge', label: 'Extra large' },
+  { value: "small", label: "Small" },
+  { value: "default", label: "Default" },
+  { value: "large", label: "Large" },
+  { value: "xlarge", label: "Extra large" },
 ];
 const INTENSITIES = [
-  { value: 'default', label: 'Default' },
-  { value: 'light', label: 'Light' },
-  { value: 'medium', label: 'Medium' },
-  { value: 'heavy', label: 'Heavy' },
+  { value: "default", label: "Default" },
+  { value: "light", label: "Light" },
+  { value: "medium", label: "Medium" },
+  { value: "heavy", label: "Heavy" },
 ];
+
+const SOURCE_LABELS = {
+  online: "Online (latest)",
+  cached: "Cached (saved from last time)",
+  bundled: "Bundled (offline)",
+};
 
 function Section({ title, children }) {
   const { colors } = useSettings();
   return (
-    <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border }]}>
+    <View
+      style={[
+        styles.section,
+        { backgroundColor: colors.card, borderColor: colors.border },
+      ]}
+    >
       <AppText style={styles.sectionTitle}>{title}</AppText>
       {children}
     </View>
@@ -52,13 +63,16 @@ function Segmented({ options, value, onChange }) {
             style={[
               styles.option,
               { borderColor: colors.border },
-              selected && { backgroundColor: colors.button, borderColor: colors.button },
+              selected && {
+                backgroundColor: colors.button,
+                borderColor: colors.button,
+              },
             ]}
           >
             <AppText
               style={[
                 styles.optionText,
-                selected && { color: colors.buttonText, fontWeight: 'bold' },
+                selected && { color: colors.buttonText, fontWeight: "bold" },
               ]}
             >
               {o.label}
@@ -76,7 +90,11 @@ function ToggleRow({ label, hint, value, onChange }) {
     <View style={styles.toggleRow}>
       <View style={styles.toggleText}>
         <AppText style={styles.rowLabel}>{label}</AppText>
-        {hint ? <AppText style={[styles.hint, { color: colors.muted }]}>{hint}</AppText> : null}
+        {hint ? (
+          <AppText style={[styles.hint, { color: colors.muted }]}>
+            {hint}
+          </AppText>
+        ) : null}
       </View>
       <Switch
         value={value}
@@ -90,7 +108,7 @@ function ToggleRow({ label, hint, value, onChange }) {
 
 export default function SettingsScreen() {
   const { settings, update, reset, colors } = useSettings();
-  const { clearGame } = useGame();
+  const { clearGame, dataStatus } = useGame();
   const triggerHaptic = useHaptics();
 
   return (
@@ -138,7 +156,7 @@ export default function SettingsScreen() {
               value={settings.hapticsIntensity}
               onChange={(hapticsIntensity) => {
                 update({ hapticsIntensity });
-                if (hapticsIntensity === 'default') triggerHaptic();
+                if (hapticsIntensity === "default") triggerHaptic();
               }}
             />
           </>
@@ -172,7 +190,7 @@ export default function SettingsScreen() {
       <Pressable
         onPress={() => {
           clearGame();
-          router.replace('/');
+          router.replace("/");
         }}
         accessibilityRole="button"
         style={[styles.resetButton, { backgroundColor: colors.button }]}
@@ -181,6 +199,15 @@ export default function SettingsScreen() {
           Main menu (switch game)
         </AppText>
       </Pressable>
+
+      <Section title="Data">
+        <AppText>{`Source: ${SOURCE_LABELS[dataStatus.source]}`}</AppText>
+        <AppText style={{ color: colors.muted, fontSize: 13 }}>
+          {dataStatus.at
+            ? `Last updated ${new Date(dataStatus.at).toLocaleString()}`
+            : "Using the data bundled with the app."}
+        </AppText>
+      </Section>
 
       <BackupSection />
 
@@ -194,7 +221,8 @@ export default function SettingsScreen() {
         </AppText>
       </Pressable>
       <AppText style={[styles.hint, styles.centered, { color: colors.muted }]}>
-        Defaults: {defaultSettings.theme} theme, default text size, default haptics.
+        Defaults: {defaultSettings.theme} theme, default text size, default
+        haptics.
       </AppText>
     </Screen>
   );
@@ -209,28 +237,28 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: 10,
   },
-  sectionTitle: { fontWeight: 'bold', fontSize: 18 },
+  sectionTitle: { fontWeight: "bold", fontSize: 18 },
   rowLabel: { fontSize: 16 },
   hint: { fontSize: 13 },
-  centered: { textAlign: 'center', marginTop: 8 },
-  segmented: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  centered: { textAlign: "center", marginTop: 8 },
+  segmented: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   option: {
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
     paddingVertical: 8,
     minHeight: 40,
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   optionText: { fontSize: 14 },
-  toggleRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  toggleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   toggleText: { flex: 1, gap: 2 },
   resetButton: {
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 20,
     paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 8,
   },
-  resetText: { fontWeight: 'bold' },
+  resetText: { fontWeight: "bold" },
 });

@@ -26,17 +26,28 @@ export function GameProvider({ children }) {
   const [gameId, setGameId] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [remote, setRemote] = useState({});
+  const [sources, setSources] = useState({});
 
   useEffect(() => {
     let cancelled = false;
     const load = async (id, kind) => {
       const path = `${id}/${kind}.json`;
       const cached = await readCached(path);
-      if (cached && !cancelled)
-        setRemote((prev) => ({ ...prev, [path]: cached }));
+      if (cached && !cancelled) {
+        setRemote((prev) => ({ ...prev, [path]: cached.data }));
+        setSources((prev) => ({
+          ...prev,
+          [path]: { source: "cached", at: cached.at },
+        }));
+      }
       const fresh = await fetchRemote(path);
-      if (fresh && !cancelled)
+      if (fresh && !cancelled) {
         setRemote((prev) => ({ ...prev, [path]: fresh }));
+        setSources((prev) => ({
+          ...prev,
+          [path]: { source: "online", at: Date.now() },
+        }));
+      }
     };
     Object.keys(games).forEach((id) => {
       load(id, "bosses");
@@ -82,8 +93,16 @@ export function GameProvider({ children }) {
       bosses: mergeList(base.bosses, bosses),
       items: mergeList(base.items, items),
     };
-    return { gameId, loaded, config, selectGame, clearGame };
-  }, [gameId, loaded, remote, selectGame, clearGame]);
+    const found = ["bosses", "items"]
+      .map((kind) => sources[`${id}/${kind}.json`])
+      .filter(Boolean);
+    const online = found.some((s) => s.source === "online");
+    const dataStatus = {
+      source: online ? "online" : found.length ? "cached" : "bundled",
+      at: found.reduce((latest, s) => Math.max(latest, s.at ?? 0), 0) || null,
+    };
+    return { gameId, loaded, config, dataStatus, selectGame, clearGame };
+  }, [gameId, loaded, remote, sources, selectGame, clearGame]);
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
 

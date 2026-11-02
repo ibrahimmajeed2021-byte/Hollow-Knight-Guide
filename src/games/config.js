@@ -37,6 +37,7 @@ export const games = {
     itemsLabel: "Tools & Crests",
     itemLabel: "Tool",
     hasLoadouts: false,
+    largeBossImage: true,
     loadingImage: require("../../assets/hollow/silksong/Hornet.png"),
     loadingColor: "#2a0508",
     loadingImageSize: { width: 124, height: 144 },

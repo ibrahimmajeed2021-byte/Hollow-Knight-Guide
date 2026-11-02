@@ -80,6 +80,15 @@ export default function BossesScreen() {
             description={item.description}
             summary={<BossSummary name={item.name} health={item.health} />}
           >
+            {config.largeBossImage && bossImages[item.image] ? (
+              <Image
+                source={bossImages[item.image]}
+                style={styles.bossImage}
+                contentFit="contain"
+                cachePolicy="memory-disk"
+                accessible={false}
+              />
+            ) : null}
             {item.act ? <Stat label="Act" value={String(item.act)} /> : null}
             <Stat label="Reward" value={item.reward} />
             <AppText style={[styles.locationLabel, { color: colors.muted }]}>
@@ -108,6 +117,7 @@ export default function BossesScreen() {
 }
 const styles = StyleSheet.create({
   empty: { textAlign: "center", marginTop: 24 },
+  bossImage: { width: "100%", height: 200, marginTop: 8 },
   locationLabel: { marginTop: 8, fontWeight: "bold", fontSize: 15 },
   location: { marginTop: 6, alignItems: "center", gap: 4 },
   locationImage: { width: "100%", height: 160 },

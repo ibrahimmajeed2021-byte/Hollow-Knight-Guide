@@ -14,9 +14,12 @@ const valid = (data) =>
 
 export async function readCached(path) {
   try {
-    const raw = await AsyncStorage.getItem(CACHE_PREFIX + path);
+    const [raw, at] = await Promise.all([
+      AsyncStorage.getItem(CACHE_PREFIX + path),
+      AsyncStorage.getItem(`${CACHE_PREFIX}${path}:at`),
+    ]);
     const data = raw ? JSON.parse(raw) : null;
-    return valid(data) ? data : null;
+    return valid(data) ? { data, at: at ? Number(at) : null } : null;
   } catch {
     return null;
   }
@@ -33,6 +36,9 @@ export async function fetchRemote(path) {
     const data = await response.json();
     if (!valid(data)) return null;
     AsyncStorage.setItem(CACHE_PREFIX + path, JSON.stringify(data)).catch(
+      () => {},
+    );
+    AsyncStorage.setItem(`${CACHE_PREFIX}${path}:at`, String(Date.now())).catch(
       () => {},
     );
     return data;
