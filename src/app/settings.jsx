@@ -6,13 +6,15 @@ import { BackupSection } from "../components/hollow/backup-section";
 import { Screen } from "../components/hollow/screen";
 import { Title } from "../components/hollow/section-text";
 import { useGame } from "../games/game-context";
-import { defaultSettings } from "../constants/hollow";
 import { useHaptics, useSettings } from "../settings/settings-context";
 
-const THEMES = [
-  { value: "default", label: "Default" },
+const MODES = [
+  { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
-  { value: "system", label: "System" },
+  { value: "system", label: "Automatic" },
+];
+const STYLES = [
+  { value: "default", label: "Default" },
   { value: "hollowknight", label: "Hollow Knight" },
   { value: "silksong", label: "Silksong" },
 ];
@@ -118,11 +120,17 @@ export default function SettingsScreen() {
       <Title>Settings</Title>
 
       <Section title="Appearance">
-        <AppText style={styles.rowLabel}>Theme</AppText>
+        <AppText style={styles.rowLabel}>Mode</AppText>
         <Segmented
-          options={THEMES}
-          value={settings.theme}
-          onChange={(theme) => update({ theme })}
+          options={MODES}
+          value={settings.mode}
+          onChange={(mode) => update({ mode })}
+        />
+        <AppText style={styles.rowLabel}>Style</AppText>
+        <Segmented
+          options={STYLES}
+          value={settings.themeStyle}
+          onChange={(themeStyle) => update({ themeStyle })}
         />
         <ToggleRow
           label="High contrast"
@@ -223,8 +231,7 @@ export default function SettingsScreen() {
         </AppText>
       </Pressable>
       <AppText style={[styles.hint, styles.centered, { color: colors.muted }]}>
-        Defaults: {defaultSettings.theme} theme, default text size, default
-        haptics.
+        Defaults: light mode, default style, default text size, default haptics.
       </AppText>
     </Screen>
   );

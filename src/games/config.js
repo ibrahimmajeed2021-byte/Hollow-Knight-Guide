@@ -40,7 +40,7 @@ export const games = {
     hasLoadouts: false,
     largeBossImage: true,
     loadingImage: require("../../assets/hollow/silksong/Hornet.png"),
-    loadingColor: "#2a0508",
+    loadingColor: "#06140a",
     loadingBackground: require("../../assets/hollow/silksong/MossGrotto.png"),
     loadingImageSize: { width: 124, height: 144 },
     bosses: silksongBosses,

@@ -18,6 +18,23 @@ import {
 } from "../constants/hollow";
 
 const STORAGE_KEY = "hollow-knight-guide:settings";
+// Converts the old single "theme" setting into the separate mode and style settings.
+const LEGACY_THEMES = {
+  default: { mode: "light", themeStyle: "default" },
+  dark: { mode: "dark", themeStyle: "default" },
+  system: { mode: "system", themeStyle: "default" },
+  hollowknight: { mode: "dark", themeStyle: "hollowknight" },
+  silksong: { mode: "dark", themeStyle: "silksong" },
+};
+
+function migrate(saved) {
+  if (!saved || typeof saved !== "object") return {};
+  const { theme, ...rest } = saved;
+  return theme in LEGACY_THEMES && !rest.mode
+    ? { ...LEGACY_THEMES[theme], ...rest }
+    : rest;
+}
+
 const SettingsContext = createContext(null);
 
 export function SettingsProvider({ children }) {
@@ -28,7 +45,8 @@ export function SettingsProvider({ children }) {
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
       .then((raw) => {
-        if (raw) setSettings({ ...defaultSettings, ...JSON.parse(raw) });
+        if (raw)
+          setSettings({ ...defaultSettings, ...migrate(JSON.parse(raw)) });
       })
       .catch(() => {})
       .finally(() => setLoaded(true));
@@ -36,7 +54,7 @@ export function SettingsProvider({ children }) {
 
   const update = useCallback((patch) => {
     setSettings((prev) => {
-      const next = { ...prev, ...patch };
+      const next = { ...prev, ...migrate(patch) };
       AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
       return next;
     });
@@ -45,15 +63,18 @@ export function SettingsProvider({ children }) {
   const reset = useCallback(() => update(defaultSettings), [update]);
 
   const value = useMemo(() => {
-    const darkThemes = ["dark", "hollowknight", "silksong"];
     const isDark =
-      darkThemes.includes(settings.theme) ||
-      (settings.theme === "system" && systemScheme === "dark");
-    const paletteKey = ["hollowknight", "silksong"].includes(settings.theme)
-      ? settings.theme
-      : isDark
-        ? "dark"
-        : "default";
+      settings.mode === "dark" ||
+      (settings.mode === "system" && systemScheme === "dark");
+    const style = settings.themeStyle;
+    const paletteKey =
+      style === "default"
+        ? isDark
+          ? "dark"
+          : "default"
+        : isDark
+          ? `${style}Dark`
+          : style;
     const colors = settings.highContrast
       ? highContrast[isDark ? "dark" : "light"]
       : palettes[paletteKey];
