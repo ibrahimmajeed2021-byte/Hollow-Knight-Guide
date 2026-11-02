@@ -40,6 +40,17 @@ export function LoadingScreen() {
         { backgroundColor: launch ? "#000" : config.loadingColor },
       ]}
     >
+      {!launch && config.loadingBackground ? (
+        <>
+          <Image
+            source={config.loadingBackground}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+            blurRadius={2}
+          />
+          <View style={[StyleSheet.absoluteFill, styles.dim]} />
+        </>
+      ) : null}
       <Animated.View
         entering={reduce ? undefined : FadeIn.duration(500)}
         style={styles.heroes}
@@ -65,6 +76,7 @@ export function LoadingScreen() {
 }
 
 const styles = StyleSheet.create({
+  dim: { backgroundColor: "rgba(0,0,0,0.55)" },
   heroes: {
     flexDirection: "row",
     alignItems: "flex-end",
