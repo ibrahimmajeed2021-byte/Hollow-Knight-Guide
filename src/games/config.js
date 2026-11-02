@@ -1,4 +1,5 @@
 import { bosses as hkBosses } from "../data/bosses";
+import { silksongBossImages } from "../data/silksong-images";
 import { silksongBosses } from "../data/silksong-bosses";
 import { charms as hkCharms } from "../data/charms";
 import { bossImages, charmImages, locationImages } from "../data/images";
@@ -36,7 +37,7 @@ export const games = {
     loadingImageSize: { width: 124, height: 144 },
     bosses: silksongBosses,
     items: [],
-    bossImages: {},
+    bossImages: silksongBossImages,
     itemImages: {},
     locationImages: {},
   },
