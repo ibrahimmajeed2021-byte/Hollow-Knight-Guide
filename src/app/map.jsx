@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useMemo, useState } from 'react';
-import { Image as RNImage, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image as RNImage, Pressable, StyleSheet, View } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
@@ -9,8 +9,9 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { AppText } from '../components/hollow/app-text';
 import { Screen } from '../components/hollow/screen';
-import { HK } from '../constants/hollow';
+import { useSettings } from '../settings/settings-context';
 
 const MIN_SCALE = 1;
 const MAX_SCALE = 8;
@@ -28,13 +29,31 @@ function maxOffset(scale, base, view) {
   return Math.max(0, (base * scale - view) / 2);
 }
 
-function resetMap(v) {
-  v.scale.value = withTiming(1);
-  v.tx.value = withTiming(0);
-  v.ty.value = withTiming(0);
+function animate(value, reduceMotion) {
+  'worklet';
+  return reduceMotion ? value : withTiming(value);
 }
 
-function createMapGesture({ W, H, baseW, baseH, scale, tx, ty, startTx, startTy, lastFx, lastFy }) {
+function resetMap(v, reduceMotion) {
+  v.scale.value = animate(1, reduceMotion);
+  v.tx.value = animate(0, reduceMotion);
+  v.ty.value = animate(0, reduceMotion);
+}
+
+function createMapGesture({
+  W,
+  H,
+  baseW,
+  baseH,
+  scale,
+  tx,
+  ty,
+  startTx,
+  startTy,
+  lastFx,
+  lastFy,
+  reduceMotion,
+}) {
   const pinch = Gesture.Pinch()
     .onStart((e) => {
       lastFx.value = e.focalX;
@@ -54,12 +73,10 @@ function createMapGesture({ W, H, baseW, baseH, scale, tx, ty, startTx, startTy,
       lastFy.value = e.focalY;
     })
     .onEnd(() => {
-      tx.value = withTiming(
-        clamp(tx.value, -maxOffset(scale.value, baseW, W), maxOffset(scale.value, baseW, W)),
-      );
-      ty.value = withTiming(
-        clamp(ty.value, -maxOffset(scale.value, baseH, H), maxOffset(scale.value, baseH, H)),
-      );
+      const mx = maxOffset(scale.value, baseW, W);
+      const my = maxOffset(scale.value, baseH, H);
+      tx.value = animate(clamp(tx.value, -mx, mx), reduceMotion);
+      ty.value = animate(clamp(ty.value, -my, my), reduceMotion);
     });
 
   const pan = Gesture.Pan()
@@ -77,6 +94,7 @@ function createMapGesture({ W, H, baseW, baseH, scale, tx, ty, startTx, startTy,
     .onEnd((e) => {
       const mx = maxOffset(scale.value, baseW, W);
       const my = maxOffset(scale.value, baseH, H);
+      if (reduceMotion) return;
       tx.value = withDecay({ velocity: e.velocityX, clamp: [-mx, mx] });
       ty.value = withDecay({ velocity: e.velocityY, clamp: [-my, my] });
     });
@@ -91,15 +109,23 @@ function createMapGesture({ W, H, baseW, baseH, scale, tx, ty, startTx, startTy,
       const fy = e.y - H / 2;
       const mx = maxOffset(next, baseW, W);
       const my = maxOffset(next, baseH, H);
-      scale.value = withTiming(next);
-      tx.value = withTiming(next === 1 ? 0 : clamp(fx - (fx - tx.value) * ratio, -mx, mx));
-      ty.value = withTiming(next === 1 ? 0 : clamp(fy - (fy - ty.value) * ratio, -my, my));
+      scale.value = animate(next, reduceMotion);
+      tx.value = animate(
+        next === 1 ? 0 : clamp(fx - (fx - tx.value) * ratio, -mx, mx),
+        reduceMotion,
+      );
+      ty.value = animate(
+        next === 1 ? 0 : clamp(fy - (fy - ty.value) * ratio, -my, my),
+        reduceMotion,
+      );
     });
 
   return Gesture.Race(doubleTap, Gesture.Simultaneous(pan, pinch));
 }
 
 export default function MapScreen() {
+  const { colors, settings } = useSettings();
+  const reduceMotion = settings.reduceMotion;
   const [size, setSize] = useState({ width: 0, height: 0 });
   const scale = useSharedValue(1);
   const tx = useSharedValue(0);
@@ -115,8 +141,22 @@ export default function MapScreen() {
   const baseH = imgH * fit;
 
   const gesture = useMemo(
-    () => createMapGesture({ W, H, baseW, baseH, scale, tx, ty, startTx, startTy, lastFx, lastFy }),
-    [W, H, baseW, baseH, scale, tx, ty, startTx, startTy, lastFx, lastFy],
+    () =>
+      createMapGesture({
+        W,
+        H,
+        baseW,
+        baseH,
+        scale,
+        tx,
+        ty,
+        startTx,
+        startTy,
+        lastFx,
+        lastFy,
+        reduceMotion,
+      }),
+    [W, H, baseW, baseH, scale, tx, ty, startTx, startTy, lastFx, lastFy, reduceMotion],
   );
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -125,7 +165,10 @@ export default function MapScreen() {
 
   return (
     <Screen scroll={false}>
-      <View style={styles.container} onLayout={(e) => setSize(e.nativeEvent.layout)}>
+      <View
+        style={[styles.container, { backgroundColor: colors.background }]}
+        onLayout={(e) => setSize(e.nativeEvent.layout)}
+      >
         {W > 0 && (
           <GestureDetector gesture={gesture}>
             <View style={StyleSheet.absoluteFill} collapsable={false}>
@@ -140,6 +183,7 @@ export default function MapScreen() {
                   source={mapImage}
                   style={StyleSheet.absoluteFill}
                   contentFit="contain"
+                  cachePolicy="memory-disk"
                   accessibilityLabel="Hollow Knight interactive map"
                 />
               </Animated.View>
@@ -147,13 +191,13 @@ export default function MapScreen() {
           </GestureDetector>
         )}
         <View style={styles.overlay} pointerEvents="box-none">
-          <Text style={styles.hint}>Pinch to zoom · drag to move · double tap to zoom</Text>
+          <AppText style={styles.hint}>Pinch to zoom · drag to move · double tap to zoom</AppText>
           <Pressable
-            onPress={() => resetMap({ scale, tx, ty })}
-            style={styles.button}
+            onPress={() => resetMap({ scale, tx, ty }, reduceMotion)}
+            style={[styles.button, { backgroundColor: colors.button }]}
             accessibilityRole="button"
           >
-            <Text style={styles.buttonText}>Reset</Text>
+            <AppText style={[styles.buttonText, { color: colors.buttonText }]}>Reset</AppText>
           </Pressable>
         </View>
       </View>
@@ -162,7 +206,7 @@ export default function MapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, overflow: 'hidden', backgroundColor: HK.background },
+  container: { flex: 1, overflow: 'hidden' },
   canvas: { position: 'absolute' },
   overlay: {
     position: 'absolute',
@@ -173,8 +217,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   hint: {
-    color: 'white',
-    backgroundColor: 'rgba(15,15,27,0.7)',
+    color: '#ffffff',
+    backgroundColor: 'rgba(15,15,27,0.75)',
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
@@ -182,10 +226,9 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   button: {
-    backgroundColor: HK.header,
     paddingHorizontal: 24,
     paddingVertical: 8,
     borderRadius: 8,
   },
-  buttonText: { color: 'white', fontWeight: 'bold' },
+  buttonText: { fontWeight: 'bold' },
 });

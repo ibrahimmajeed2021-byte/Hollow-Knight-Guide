@@ -1,14 +1,18 @@
-import { StyleSheet, Text } from 'react-native';
-import { HK, HKFont } from '../../constants/hollow';
-export function Title(props) {
-  return <Text {...props} style={[styles.title, props.style]} />;
+import { StyleSheet } from 'react-native';
+
+import { HKFont } from '../../constants/hollow';
+import { AppText } from './app-text';
+
+export function Title({ style, ...props }) {
+  return <AppText {...props} style={[styles.title, style]} />;
 }
-export function Body(props) {
-  return <Text {...props} style={[styles.body, props.style]} />;
+
+export function Body({ style, ...props }) {
+  return <AppText {...props} style={[styles.body, style]} />;
 }
+
 const styles = StyleSheet.create({
   title: {
-    color: HK.text,
     fontFamily: HKFont,
     fontSize: 30,
     textAlign: 'center',
@@ -16,7 +20,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   body: {
-    color: HK.text,
     fontSize: 16,
     lineHeight: 24,
     textAlign: 'center',

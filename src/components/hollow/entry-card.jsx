@@ -1,40 +1,56 @@
 import { Image } from 'expo-image';
-import { StyleSheet, Text, View } from 'react-native';
-import { HK, HKFont } from '../../constants/hollow';
-export function EntryCard({ image, name, description, children }) {
+import { memo } from 'react';
+import { StyleSheet, View } from 'react-native';
+
+import { HKFont } from '../../constants/hollow';
+import { useSettings } from '../../settings/settings-context';
+import { AppText } from './app-text';
+
+function EntryCardBase({ image, name, description, children }) {
+  const { colors } = useSettings();
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
       <View style={styles.top}>
-        <Image source={image} style={styles.image} contentFit="contain" accessibilityLabel={name} />
-        <Text style={styles.name}>{name}</Text>
+        <Image
+          source={image}
+          style={styles.image}
+          contentFit="contain"
+          cachePolicy="memory-disk"
+          recyclingKey={name}
+          accessibilityLabel={name}
+        />
+        <AppText style={styles.name}>{name}</AppText>
       </View>
-      <Text style={styles.description}>{description}</Text>
+      <AppText style={styles.description}>{description}</AppText>
       {children}
     </View>
   );
 }
+
+export const EntryCard = memo(EntryCardBase);
+
 export function Stat({ label, value }) {
+  const { colors } = useSettings();
   return (
-    <Text style={styles.stat}>
-      <Text style={styles.statLabel}>{label}: </Text>
+    <AppText style={styles.stat}>
+      <AppText style={[styles.statLabel, { color: colors.muted }]}>{label}: </AppText>
       {value}
-    </Text>
+    </AppText>
   );
 }
+
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: HK.card,
     borderRadius: 12,
     padding: 14,
     marginHorizontal: 16,
     marginTop: 14,
     borderWidth: 1,
-    borderColor: HK.tabBar,
   },
   top: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   image: { width: 72, height: 72 },
-  name: { flex: 1, fontFamily: HKFont, fontSize: 20, color: HK.text },
-  description: { marginTop: 10, color: HK.text, fontSize: 15, lineHeight: 22 },
-  stat: { marginTop: 8, color: HK.text, fontSize: 15 },
-  statLabel: { fontWeight: 'bold', color: HK.muted },
+  name: { flex: 1, fontFamily: HKFont, fontSize: 20 },
+  description: { marginTop: 10, fontSize: 15, lineHeight: 22 },
+  stat: { marginTop: 8, fontSize: 15 },
+  statLabel: { fontWeight: 'bold', fontSize: 15 },
 });

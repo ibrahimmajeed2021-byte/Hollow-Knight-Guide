@@ -1,15 +1,21 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { HK, HKFont } from '../../constants/hollow';
+
+import { HKFont } from '../../constants/hollow';
+import { useSettings } from '../../settings/settings-context';
+import { AppText } from './app-text';
+
 export function AppHeader() {
   const { top } = useSafeAreaInsets();
+  const { colors } = useSettings();
   return (
-    <View style={[styles.container, { paddingTop: top + 8 }]}>
-      <Text style={styles.title}>Hollow Knight Guide</Text>
+    <View style={[styles.container, { paddingTop: top + 8, backgroundColor: colors.header }]}>
+      <AppText style={[styles.title, { color: colors.headerText }]}>Hollow Knight Guide</AppText>
     </View>
   );
 }
+
 const styles = StyleSheet.create({
-  container: { backgroundColor: HK.header, paddingBottom: 12, alignItems: 'center' },
-  title: { color: HK.headerText, fontSize: 28, fontFamily: HKFont, textAlign: 'center' },
+  container: { paddingBottom: 12, alignItems: 'center' },
+  title: { fontSize: 28, fontFamily: HKFont, textAlign: 'center' },
 });

@@ -1,12 +1,13 @@
 import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { HK } from '../constants/hollow';
+import { useSettings } from '../settings/settings-context';
 export default function AppTabs() {
+  const { colors } = useSettings();
   return (
     <Tabs>
       <TabSlot style={{ flex: 1 }} />
       <TabList asChild>
-        <View style={styles.tabList}>
+        <View style={[styles.tabList, { backgroundColor: colors.tabBar }]}>
           <TabTrigger name="index" href="/" asChild>
             <TabButton>Home</TabButton>
           </TabTrigger>
@@ -19,25 +20,36 @@ export default function AppTabs() {
           <TabTrigger name="map" href="/map" asChild>
             <TabButton>Map</TabButton>
           </TabTrigger>
+          <TabTrigger name="settings" href="/settings" asChild>
+            <TabButton>Settings</TabButton>
+          </TabTrigger>
         </View>
       </TabList>
     </Tabs>
   );
 }
 function TabButton({ children, isFocused, ...props }) {
+  const { colors } = useSettings();
   return (
     <Pressable {...props} style={styles.button}>
-      <Text style={[styles.label, isFocused && styles.focused]}>{children}</Text>
+      <Text
+        style={[
+          styles.label,
+          { color: isFocused ? colors.text : colors.muted },
+          isFocused && styles.focused,
+        ]}
+      >
+        {children}
+      </Text>
     </Pressable>
   );
 }
 const styles = StyleSheet.create({
   tabList: {
     flexDirection: 'row',
-    backgroundColor: HK.tabBar,
     paddingVertical: 10,
   },
   button: { flex: 1, alignItems: 'center' },
-  label: { color: HK.muted, fontSize: 16 },
-  focused: { color: HK.text, fontWeight: 'bold' },
+  label: { fontSize: 16 },
+  focused: { fontWeight: 'bold' },
 });

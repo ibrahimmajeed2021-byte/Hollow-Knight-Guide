@@ -11,7 +11,10 @@ export default function CharmsScreen() {
         data={charms}
         keyExtractor={(c) => c.name}
         initialNumToRender={8}
-        contentContainerStyle={{ paddingTop: 16 }}
+        removeClippedSubviews
+        windowSize={7}
+        maxToRenderPerBatch={6}
+        contentContainerStyle={{ paddingTop: 16, paddingBottom: 32 }}
         ListHeaderComponent={
           <>
             <Title>Charms</Title>

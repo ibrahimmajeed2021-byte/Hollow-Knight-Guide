@@ -1,9 +1,11 @@
-import { Linking, StyleSheet, Text } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 import { Body, Title } from '../components/hollow/section-text';
 import { Screen } from '../components/hollow/screen';
-import { HK } from '../constants/hollow';
+import { AppText } from '../components/hollow/app-text';
+import { useSettings } from '../settings/settings-context';
 const EMAIL = 'apolohcr2@outlook.com';
 export default function HomeScreen() {
+  const { colors } = useSettings();
   return (
     <Screen>
       <Title style={styles.big}>Welcome to this guide!</Title>
@@ -16,9 +18,12 @@ export default function HomeScreen() {
         progress so please expect some things to be missing or not working. I will try to update it
         as often as possible so please check back often! If you have any questions or comments
         please email me at{' '}
-        <Text style={styles.link} onPress={() => Linking.openURL(`mailto:${EMAIL}`)}>
+        <AppText
+          style={[styles.link, { color: colors.accent }]}
+          onPress={() => Linking.openURL(`mailto:${EMAIL}`)}
+        >
           {EMAIL}
-        </Text>
+        </AppText>
         . Thank you for using this app! Have fun playing Hollow Knight!
       </Body>
       <Title style={[styles.big, styles.gap]}>Hollow Knight</Title>
@@ -38,5 +43,5 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   big: { fontSize: 32 },
   gap: { marginTop: 32 },
-  link: { color: HK.accent, textDecorationLine: 'underline' },
+  link: { textDecorationLine: 'underline' },
 });
