@@ -41,9 +41,11 @@ export function LoadoutsProvider({ children }) {
     [commit],
   );
 
+  const replaceLoadouts = useCallback((list) => commit(() => list), [commit]);
+
   const value = useMemo(
-    () => ({ loadouts, saveLoadout, deleteLoadout }),
-    [loadouts, saveLoadout, deleteLoadout],
+    () => ({ loadouts, saveLoadout, deleteLoadout, replaceLoadouts }),
+    [loadouts, saveLoadout, deleteLoadout, replaceLoadouts],
   );
   return <LoadoutsContext.Provider value={value}>{children}</LoadoutsContext.Provider>;
 }

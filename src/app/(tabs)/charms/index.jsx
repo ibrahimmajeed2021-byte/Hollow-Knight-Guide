@@ -1,17 +1,50 @@
 import { router } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { FlatList } from 'react-native';
 import { Button } from '../../../components/hollow/button';
 import { EntryCard } from '../../../components/hollow/entry-card';
 import { CharmExtras, CharmSummary } from '../../../components/hollow/progress-extras';
+import { AppText } from '../../../components/hollow/app-text';
+import { SearchFilter } from '../../../components/hollow/search-filter';
 import { Screen } from '../../../components/hollow/screen';
 import { Body, Title } from '../../../components/hollow/section-text';
 import { charms } from '../../../data/charms';
 import { charmImages } from '../../../data/images';
+import { useJournal } from '../../../journal/journal-context';
+const FILTERS = [
+  { value: 'all', label: 'All' },
+  { value: 'todo', label: 'Not collected' },
+  { value: 'done', label: 'Collected' },
+];
+
 export default function CharmsScreen() {
+  const { collected } = useJournal();
+  const [query, setQuery] = useState('');
+  const [filter, setFilter] = useState('all');
+  const data = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return charms.filter(
+      (c) =>
+        (!q || c.name.toLowerCase().includes(q)) &&
+        (filter === 'all' || (filter === 'done') === !!collected[c.name]),
+    );
+  }, [query, filter, collected]);
   return (
     <Screen scroll={false}>
+      <SearchFilter
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Search charms"
+        filters={FILTERS}
+        filter={filter}
+        onFilter={setFilter}
+      />
       <FlatList
-        data={charms}
+        data={data}
+        keyboardShouldPersistTaps="handled"
+        ListEmptyComponent={
+          <AppText style={{ textAlign: 'center', marginTop: 24 }}>No charms match.</AppText>
+        }
         keyExtractor={(c) => c.name}
         initialNumToRender={8}
         removeClippedSubviews

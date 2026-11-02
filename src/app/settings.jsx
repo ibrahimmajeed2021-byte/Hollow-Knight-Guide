@@ -1,6 +1,7 @@
 import { Pressable, StyleSheet, Switch, View } from 'react-native';
 
 import { AppText } from '../components/hollow/app-text';
+import { BackupSection } from '../components/hollow/backup-section';
 import { Screen } from '../components/hollow/screen';
 import { Title } from '../components/hollow/section-text';
 import { defaultSettings } from '../constants/hollow';
@@ -158,6 +159,8 @@ export default function SettingsScreen() {
           onChange={(reduceMotion) => update({ reduceMotion })}
         />
       </Section>
+
+      <BackupSection />
 
       <Pressable
         onPress={reset}

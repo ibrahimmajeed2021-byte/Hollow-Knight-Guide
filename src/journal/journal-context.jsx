@@ -100,8 +100,15 @@ export function JournalProvider({ children }) {
     [commit],
   );
 
+  const restoreProgress = useCallback(
+    ({ defeated, collected }) =>
+      commit((prev) => ({ ...prev, defeated: defeated ?? {}, collected: collected ?? {} })),
+    [commit],
+  );
+
   const value = useMemo(
     () => ({
+      restoreProgress,
       photos: state.photos,
       defeated: state.defeated,
       collected: state.collected,
@@ -112,7 +119,7 @@ export function JournalProvider({ children }) {
       removePhoto,
       toggleDefeated,
     }),
-    [state, addPhoto, updatePhoto, removePhoto, toggleDefeated, toggleCollected, resetProgress],
+    [state, addPhoto, updatePhoto, removePhoto, toggleDefeated, toggleCollected, resetProgress, restoreProgress],
   );
 
   return <JournalContext.Provider value={value}>{children}</JournalContext.Provider>;
