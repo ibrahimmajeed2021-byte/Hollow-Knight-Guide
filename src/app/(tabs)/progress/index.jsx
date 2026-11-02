@@ -1,5 +1,5 @@
 import { router } from 'expo-router';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 
 import { AppText } from '../../../components/hollow/app-text';
 import { Button } from '../../../components/hollow/button';
@@ -72,11 +72,13 @@ export default function ProgressScreen() {
           total={charms.length}
           onPress={() => router.push('/charms')}
         />
-        <Button
-          label={`Photo journal (${photos.length})`}
-          onPress={() => router.push('/progress/journal')}
-          style={styles.gap}
-        />
+        {Platform.OS !== 'web' && (
+          <Button
+            label={`Photo journal (${photos.length})`}
+            onPress={() => router.push('/progress/journal')}
+            style={styles.gap}
+          />
+        )}
         <Button label="Reset progress" variant="outline" onPress={confirmReset} />
       </View>
     </Screen>

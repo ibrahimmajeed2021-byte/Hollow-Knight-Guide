@@ -23,7 +23,11 @@
       "predictiveBackGestureEnabled": false
     },
     "web": {
-      "output": "server",
+      "output": "static",
+      "name": "Hollow Knight Guide",
+      "shortName": "HK Guide",
+      "backgroundColor": "#000000",
+      "themeColor": "#000000",
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
@@ -58,7 +62,8 @@
       "expo-sharing"
     ],
     "experiments": {
-      "reactCompiler": true
+      "reactCompiler": true,
+      "baseUrl": "/Hollow-Knight-Guide"
     }
   }
 }

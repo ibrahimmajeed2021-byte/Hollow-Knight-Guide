@@ -1,5 +1,6 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { downloadOnWeb } from "../../../utils/web-download";
 import * as Sharing from "expo-sharing";
 import { useRef, useState } from "react";
 import { captureRef } from "react-native-view-shot";
@@ -104,6 +105,14 @@ export default function LoadoutScreen() {
       return;
     }
     try {
+      if (Platform.OS === "web") {
+        const dataUri = await captureRef(cardRef, {
+          format: "png",
+          result: "data-uri",
+        });
+        downloadOnWeb(dataUri, "hollow-knight-loadout.png");
+        return;
+      }
       const uri = await captureRef(cardRef, { format: "png", quality: 1 });
       if (!(await Sharing.isAvailableAsync())) {
         Alert.alert("Sharing unavailable", "This device cannot share files.");

@@ -7,7 +7,7 @@ export default function AppTabs() {
     <Tabs>
       <TabSlot style={{ flex: 1 }} />
       <TabList asChild>
-        <View style={[styles.tabList, { backgroundColor: colors.tabBar }]}>
+        <View style={StyleSheet.flatten([styles.tabList, { backgroundColor: colors.tabBar }])}>
           <TabTrigger name="index" href="/" asChild>
             <TabButton>Home</TabButton>
           </TabTrigger>
@@ -44,7 +44,8 @@ function TabButton({ children, isFocused, ...props }) {
 const styles = StyleSheet.create({
   tabList: {
     flexDirection: 'row',
-    paddingVertical: 10,
+    paddingTop: 10,
+    paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
   },
   button: { flex: 1, alignItems: 'center' },
   label: { fontSize: 16 },

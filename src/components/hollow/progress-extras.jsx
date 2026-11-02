@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState } from "react";
-import { Pressable, StyleSheet, Switch, TextInput, View } from "react-native";
+import { Platform, Pressable, StyleSheet, Switch, TextInput, View } from "react-native";
 
 import { photoUri, useJournal } from "../../journal/journal-context";
 import { takePhoto } from "../../journal/take-photo";
@@ -55,7 +55,7 @@ export function BossExtras({ name }) {
         />
       </View>
       <View style={styles.photos}>
-        {bossPhotos.map((photo) => (
+        {Platform.OS !== 'web' && bossPhotos.map((photo) => (
           <Pressable
             key={photo.id}
             onPress={() => router.push(`/progress/photo/${photo.id}`)}
@@ -85,7 +85,7 @@ export function BossExtras({ name }) {
           { color: colors.text, borderColor: colors.border },
         ]}
       />
-      <Button label="Add photo" variant="outline" onPress={attach} />
+      {Platform.OS !== 'web' && <Button label="Add photo" variant="outline" onPress={attach} />}
     </View>
   );
 }

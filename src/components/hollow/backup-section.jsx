@@ -1,7 +1,9 @@
 import * as DocumentPicker from 'expo-document-picker';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, Platform, StyleSheet, View } from 'react-native';
+
+import { downloadOnWeb } from '../../utils/web-download';
 
 import { useJournal } from '../../journal/journal-context';
 import { useLoadouts } from '../../loadouts/loadouts-context';
@@ -27,6 +29,14 @@ export function BackupSection() {
         progress: { defeated, collected, notes },
         loadouts,
       };
+      if (Platform.OS === 'web') {
+        const url = URL.createObjectURL(
+          new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }),
+        );
+        downloadOnWeb(url, 'hollow-knight-backup.json');
+        URL.revokeObjectURL(url);
+        return;
+      }
       const file = new File(Paths.cache, 'hollow-knight-backup.json');
       if (file.exists) file.delete();
       file.create();
@@ -63,7 +73,9 @@ export function BackupSection() {
         copyToCacheDirectory: true,
       });
       if (result.canceled) return;
-      const backup = JSON.parse(await new File(result.assets[0].uri).text());
+      const asset = result.assets[0];
+      const text = Platform.OS === 'web' ? await asset.file.text() : await new File(asset.uri).text();
+      const backup = JSON.parse(text);
       if (!isObject(backup) || backup.app !== APP_ID) {
         Alert.alert('Invalid backup', 'This file is not a Hollow Knight Guide backup.');
         return;
