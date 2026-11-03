@@ -37,7 +37,7 @@ export const games = {
     storageSuffix: ":silksong",
     itemsLabel: "Tools & Crests",
     itemLabel: "Tool",
-    hasLoadouts: false,
+    hasLoadouts: true,
     largeBossImage: true,
     loadingImage: require("../../assets/hollow/silksong/Hornet.png"),
     loadingColor: "#06140a",
