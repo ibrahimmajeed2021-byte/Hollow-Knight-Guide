@@ -8,7 +8,7 @@ export default function LoadingSoundSetting() {
   const { settings = {}, update = () => {}, colors = {} } = context;
 
   const soundEnabled = settings.loadingSoundEnabled ?? true;
-  const volume = settings.loadingSoundVolume ?? 80;
+  const volume = settings.loadingSoundVolume ?? 50;
 
   // Extract app theme palette (with Hollow Knight gold fallbacks)
   const primaryColor = colors.primary || colors.accent || "#D4AF37";
