@@ -29,9 +29,10 @@ const CRESTS = [
   { name: "Reaper Crest", slots: { red: 1, blue: 1, yellow: 1 } },
   { name: "Wanderer Crest", slots: { red: 1, blue: 0, yellow: 2 } },
   { name: "Beast Crest", slots: { red: 2, blue: 0, yellow: 0 } },
-  { name: "Witch Crest", slots: { red: 2, blue: 0, yellow: 0 } },
+  { name: "Cursed Crest", slots: { red: 0, blue: 0, yellow: 0 } },
   { name: "Architect Crest", slots: { red: 3, blue: 0, yellow: 0 } },
   { name: "Shaman Crest", slots: { red: 0, blue: 0, yellow: 0 } },
+  { name: "Cloakless Crest", slots: { red: 0, blue: 0, yellow: 0 } },
 ];
 const COLORS = [
   { id: "red", label: "Red Tools", kind: "Red Tool", color: "#c84c4c" },
@@ -365,21 +366,28 @@ export default function SilksongLoadoutScreen() {
 
       <View style={styles.offscreen} pointerEvents="none">
         <View ref={cardRef} collapsable={false} style={[styles.shareCard, { width: cardWidth }]}>
-          <AppText style={styles.shareEyebrow}>HOLLOW KNIGHT: SILKSONG</AppText>
           <AppText style={styles.shareTitle}>{name.trim() || "My Silksong Loadout"}</AppText>
+          <AppText style={styles.shareSub}>Silksong Crest & Tool Loadout</AppText>
           <View style={styles.shareCrest}>
             {crestData && silksongItemImages[crestData.image] ? <Image source={silksongItemImages[crestData.image]} style={styles.shareCrestImage} contentFit="contain" /> : null}
             <AppText style={styles.shareCrestName}>{crest}</AppText>
           </View>
-          {COLORS.map((color) => (
-            <View key={color.id} style={styles.shareSection}>
-              <AppText style={[styles.shareSectionTitle, { color: color.color }]}>{color.label} · {slots[color.id].length} slots</AppText>
-              <View style={styles.shareGrid}>
-                {slots[color.id].map((_, index) => renderSlot(color, index, true))}
-              </View>
-            </View>
-          ))}
-          <AppText style={styles.shareFoot}>Silksong Loadout Builder · Hollow Knight Guide</AppText>
+          <View style={styles.shareGrid}>
+            {COLORS.flatMap((color) =>
+              slots[color.id].filter(Boolean).map((toolName) => {
+                const tool = tools.find((item) => item.name === toolName);
+                return tool ? (
+                  <View key={tool.name} style={styles.shareItem}>
+                    <Image source={silksongItemImages[tool.image]} style={styles.shareImg} contentFit="contain" />
+                    <AppText style={styles.shareName}>{tool.name}</AppText>
+                    <AppText style={[styles.shareCost, { color: color.color }]}>{color.label.replace(" Tools", "")}</AppText>
+                  </View>
+                ) : null;
+              }),
+            )}
+          </View>
+          <AppText style={styles.shareFoot}>Silksong Guide by Ibrahim</AppText>
+          <AppText style={styles.shareCredit}>All rights reserved</AppText>
         </View>
       </View>
     </Screen>
@@ -419,15 +427,15 @@ const styles = StyleSheet.create({
   saved: { flexDirection: "row", alignItems: "center", gap: 8, borderWidth: 1, borderRadius: 10, padding: 10 },
   savedName: { fontSize: 15, fontWeight: "bold" },
   modal: { flex: 1, padding: 16, paddingTop: 54, gap: 12 },
-  modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 },
+  modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 },\n  modalTitle: { flex: 1, gap: 4 },
   toolList: { gap: 8, paddingBottom: 30 },
   toolRow: { flexDirection: "row", alignItems: "center", gap: 12, padding: 10, borderWidth: 1, borderRadius: 10 },
   toolImage: { width: 56, height: 56 },
   toolName: { fontSize: 15, fontWeight: "bold" },
   offscreen: { position: "absolute", left: -2000, top: 0 },
-  shareCard: { backgroundColor: "#0d1119", padding: 18, gap: 10 },
-  shareEyebrow: { color: "#91a4c0", fontSize: 10, letterSpacing: 2, textAlign: "center" },
-  shareTitle: { color: "#fff", fontSize: 24, fontWeight: "bold", textAlign: "center" },
+  shareCard: { width: 360, backgroundColor: "#0f0f1b", padding: 16, gap: 8 },
+
+  shareTitle: { color: "#ffffff", fontSize: 24, fontWeight: "bold", textAlign: "center" },\n  shareSub: { color: "#b8b8cc", fontSize: 14, textAlign: "center" },
   shareCrest: { alignItems: "center", gap: 4, paddingVertical: 6 },
   shareCrestImage: { width: 70, height: 70 },
   shareCrestName: { color: "#fff", fontSize: 16, fontWeight: "bold" },
