@@ -80,7 +80,7 @@ export default function SilksongLoadoutScreen() {
     [crest],
   );
   const tools = useMemo(
-    () => silksongItems.filter((item) => item.kind && item.kind !== "Crest"),
+    () => silksongItems.filter((item) => COLORS.some((color) => color.kind === item.kind)),
     [],
   );
   const availableTools = useMemo(() => {
@@ -88,7 +88,7 @@ export default function SilksongLoadoutScreen() {
     const kind = COLORS.find((item) => item.id === activeSlot.color)?.kind;
     const query = toolSearch.trim().toLowerCase();
     return tools.filter(
-      (tool) => tool.kind === kind && (!query || tool.name.toLowerCase().includes(query)),
+      (tool) => tool.kind === kind && (!query || `${tool.name} ${tool.description ?? ""}`.toLowerCase().includes(query)),
     );
   }, [activeSlot, toolSearch, tools]);
 
