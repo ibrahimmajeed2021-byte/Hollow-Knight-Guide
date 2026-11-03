@@ -5,7 +5,20 @@ const loadingSources = {
   hollow: require("../../assets/sounds/hollow-loading.mp3"),
   silksong: require("../../assets/sounds/silksong-loading.mp3"),
 };
-const selectorSource = require("../../assets/sounds/game-selector.mp3");
+// Every track in assets/sounds/Game Selector is bundled explicitly for Expo.
+const selectorSources = [
+  require("../../assets/sounds/Game Selector/selector1.mp3"),
+  require("../../assets/sounds/Game Selector/selector2.mp3"),
+  require("../../assets/sounds/Game Selector/selector3.mp3"),
+  require("../../assets/sounds/Game Selector/selector4.mp3"),
+  require("../../assets/sounds/Game Selector/selector5.mp3"),
+  require("../../assets/sounds/Game Selector/selector6.mp3"),
+  require("../../assets/sounds/Game Selector/selector7.mp3"),
+  require("../../assets/sounds/Game Selector/selector8.mp3"),
+  require("../../assets/sounds/Game Selector/selector9.mp3"),
+  require("../../assets/sounds/Game Selector/selector10.mp3"),
+  require("../../assets/sounds/Game Selector/selector11.mp3"),
+];
 
 const FADE_MS = 600;
 const FADE_STEPS = 12;
@@ -93,5 +106,6 @@ export function playLoadingSound(gameId) {
 }
 
 export function playSelectorSound() {
-  return play(selectorSource);
+  const source = selectorSources[Math.floor(Math.random() * selectorSources.length)];
+  return play(source);
 }
