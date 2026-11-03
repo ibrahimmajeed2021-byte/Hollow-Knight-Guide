@@ -39,6 +39,21 @@ const LOADINGVOLUME = [
   { value: "high", label: "High" },
 ];
 
+const SELECTOR_TRACKS = [
+  { value: 0, label: "Hollow Knight Title Theme", game: "Hollow Knight" },
+  { value: 1, label: "Silksong Title Theme", game: "Silksong" },
+  { value: 2, label: "Bone Bottom", game: "Silksong" },
+  { value: 3, label: "Bilewater", game: "Silksong" },
+  { value: 4, label: "Choral Chambers", game: "Silksong" },
+  { value: 5, label: "Lost Verdania", game: "Silksong" },
+  { value: 6, label: "Songclave", game: "Silksong" },
+  { value: 7, label: "High Halls", game: "Silksong" },
+  { value: 8, label: "Dirtmouth", game: "Hollow Knight" },
+  { value: 9, label: "Greenpath", game: "Hollow Knight" },
+  { value: 10, label: "City of Tears", game: "Hollow Knight" },
+  { value: 11, label: "Resting Grounds", game: "Hollow Knight" },
+];
+
 const SOURCE_LABELS = {
   online: "Online (latest)",
   cached: "Cached (saved from last time)",
@@ -183,6 +198,74 @@ export default function SettingsScreen() {
 
       <LoadingSoundSetting />
 
+      <Section title="Game selector music">
+        <ToggleRow
+          label="Selector music"
+          hint="Play music while choosing Hollow Knight or Silksong"
+          value={settings.selectorMusicEnabled ?? true}
+          onChange={(selectorMusicEnabled) => update({ selectorMusicEnabled })}
+        />
+        {settings.selectorMusicEnabled !== false && (
+          <>
+            <ToggleRow
+              label="Randomise music"
+              hint="Choose a different track at random each time the game menu opens"
+              value={settings.selectorMusicRandom ?? true}
+              onChange={(selectorMusicRandom) => update({ selectorMusicRandom })}
+            />
+            {settings.selectorMusicRandom === false && (
+              <View style={styles.trackList}>
+                <AppText style={styles.rowLabel}>Choose a song</AppText>
+                {SELECTOR_TRACKS.map((track) => {
+                  const selected = (settings.selectorMusicTrack ?? 0) === track.value;
+                  return (
+                    <Pressable
+                      key={track.value}
+                      onPress={() => update({ selectorMusicTrack: track.value })}
+                      accessibilityRole="radio"
+                      accessibilityLabel={`${track.label}, from ${track.game}`}
+                      accessibilityState={{ selected }}
+                      style={[
+                        styles.trackOption,
+                        { borderColor: colors.border },
+                        selected && {
+                          backgroundColor: colors.button,
+                          borderColor: colors.button,
+                        },
+                      ]}
+                    >
+                      <View style={styles.trackText}>
+                        <AppText
+                          style={[
+                            styles.trackName,
+                            selected && { color: colors.buttonText, fontWeight: "bold" },
+                          ]}
+                        >
+                          {track.label}
+                        </AppText>
+                        <AppText
+                          style={[
+                            styles.hint,
+                            { color: selected ? colors.buttonText : colors.muted },
+                          ]}
+                        >
+                          {track.game}
+                        </AppText>
+                      </View>
+                      {selected ? (
+                        <AppText style={{ color: colors.buttonText, fontWeight: "bold" }}>
+                          Selected
+                        </AppText>
+                      ) : null}
+                    </Pressable>
+                  );
+                })}
+              </View>
+            )}
+          </>
+        )}
+      </Section>
+
       <Section title="Cards">
         <ToggleRow
           label="Start expanded"
@@ -272,6 +355,20 @@ const styles = StyleSheet.create({
   optionText: { fontSize: 14 },
   toggleRow: { flexDirection: "row", alignItems: "center", gap: 12 },
   toggleText: { flex: 1, gap: 2 },
+  trackList: { gap: 8, marginTop: 4 },
+  trackOption: {
+    minHeight: 54,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 8,
+  },
+  trackText: { flex: 1, gap: 2 },
+  trackName: { fontSize: 15 },
   resetButton: {
     alignSelf: "center",
     marginTop: 20,
