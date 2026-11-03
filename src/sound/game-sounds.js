@@ -7,6 +7,7 @@ const loadingSources = {
 };
 // Every track in assets/sounds/Game Selector is bundled explicitly for Expo.
 const selectorSources = [
+  require("../../assets/sounds/Game Selector/game-selector.mp3"),
   require("../../assets/sounds/Game Selector/selector1.mp3"),
   require("../../assets/sounds/Game Selector/selector2.mp3"),
   require("../../assets/sounds/Game Selector/selector3.mp3"),
@@ -105,7 +106,9 @@ export function playLoadingSound(gameId) {
   return play(loadingSources[gameId]);
 }
 
-export function playSelectorSound() {
-  const source = selectorSources[Math.floor(Math.random() * selectorSources.length)];
-  return play(source);
+export function playSelectorSound(random = true, trackIndex = 0) {
+  const index = random
+    ? Math.floor(Math.random() * selectorSources.length)
+    : Math.max(0, Math.min(selectorSources.length - 1, trackIndex));
+  return play(selectorSources[index]);
 }
