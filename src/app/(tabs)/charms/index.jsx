@@ -95,8 +95,8 @@ export default function CharmsScreen() {
             <Title>{config.itemsLabel}</Title>
             {config.hasLoadouts && (
               <Button
-                label="Loadout builder"
-                onPress={() => router.push("/charms/loadout")}
+                label={config.id === "silksong" ? "Crest & tool loadout builder" : "Loadout builder"}
+                onPress={() => router.push(config.id === "silksong" ? "/charms/silksong-loadout" : "/charms/loadout")}
                 style={{ marginHorizontal: 16, marginTop: 12 }}
               />
             )}
