@@ -54,8 +54,23 @@ export function LoadingScreen() {
 
   // The game picker sits under this overlay, so its music starts once the launch screen is gone.
   useEffect(() => {
-    if (launch && loaded && !visible) playSelectorSound();
-  }, [launch, loaded, visible]);
+    if (!launch || !loaded || visible) return;
+    if (!settings.selectorMusicEnabled) {
+      stopSound();
+      return;
+    }
+    playSelectorSound(
+      settings.selectorMusicRandom ?? true,
+      settings.selectorMusicTrack ?? 0
+    );
+  }, [
+    launch,
+    loaded,
+    visible,
+    settings.selectorMusicEnabled,
+    settings.selectorMusicRandom,
+    settings.selectorMusicTrack,
+  ]);
 
   // A game's loading sound fades out as the guide appears.
   useEffect(() => {
