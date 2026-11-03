@@ -19,18 +19,20 @@ function EntryCardBase({ image, name, summary, description, children }) {
   };
 
   return (
-    <Pressable
-      onPress={toggle}
-      accessibilityRole="button"
-      accessibilityLabel={name}
-      accessibilityHint={expanded ? "Collapse details" : "Expand details"}
-      accessibilityState={{ expanded }}
+    <View
       style={[
         styles.card,
         { backgroundColor: colors.card, borderColor: colors.border },
       ]}
     >
-      <View style={styles.top}>
+      <Pressable
+        onPress={toggle}
+        accessibilityRole="button"
+        accessibilityLabel={name}
+        accessibilityHint={expanded ? "Collapse details" : "Expand details"}
+        accessibilityState={{ expanded }}
+        style={styles.top}
+      >
         {image ? (
           <Image
             source={image}
@@ -48,16 +50,26 @@ function EntryCardBase({ image, name, summary, description, children }) {
         <AppText style={[styles.chevron, { color: colors.muted }]}>
           {expanded ? "▲" : "▼"}
         </AppText>
-      </View>
+      </Pressable>
       {expanded && (
         <Animated.View
           entering={settings.reduceMotion ? undefined : FadeIn.duration(250)}
         >
           <AppText style={styles.description}>{description}</AppText>
           {children}
+          <Pressable
+            onPress={toggle}
+            accessibilityRole="button"
+            accessibilityLabel={`Back from ${name} details`}
+            style={[styles.closeDetails, { borderColor: colors.border }]}
+          >
+            <AppText style={[styles.closeDetailsText, { color: colors.accent }]}>
+              Back to list
+            </AppText>
+          </Pressable>
         </Animated.View>
       )}
-    </Pressable>
+    </View>
   );
 }
 
@@ -89,6 +101,15 @@ const styles = StyleSheet.create({
   name: { fontFamily: HKFont, fontSize: 20 },
   chevron: { fontSize: 14 },
   description: { marginTop: 10, fontSize: 15, lineHeight: 22 },
+  closeDetails: {
+    alignSelf: "flex-start",
+    marginTop: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderRadius: 8,
+  },
+  closeDetailsText: { fontSize: 14, fontWeight: "bold" },
   stat: { marginTop: 4, fontSize: 15 },
   statLabel: { fontWeight: "bold", fontSize: 15 },
 });
