@@ -1,7 +1,9 @@
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { AppText } from "../../components/hollow/app-text";
+import { Button } from "../../components/hollow/button";
 import { EntryCard, Stat } from "../../components/hollow/entry-card";
 import {
   BossExtras,
@@ -60,6 +62,7 @@ export default function BossesScreen() {
         contentContainerStyle={{ paddingTop: 16, paddingBottom: inset + 16 }}
         ListHeaderComponent={
           <>
+            <Button label="Back" variant="outline" onPress={() => router.back()} style={{ marginHorizontal: 16, marginBottom: 8, alignSelf: "flex-start" }} />
             <Title>Bosses</Title>
             <Body>
               {config.id === "silksong"
