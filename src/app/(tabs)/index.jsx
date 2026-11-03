@@ -84,20 +84,22 @@ export default function HomeScreen() {
         {config.hasLoadouts && (
           <Card>
             <AppText style={[styles.small, { color: colors.muted }]}>
-              Charm loadout
+              {config.id === "silksong" ? "Silksong tool loadout" : "Charm loadout"}
             </AppText>
             <AppText style={styles.cardTitle}>
               {lastLoadout ? lastLoadout.name : "No loadouts yet"}
             </AppText>
             {lastLoadout ? (
               <AppText style={[styles.small, { color: colors.muted }]}>
-                {lastLoadout.charms.length} charms
+                {config.id === "silksong"
+                  ? `${lastLoadout.crest} · ${lastLoadout.tools?.length ?? 0} tools`
+                  : `${lastLoadout.charms.length} charms`}
               </AppText>
             ) : null}
             <Button
               label={lastLoadout ? "Open loadouts" : "Build a loadout"}
               variant="outline"
-              onPress={() => router.push("/charms/loadout")}
+              onPress={() => router.push(config.id === "silksong" ? "/charms/silksong-loadout" : "/charms/loadout")}
             />
           </Card>
         )}
