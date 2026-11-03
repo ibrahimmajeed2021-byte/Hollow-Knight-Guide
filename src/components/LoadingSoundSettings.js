@@ -14,7 +14,7 @@ export default function LoadingSoundSetting() {
   const primaryColor = colors.primary || colors.accent || "#D4AF37";
   const textColor = colors.text || "#FFFFFF";
   const subtextColor = colors.subtext || colors.muted || "#A0A0A0";
-  const cardBg = colors.card || colors.surface || "rgba(255, 255, 255, 0.05)";
+  const cardBg = colors.ca || colors.surface || "rgba(255, 255, 255, 0.05)";
   const borderColor = colors.border || "rgba(255, 255, 255, 0.1)";
 
   const handleToggle = (value) => {
