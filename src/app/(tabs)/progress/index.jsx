@@ -6,7 +6,10 @@ import { Button } from "../../../components/hollow/button";
 import { ProgressBar } from "../../../components/hollow/progress-bar";
 import { Screen } from "../../../components/hollow/screen";
 import { Body, Title } from "../../../components/hollow/section-text";
-import { silksongCollectibles } from "../../../data/silksong-collectibles";
+import {
+  silksongCollectibleGroups,
+  silksongCollectibles,
+} from "../../../data/silksong-collectibles";
 import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
 import { useSettings } from "../../../settings/SettingsContext.jsx";
@@ -31,7 +34,7 @@ function ProgressRow({ label, done, total, onPress, big }) {
       </View>
       <ProgressBar pct={pct} label={`${label} progress`} />
       <AppText style={[styles.count, { color: colors.muted }]}>
-        {done} / {total}
+        {done} / {total} completed · {Math.max(0, total - done)} remaining
       </AppText>
     </View>
   );
@@ -40,7 +43,7 @@ function ProgressRow({ label, done, total, onPress, big }) {
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${label}, ${pct}%`}
+      accessibilityLabel={`${label}, ${done} of ${total} completed, ${pct}%`}
     >
       {content}
     </Pressable>
@@ -49,60 +52,95 @@ function ProgressRow({ label, done, total, onPress, big }) {
 
 export default function ProgressScreen() {
   const { defeated, collected, photos, resetProgress } = useJournal();
-  const { config, gameId } = useGame();
-  const collectDone = silksongCollectibles.filter(
-    (c) => collected[`c:${c.name}`]
-  ).length;
+  const { config } = useGame();
+  const { colors } = useSettings();
+  const isSilksong = config.id === "silksong";
   const bosses = config.bosses;
-  const charms = config.items;
-  const bossDone = bosses.filter((b) => defeated[b.name]).length;
-  const charmDone = charms.filter((c) => collected[c.name]).length;
+  const items = config.items;
+  const bossDone = bosses.filter((boss) => defeated[boss.name]).length;
+  const itemDone = items.filter((item) => collected[item.name]).length;
+
+  const collectibleProgress = silksongCollectibleGroups.map((group) => {
+    const groupItems = silksongCollectibles.filter((item) => item.group === group.id);
+    const done = groupItems.filter((item) => collected[`c:${item.name}`]).length;
+    return { ...group, done, total: groupItems.length };
+  });
+  const collectibleDone = collectibleProgress.reduce((sum, group) => sum + group.done, 0);
+  const collectibleTotal = collectibleProgress.reduce((sum, group) => sum + group.total, 0);
+
+  const totalDone = bossDone + itemDone + (isSilksong ? collectibleDone : 0);
+  const totalItems = bosses.length + items.length + (isSilksong ? collectibleTotal : 0);
 
   const confirmReset = () =>
     Alert.alert(
       "Reset progress?",
-      `This clears all defeated bosses and collected ${config.itemsLabel.toLowerCase()}.`,
+      `This clears all defeated bosses and collected ${config.itemsLabel.toLowerCase()}${isSilksong ? " and Silksong collectibles" : ""}. Your photo journal and saved loadouts will remain.`,
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset", style: "destructive", onPress: resetProgress },
-      ]
+      ],
     );
 
   return (
     <Screen>
-      <Button label="Back" variant="outline" onPress={() => router.back()} style={{ marginHorizontal: 16, marginTop: 8, alignSelf: "flex-start" }} />
-      <Title>Progress</Title>
+      <Button
+        label="Back"
+        variant="outline"
+        onPress={() => router.back()}
+        style={{ marginHorizontal: 16, marginTop: 8, alignSelf: "flex-start" }}
+      />
+      <Title>100% Completion</Title>
       <Body>
-        Tick bosses and {config.itemsLabel.toLowerCase()} on their pages to
-        track your run.
+        Track everything currently included in the {config.title} guide. Your
+        checklist is saved automatically on this device.
       </Body>
       <View style={styles.list}>
         <ProgressRow
           big
-          label="Overall"
-          done={bossDone + charmDone}
-          total={bosses.length + charms.length}
+          label="Guide completion"
+          done={totalDone}
+          total={totalItems}
         />
+        <AppText style={[styles.note, { color: colors.muted }]}>
+          This percentage covers the guide's tracked entries. It is not the
+          game's official in-game completion percentage.
+        </AppText>
+
+        <Title style={styles.sectionTitle}>Completion breakdown</Title>
         <ProgressRow
-          label="Bosses"
+          label="Bosses defeated"
           done={bossDone}
           total={bosses.length}
           onPress={() => router.push("/bosses")}
         />
         <ProgressRow
-          label={config.itemsLabel}
-          done={charmDone}
-          total={charms.length}
+          label={isSilksong ? "Tools & Crests collected" : "Charms collected"}
+          done={itemDone}
+          total={items.length}
           onPress={() => router.push("/charms")}
         />
-        {gameId === "silksong" && (
-          <ProgressRow
-            label="Collectibles"
-            done={collectDone}
-            total={silksongCollectibles.length}
-            onPress={() => router.push("/progress/collectibles")}
-          />
+
+        {isSilksong && (
+          <>
+            <Title style={styles.sectionTitle}>Collectibles</Title>
+            <ProgressRow
+              label="All collectibles"
+              done={collectibleDone}
+              total={collectibleTotal}
+              onPress={() => router.push("/progress/collectibles")}
+            />
+            {collectibleProgress.map((group) => (
+              <ProgressRow
+                key={group.id}
+                label={group.title}
+                done={group.done}
+                total={group.total}
+                onPress={() => router.push("/progress/collectibles")}
+              />
+            ))}
+          </>
         )}
+
         {Platform.OS !== "web" && (
           <Button
             label={`Photo journal (${photos.length})`}
@@ -127,11 +165,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    gap: 8,
   },
-  label: { fontSize: 18, fontWeight: "bold" },
+  label: { fontSize: 18, fontWeight: "bold", flex: 1 },
   pct: { fontSize: 18, fontWeight: "bold" },
-  bigLabel: { fontSize: 22, fontWeight: "bold" },
+  bigLabel: { fontSize: 22, fontWeight: "bold", flex: 1 },
   bigPct: { fontSize: 28, fontWeight: "bold" },
   count: { fontSize: 14 },
+  note: { fontSize: 13, lineHeight: 19, paddingHorizontal: 2 },
+  sectionTitle: { fontSize: 22, marginTop: 12 },
   gap: { marginTop: 8 },
 });
