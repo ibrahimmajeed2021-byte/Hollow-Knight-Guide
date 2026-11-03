@@ -1,9 +1,7 @@
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { downloadOnWeb } from "../../../utils/web-download";
 import * as Sharing from "expo-sharing";
 import { useRef, useState } from "react";
-import { captureRef } from "react-native-view-shot";
 import {
   Alert,
   Dimensions,
@@ -16,6 +14,8 @@ import {
   TextInput,
   View,
 } from "react-native";
+import { captureRef } from "react-native-view-shot";
+import { downloadOnWeb } from "../../../utils/web-download";
 
 import { AppText } from "../../../components/hollow/app-text";
 import { Button } from "../../../components/hollow/button";
@@ -66,13 +66,13 @@ export default function LoadoutScreen() {
       : [...filtered].sort((a, b) =>
           sort === "asc"
             ? Number(a.notches) - Number(b.notches)
-            : Number(b.notches) - Number(a.notches),
+            : Number(b.notches) - Number(a.notches)
         );
 
   const toggle = (charm) => {
     triggerHaptic();
     setSelected((prev) =>
-      prev.includes(charm) ? prev.filter((n) => n !== charm) : [...prev, charm],
+      prev.includes(charm) ? prev.filter((n) => n !== charm) : [...prev, charm]
     );
   };
 
@@ -88,7 +88,7 @@ export default function LoadoutScreen() {
         name: trimmed,
         limit,
         charms: selected,
-      }),
+      })
     );
   };
 
@@ -401,7 +401,9 @@ export default function LoadoutScreen() {
             })}
           </View>
           <AppText style={styles.shareFoot}>Hollow Knight Guide</AppText>
-          <AppText style={styles.shareCredit}>By Ibrahim · All rights reserved</AppText>
+          <AppText style={styles.shareCredit}>
+            By Ibrahim · All rights reserved
+          </AppText>
         </View>
       </View>
     </Screen>
@@ -430,7 +432,7 @@ const styles = StyleSheet.create({
   shareImg: { width: 64, height: 64 },
   shareName: { color: "#ffffff", fontSize: 12, textAlign: "center" },
   shareCost: { color: "#b8b8cc", fontSize: 11 },
-  shareCredit: { color: '#8a8aa0', fontSize: 9, textAlign: 'center' },
+  shareCredit: { color: "#8a8aa0", fontSize: 9, textAlign: "center" },
   shareFoot: {
     color: "#8a8aa0",
     fontSize: 11,
