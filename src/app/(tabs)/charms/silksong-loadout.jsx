@@ -338,8 +338,10 @@ export default function SilksongLoadoutScreen() {
       <Modal visible={!!activeSlot} animationType="slide" onRequestClose={() => setActiveSlot(null)}>
         <View style={[styles.modal, { backgroundColor: colors.background }]}>
           <View style={styles.modalHeader}>
-            <Title>Choose a {activeSlot ? COLORS.find((item) => item.id === activeSlot.color)?.label : "Tool"}</Title>
-            <Button label="Close" variant="outline" onPress={() => setActiveSlot(null)} />
+            <AppText style={[styles.modalHeading, { color: colors.text }]} numberOfLines={2}>
+              Choose a {activeSlot ? COLORS.find((item) => item.id === activeSlot.color)?.label : "Tool"}
+            </AppText>
+            <Button label="Back" variant="outline" onPress={() => setActiveSlot(null)} />
           </View>
           <TextInput
             value={toolSearch}
@@ -431,8 +433,8 @@ const styles = StyleSheet.create({
   saved: { flexDirection: "row", alignItems: "center", gap: 8, borderWidth: 1, borderRadius: 10, padding: 10 },
   savedName: { fontSize: 15, fontWeight: "bold" },
   modal: { flex: 1, padding: 16, paddingTop: 54, gap: 12 },
-  modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 8 },
-  modalTitle: { flex: 1, gap: 4 },
+  modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", gap: 12, width: "100%" },
+  modalHeading: { flex: 1, flexShrink: 1, fontSize: 24, lineHeight: 30, fontWeight: "bold" },
   toolList: { gap: 8, paddingBottom: 30 },
   toolRow: { flexDirection: "row", alignItems: "center", gap: 12, padding: 10, borderWidth: 1, borderRadius: 10 },
   toolImage: { width: 56, height: 56 },
