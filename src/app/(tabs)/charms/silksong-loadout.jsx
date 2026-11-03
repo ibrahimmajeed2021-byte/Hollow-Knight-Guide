@@ -40,6 +40,9 @@ const COLORS = [
   { id: "yellow", label: "Yellow Tools", kind: "Yellow Tool", color: "#c59b37" },
 ];
 const MAX_SLOTS = 6;
+const COLUMNS = 3;
+const GAP = 8;
+const TILE = (Dimensions.get("window").width - 32 - GAP * (COLUMNS - 1)) / COLUMNS;
 const cardWidth = Math.min(Dimensions.get("window").width - 48, 420);
 
 function crestSlots(name) {
@@ -234,7 +237,7 @@ export default function SilksongLoadoutScreen() {
               accessibilityLabel={toolName ? `Change ${toolName} in ${color.label} slot ${index + 1}` : `Choose tool for ${color.label} slot ${index + 1}`}
             >
               {image ? <Image source={image} style={styles.slotImage} contentFit="contain" /> : <AppText style={styles.emptySlot}>＋</AppText>}
-              <AppText style={styles.slotName} numberOfLines={2}>{toolName || "Choose tool"}</AppText>
+              <AppText style={[styles.slotName, { color: colors.text }]} numberOfLines={2}>{toolName || "Choose tool"}</AppText>
             </Pressable>
             {toolName ? (
               <Pressable onPress={() => clearSlot(color.id, index)} style={styles.clearSlot}>
@@ -254,7 +257,7 @@ export default function SilksongLoadoutScreen() {
         <Title>Silksong Loadout Builder</Title>
         <Body>Choose a Crest, configure its tool spaces, then assign matching Red, Blue and Yellow Tools. Crest selection sets the starting layout, and you can customise every slot count.</Body>
 
-        <Title style={styles.sectionTitle}>1. Choose your Crest</Title>
+        <AppText style={[styles.sectionHeading, { color: colors.text }]}>Choose your Crest</AppText>
         <View style={styles.crestGrid}>
           {CRESTS.map((item) => {
             const selected = crest === item.name;
@@ -273,7 +276,7 @@ export default function SilksongLoadoutScreen() {
                 accessibilityState={{ selected }}
               >
                 {image ? <Image source={image} style={styles.crestImage} contentFit="contain" /> : <View style={styles.crestPlaceholder}><AppText style={styles.crestInitial}>{item.name[0]}</AppText></View>}
-                <AppText style={styles.crestName}>{item.name}</AppText>
+                <AppText style={[styles.crestName, { color: colors.text }]}>{item.name}</AppText>
                 <AppText style={[styles.slotSummary, { color: colors.muted }]}>
                   R {item.slots.red} · B {item.slots.blue} · Y {item.slots.yellow}
                 </AppText>
@@ -283,13 +286,13 @@ export default function SilksongLoadoutScreen() {
         </View>
         {crestData?.description ? <Body>{crestData.description}</Body> : crest === "Witch Crest" ? <Body>Wide slashes and a bind that drains health from nearby enemies. Starts with two Red Tool slots; Blue and Yellow slots are not available.</Body> : crest === "Shaman Crest" ? <Body>Focuses on Silk Skills rather than Tools. This builder leaves its Tool slots empty.</Body> : null}
 
-        <Title style={styles.sectionTitle}>2. Configure tool spaces</Title>
+        <AppText style={[styles.sectionHeading, { color: colors.text }]}>Configure tool spaces</AppText>
         <Body>The Crest pre-fills its base tool slots. Use + or − to add slots unlocked with Memory Lockets or customise your build (up to {MAX_SLOTS} slots of each colour).</Body>
         {COLORS.map((color) => (
           <View key={color.id} style={[styles.colorPanel, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.colorHeading}>
               <View style={[styles.colorDot, { backgroundColor: color.color }]} />
-              <AppText style={styles.colorTitle}>{color.label}</AppText>
+              <AppText style={[styles.colorTitle, { color: colors.text }]}>{color.label}</AppText>
               <View style={styles.stepper}>
                 <Button label="−" variant="outline" disabled={slots[color.id].length === 0} onPress={() => resizeSlots(color.id, -1)} />
                 <AppText style={styles.slotCount}>{slots[color.id].length}</AppText>
@@ -303,7 +306,7 @@ export default function SilksongLoadoutScreen() {
           </View>
         ))}
 
-        <Title style={styles.sectionTitle}>3. Save and share</Title>
+        <AppText style={[styles.sectionHeading, { color: colors.text }]}>Save and share</AppText>
         <AppText style={[styles.label, { color: colors.text }]}>{editingId ? "Editing saved loadout" : "Save loadout"}</AppText>
         <TextInput
           value={name}
@@ -317,7 +320,7 @@ export default function SilksongLoadoutScreen() {
           <Button label="Clear" variant="outline" onPress={clear} style={styles.flex} />
         </View>
         <Button label="Share as image" variant="outline" onPress={share} />
-        <Title style={styles.sectionTitle}>Saved Silksong loadouts</Title>
+        <AppText style={[styles.label, { color: colors.text }, styles.savedTitle]}>Saved loadouts</AppText>
         {loadouts.filter((item) => item.crest).length === 0 ? (
           <AppText style={{ color: colors.muted }}>No Silksong loadouts saved yet.</AppText>
         ) : loadouts.filter((item) => item.crest).map((item) => (
@@ -396,34 +399,35 @@ export default function SilksongLoadoutScreen() {
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
-  content: { paddingHorizontal: 16, paddingBottom: 48, gap: 10 },
+  content: { paddingHorizontal: 16, paddingBottom: 40, gap: 12 },
   back: { alignSelf: "flex-start", marginTop: 8 },
-  sectionTitle: { fontSize: 21, marginTop: 18 },
-  crestGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  crestTile: { width: "31.5%", borderWidth: 1, borderRadius: 12, padding: 8, alignItems: "center", gap: 4 },
+  sectionHeading: { fontSize: 17, fontWeight: "bold", marginTop: 12 },
+  crestGrid: { flexDirection: "row", flexWrap: "wrap", gap: GAP },
+  crestTile: { width: TILE, minHeight: TILE + 24, borderWidth: 1, borderRadius: 10, paddingVertical: 10, paddingHorizontal: 5, alignItems: "center", justifyContent: "center", gap: 5 },
   selectedTile: { borderWidth: 3 },
-  crestImage: { width: 54, height: 54 },
-  crestPlaceholder: { width: 54, height: 54, borderRadius: 27, backgroundColor: "#414653", alignItems: "center", justifyContent: "center" },
+  crestImage: { width: TILE - 40, height: TILE - 40 },
+  crestPlaceholder: { width: TILE - 40, height: TILE - 40, borderRadius: 40, backgroundColor: "#414653", alignItems: "center", justifyContent: "center" },
   crestInitial: { color: "#fff", fontSize: 25, fontWeight: "bold" },
-  crestName: { fontSize: 12, fontWeight: "bold", textAlign: "center" },
-  slotSummary: { fontSize: 10 },
+  crestName: { fontSize: 13, fontWeight: "bold", textAlign: "center" },
+  slotSummary: { fontSize: 11 },
   colorPanel: { borderWidth: 1, borderRadius: 12, padding: 12, gap: 12 },
   colorHeading: { flexDirection: "row", alignItems: "center", gap: 8 },
   colorDot: { width: 12, height: 12, borderRadius: 6 },
   colorTitle: { fontSize: 16, fontWeight: "bold", flex: 1 },
   stepper: { flexDirection: "row", alignItems: "center", gap: 8 },
   slotCount: { minWidth: 18, textAlign: "center", fontSize: 17, fontWeight: "bold" },
-  slotGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  slot: { width: "31.5%", minHeight: 112, borderWidth: 1.5, borderRadius: 10, padding: 6, alignItems: "center", justifyContent: "center", gap: 3 },
-  slotButton: { width: "100%", alignItems: "center", gap: 4, flex: 1, justifyContent: "center" },
-  slotImage: { width: 48, height: 48 },
-  slotName: { color: "#fff", fontSize: 10, textAlign: "center", fontWeight: "bold" },
+  slotGrid: { flexDirection: "row", flexWrap: "wrap", gap: GAP },
+  slot: { width: TILE, minHeight: TILE + 24, borderWidth: 1, borderRadius: 10, paddingVertical: 8, paddingHorizontal: 5, alignItems: "center", justifyContent: "center", gap: 4 },
+  slotButton: { width: "100%", alignItems: "center", gap: 5, flex: 1, justifyContent: "center" },
+  slotImage: { width: TILE - 40, height: TILE - 40 },
+  slotName: { fontSize: 13, textAlign: "center", fontWeight: "bold" },
   emptySlot: { fontSize: 32, color: "#aab0bd" },
-  clearSlot: { paddingVertical: 3, paddingHorizontal: 8 },
-  clearText: { color: "#e58b8b", fontSize: 10 },
-  label: { fontSize: 15, fontWeight: "bold" },
-  input: { borderWidth: 1, borderRadius: 10, padding: 11, fontSize: 16 },
+  clearSlot: { paddingVertical: 4, paddingHorizontal: 8 },
+  clearText: { color: "#e58b8b", fontSize: 11, fontWeight: "bold" },
+  label: { fontSize: 16, fontWeight: "bold" },
+  input: { borderWidth: 1, borderRadius: 10, padding: 10, fontSize: 16 },
   actions: { flexDirection: "row", gap: 10 },
+  savedTitle: { marginTop: 12 },
   saved: { flexDirection: "row", alignItems: "center", gap: 8, borderWidth: 1, borderRadius: 10, padding: 10 },
   savedName: { fontSize: 15, fontWeight: "bold" },
   modal: { flex: 1, padding: 16, paddingTop: 54, gap: 12 },
