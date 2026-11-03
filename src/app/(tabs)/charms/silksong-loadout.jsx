@@ -25,15 +25,13 @@ import { useLoadouts } from "../../../loadouts/loadouts-context";
 import { useHaptics, useSettings } from "../../../settings/SettingsContext.jsx";
 
 const CRESTS = [
-  { name: "Hunter Crest", slots: { red: 2, blue: 1, yellow: 1 } },
-  { name: "Reaper Crest", slots: { red: 1, blue: 2, yellow: 1 } },
-  { name: "Wanderer Crest", slots: { red: 2, blue: 0, yellow: 2 } },
-  { name: "Beast Crest", slots: { red: 3, blue: 1, yellow: 0 } },
-  { name: "Witch Crest", slots: { red: 1, blue: 2, yellow: 1 } },
-  { name: "Architect Crest", slots: { red: 1, blue: 1, yellow: 3 } },
-  { name: "Shaman Crest", slots: { red: 0, blue: 1, yellow: 3 } },
-  { name: "Cursed Crest", slots: { red: 0, blue: 0, yellow: 0 } },
-  { name: "Cloakless Crest", slots: { red: 0, blue: 0, yellow: 0 } },
+  { name: "Hunter Crest", slots: { red: 1, blue: 1, yellow: 1 } },
+  { name: "Reaper Crest", slots: { red: 1, blue: 1, yellow: 1 } },
+  { name: "Wanderer Crest", slots: { red: 1, blue: 0, yellow: 2 } },
+  { name: "Beast Crest", slots: { red: 2, blue: 0, yellow: 0 } },
+  { name: "Witch Crest", slots: { red: 2, blue: 0, yellow: 0 } },
+  { name: "Architect Crest", slots: { red: 3, blue: 0, yellow: 0 } },
+  { name: "Shaman Crest", slots: { red: 0, blue: 0, yellow: 0 } },
 ];
 const COLORS = [
   { id: "red", label: "Red Tools", kind: "Red Tool", color: "#c84c4c" },
@@ -259,7 +257,7 @@ export default function SilksongLoadoutScreen() {
         <View style={styles.crestGrid}>
           {CRESTS.map((item) => {
             const selected = crest === item.name;
-            const imageKey = item.name.replaceAll(" ", "").replace("Crest", "Crest");
+            const imageKey = item.name.replaceAll(" ", "");
             const image = silksongItemImages[imageKey];
             return (
               <Pressable
@@ -282,10 +280,10 @@ export default function SilksongLoadoutScreen() {
             );
           })}
         </View>
-        {crestData?.description ? <Body>{crestData.description}</Body> : null}
+        {crestData?.description ? <Body>{crestData.description}</Body> : crest === "Witch Crest" ? <Body>Wide slashes and a bind that drains health from nearby enemies. Starts with two Red Tool slots; Blue and Yellow slots are not available.</Body> : crest === "Shaman Crest" ? <Body>Focuses on Silk Skills rather than Tools. This builder leaves its Tool slots empty.</Body> : null}
 
         <Title style={styles.sectionTitle}>2. Configure tool spaces</Title>
-        <Body>The Crest pre-fills these counts. Use + or − to customise your build (up to {MAX_SLOTS} slots of each colour).</Body>
+        <Body>The Crest pre-fills its base tool slots. Use + or − to add slots unlocked with Memory Lockets or customise your build (up to {MAX_SLOTS} slots of each colour).</Body>
         {COLORS.map((color) => (
           <View key={color.id} style={[styles.colorPanel, { backgroundColor: colors.card, borderColor: colors.border }]}>
             <View style={styles.colorHeading}>
