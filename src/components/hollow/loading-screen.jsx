@@ -12,6 +12,7 @@ import {
   pickRandomGameId,
   playLoadingSound,
   playSelectorSound,
+  setSoundVolume,
   stopSound,
 } from "../../sound/game-sounds";
 
@@ -36,6 +37,14 @@ export function LoadingScreen() {
     const timer = setTimeout(() => setVisible(false), HOLD_MS);
     return () => clearTimeout(timer);
   }, []);
+
+  // Apply volume changes immediately, including muting the sound when disabled.
+  useEffect(() => {
+    const volume = settings.loadingSoundEnabled
+      ? (settings.loadingSoundVolume ?? 80) / 100
+      : 0;
+    setSoundVolume(volume);
+  }, [settings.loadingSoundEnabled, settings.loadingSoundVolume]);
 
   // Wait for `loaded` so a remembered game doesn't flash the random launch sound first.
   useEffect(() => {
