@@ -120,6 +120,8 @@ export const defaultSettings = {
   fontSize: "default",
   hapticsEnabled: true,
   hapticsIntensity: "default",
+  loadingSoundEnabled: true,
+  loadingSoundVolume: 80,
   reduceMotion: false,
   rememberGame: false,
   startExpanded: false,

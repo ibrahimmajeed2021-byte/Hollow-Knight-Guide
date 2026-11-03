@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet, View } from "react-native";
 
 import { useTabInset } from "../../hooks/use-tab-inset";
-import { useSettings } from "../../settings/settings-context";
+import { useSettings } from "../../settings/SettingsContext";
 import { AppHeader } from "./app-header";
 
 export function Screen({ children, scroll = true }) {

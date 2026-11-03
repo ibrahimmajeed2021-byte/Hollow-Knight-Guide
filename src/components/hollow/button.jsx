@@ -1,12 +1,12 @@
-import { Pressable, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from "react-native";
 
-import { useHaptics, useSettings } from '../../settings/settings-context';
-import { AppText } from './app-text';
+import { useHaptics, useSettings } from "../../settings/SettingsContext";
+import { AppText } from "./app-text";
 
-export function Button({ label, onPress, variant = 'solid', style, disabled }) {
+export function Button({ label, onPress, variant = "solid", style, disabled }) {
   const { colors } = useSettings();
   const triggerHaptic = useHaptics();
-  const solid = variant === 'solid';
+  const solid = variant === "solid";
   return (
     <Pressable
       accessibilityRole="button"
@@ -26,7 +26,9 @@ export function Button({ label, onPress, variant = 'solid', style, disabled }) {
         style,
       ]}
     >
-      <AppText style={[styles.label, solid && { color: colors.buttonText }]}>{label}</AppText>
+      <AppText style={[styles.label, solid && { color: colors.buttonText }]}>
+        {label}
+      </AppText>
     </Pressable>
   );
 }
@@ -37,9 +39,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingVertical: 10,
     paddingHorizontal: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
-  label: { fontSize: 15, fontWeight: 'bold' },
+  label: { fontSize: 15, fontWeight: "bold" },
   disabled: { opacity: 0.5 },
 });

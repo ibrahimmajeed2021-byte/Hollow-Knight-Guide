@@ -73,8 +73,8 @@ export function SettingsProvider({ children }) {
           ? "dark"
           : "default"
         : isDark
-          ? `${style}Dark`
-          : style;
+        ? `${style}Dark`
+        : style;
     const colors = settings.highContrast
       ? highContrast[isDark ? "dark" : "light"]
       : palettes[paletteKey];
@@ -105,6 +105,23 @@ const impactStyles = {
   medium: Haptics.ImpactFeedbackStyle.Medium,
   heavy: Haptics.ImpactFeedbackStyle.Heavy,
 };
+
+export function useLoadingVolume() {
+  const { settings } = useSettings();
+  return useMemo(() => {
+    // Check if toggle switch is active (defaults to true)
+    const enabled = settings?.loadingSoundEnabled ?? true;
+
+    // Get numeric slider value 0-100 (defaults to 80)
+    const volumeVal =
+      typeof settings?.loadingSoundVolume === "number"
+        ? settings.loadingSoundVolume
+        : 80;
+
+    // Returns a float from 0.0 to 1.0 for expo-av (or 0 if disabled)
+    return enabled ? volumeVal / 100 : 0;
+  }, [settings?.loadingSoundEnabled, settings?.loadingSoundVolume]);
+}
 
 export function useHaptics() {
   const { settings } = useSettings();

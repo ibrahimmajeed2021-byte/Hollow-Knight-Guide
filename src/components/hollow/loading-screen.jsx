@@ -4,17 +4,25 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
-import { useGame } from "../../games/game-context";
 import { HKFont } from "../../constants/hollow";
 import { games } from "../../games/config";
-import { useSettings } from "../../settings/settings-context";
+import { useGame } from "../../games/game-context";
+import { useSettings } from "../../settings/SettingsContext.jsx";
+import {
+  pickRandomGameId,
+  playLoadingSound,
+  playSelectorSound,
+  stopSound,
+} from "../../sound/game-sounds";
 
-const HOLD_MS = 1200;
+const HOLD_MS = 3000;
 
 export function LoadingScreen() {
   const { settings } = useSettings();
-  const { config, gameId } = useGame();
+  const { config, gameId, loaded } = useGame();
   const launch = !gameId;
+  // Which game's loading sound the launch screen uses; re-rolled on every launch.
+  const [launchPick] = useState(pickRandomGameId);
   const heroes = launch ? [games.hollow, games.silksong] : [config];
   const words = launch
     ? ["HOLLOW KNIGHT & SILKSONG"]
@@ -28,6 +36,22 @@ export function LoadingScreen() {
     const timer = setTimeout(() => setVisible(false), HOLD_MS);
     return () => clearTimeout(timer);
   }, []);
+
+  // Wait for `loaded` so a remembered game doesn't flash the random launch sound first.
+  useEffect(() => {
+    if (!loaded) return;
+    playLoadingSound(launch ? launchPick : gameId);
+  }, [loaded, launch, launchPick, gameId]);
+
+  // The game picker sits under this overlay, so its music starts once the launch screen is gone.
+  useEffect(() => {
+    if (launch && loaded && !visible) playSelectorSound();
+  }, [launch, loaded, visible]);
+
+  // A game's loading sound fades out as the guide appears.
+  useEffect(() => {
+    if (!launch && !visible) stopSound();
+  }, [launch, visible]);
 
   if (!visible) return null;
 

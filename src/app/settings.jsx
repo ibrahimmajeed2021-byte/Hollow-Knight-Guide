@@ -5,8 +5,9 @@ import { AppText } from "../components/hollow/app-text";
 import { BackupSection } from "../components/hollow/backup-section";
 import { Screen } from "../components/hollow/screen";
 import { Title } from "../components/hollow/section-text";
+import LoadingSoundSetting from "../components/LoadingSoundSettings.js";
 import { useGame } from "../games/game-context";
-import { useHaptics, useSettings } from "../settings/settings-context";
+import { useHaptics, useSettings } from "../settings/SettingsContext.jsx";
 
 const MODES = [
   { value: "light", label: "Light" },
@@ -29,6 +30,13 @@ const INTENSITIES = [
   { value: "light", label: "Light" },
   { value: "medium", label: "Medium" },
   { value: "heavy", label: "Heavy" },
+];
+
+const LOADINGVOLUME = [
+  { value: "disabled", label: "Disabled" },
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
 ];
 
 const SOURCE_LABELS = {
@@ -172,6 +180,8 @@ export default function SettingsScreen() {
           </>
         )}
       </Section>
+
+      <LoadingSoundSetting />
 
       <Section title="Cards">
         <ToggleRow

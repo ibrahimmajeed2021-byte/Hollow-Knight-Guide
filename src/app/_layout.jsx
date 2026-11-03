@@ -1,17 +1,27 @@
-import { useFonts } from 'expo-font';
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider, usePathname } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect, useRef } from 'react';
-import { View } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useFonts } from "expo-font";
+import {
+  DarkTheme,
+  DefaultTheme,
+  Stack,
+  ThemeProvider,
+  usePathname,
+} from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect, useRef } from "react";
+import { View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { GameSelect } from '../components/hollow/game-select';
-import { GameProvider, useGame } from '../games/game-context';
-import { LoadingScreen } from '../components/hollow/loading-screen';
-import { HKFont } from '../constants/hollow';
-import { JournalProvider } from '../journal/journal-context';
-import { LoadoutsProvider } from '../loadouts/loadouts-context';
-import { SettingsProvider, useHaptics, useSettings } from '../settings/settings-context';
+import { GameSelect } from "../components/hollow/game-select";
+import { LoadingScreen } from "../components/hollow/loading-screen";
+import { HKFont } from "../constants/hollow";
+import { GameProvider, useGame } from "../games/game-context";
+import { JournalProvider } from "../journal/journal-context";
+import { LoadoutsProvider } from "../loadouts/loadouts-context";
+import {
+  SettingsProvider,
+  useHaptics,
+  useSettings,
+} from "../settings/SettingsContext.jsx";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -34,7 +44,7 @@ function AppShell() {
       <View style={{ flex: 1 }}>
         <Stack screenOptions={{ headerShown: false }} />
         <GameSelect />
-        <LoadingScreen key={gameId ?? 'launch'} />
+        <LoadingScreen key={gameId ?? "launch"} />
       </View>
     </ThemeProvider>
   );
@@ -53,7 +63,7 @@ function GameData() {
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    [HKFont]: require('../../assets/hollow/fonts/TrajanProBold.ttf'),
+    [HKFont]: require("../../assets/hollow/fonts/TrajanProBold.ttf"),
   });
 
   if (!fontsLoaded) return null;

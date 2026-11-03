@@ -1,7 +1,7 @@
-import { Tabs, TabList, TabTrigger, TabSlot } from 'expo-router/ui';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useGame } from '../games/game-context';
-import { useSettings } from '../settings/settings-context';
+import { TabList, Tabs, TabSlot, TabTrigger } from "expo-router/ui";
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import { useGame } from "../games/game-context";
+import { useSettings } from "../settings/SettingsContext.jsx";
 export default function AppTabs() {
   const { colors } = useSettings();
   const { config } = useGame();
@@ -9,7 +9,12 @@ export default function AppTabs() {
     <Tabs>
       <TabSlot style={{ flex: 1 }} />
       <TabList asChild>
-        <View style={StyleSheet.flatten([styles.tabList, { backgroundColor: colors.tabBar }])}>
+        <View
+          style={StyleSheet.flatten([
+            styles.tabList,
+            { backgroundColor: colors.tabBar },
+          ])}
+        >
           <TabTrigger name="index" href="/" asChild>
             <TabButton>Home</TabButton>
           </TabTrigger>
@@ -45,11 +50,11 @@ function TabButton({ children, isFocused, ...props }) {
 }
 const styles = StyleSheet.create({
   tabList: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingTop: 10,
-    paddingBottom: 'max(10px, env(safe-area-inset-bottom))',
+    paddingBottom: "max(10px, env(safe-area-inset-bottom))",
   },
-  button: { flex: 1, alignItems: 'center' },
+  button: { flex: 1, alignItems: "center" },
   label: { fontSize: 16 },
-  focused: { fontWeight: 'bold' },
+  focused: { fontWeight: "bold" },
 });

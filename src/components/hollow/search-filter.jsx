@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
-import { useSettings } from "../../settings/settings-context";
+import { useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
 
 export function SearchFilter({

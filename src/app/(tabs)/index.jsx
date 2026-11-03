@@ -6,11 +6,11 @@ import { Button } from "../../components/hollow/button";
 import { ProgressBar } from "../../components/hollow/progress-bar";
 import { Screen } from "../../components/hollow/screen";
 import { Body, Title } from "../../components/hollow/section-text";
-import { useGame } from "../../games/game-context";
 import { tips } from "../../data/tips";
+import { useGame } from "../../games/game-context";
 import { useJournal } from "../../journal/journal-context";
 import { useLoadouts } from "../../loadouts/loadouts-context";
-import { useSettings } from "../../settings/settings-context";
+import { useSettings } from "../../settings/SettingsContext.jsx";
 
 const tip = tips[Math.floor(Math.random() * tips.length)];
 const EMAIL = "apolohcr2@outlook.com";
@@ -76,8 +76,8 @@ export default function HomeScreen() {
             {nextBoss
               ? nextBoss.name
               : bosses.length
-                ? "All bosses defeated! 🎉"
-                : "Bosses coming soon"}
+              ? "All bosses defeated! 🎉"
+              : "Bosses coming soon"}
           </AppText>
         </Card>
 

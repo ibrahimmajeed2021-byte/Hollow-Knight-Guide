@@ -8,7 +8,7 @@ import { downloadOnWeb } from "../../utils/web-download";
 import { useGame } from "../../games/game-context";
 import { useJournal } from "../../journal/journal-context";
 import { useLoadouts } from "../../loadouts/loadouts-context";
-import { useSettings } from "../../settings/settings-context";
+import { useSettings } from "../../settings/SettingsContext";
 import { AppText } from "./app-text";
 import { Button } from "./button";
 
@@ -37,7 +37,7 @@ export function BackupSection() {
         const url = URL.createObjectURL(
           new Blob([JSON.stringify(backup, null, 2)], {
             type: "application/json",
-          }),
+          })
         );
         downloadOnWeb(url, `hollow-knight-backup-${gameId ?? "hollow"}.json`);
         URL.revokeObjectURL(url);
@@ -45,7 +45,7 @@ export function BackupSection() {
       }
       const file = new File(
         Paths.cache,
-        `hollow-knight-backup-${gameId ?? "hollow"}.json`,
+        `hollow-knight-backup-${gameId ?? "hollow"}.json`
       );
       if (file.exists) file.delete();
       file.create();
@@ -78,7 +78,7 @@ export function BackupSection() {
     replaceLoadouts(Array.isArray(backup.loadouts) ? backup.loadouts : []);
     Alert.alert(
       "Backup restored",
-      "Your settings, progress and loadouts have been restored.",
+      "Your settings, progress and loadouts have been restored."
     );
   };
 
@@ -98,14 +98,14 @@ export function BackupSection() {
       if (!isObject(backup) || backup.app !== APP_ID) {
         Alert.alert(
           "Invalid backup",
-          "This file is not a Hollow Knight Guide backup.",
+          "This file is not a Hollow Knight Guide backup."
         );
         return;
       }
       if (backup.game && backup.game !== (gameId ?? "hollow")) {
         Alert.alert(
           "Wrong game",
-          `This backup is for another game. Switch to that game from the main menu, then import it again.`,
+          `This backup is for another game. Switch to that game from the main menu, then import it again.`
         );
         return;
       }
@@ -119,7 +119,7 @@ export function BackupSection() {
             style: "destructive",
             onPress: () => applyBackup(backup),
           },
-        ],
+        ]
       );
     } catch {
       Alert.alert("Import failed", "Could not read that file.");

@@ -25,7 +25,7 @@ import { charms } from "../../../data/charms";
 import { charmImages } from "../../../data/images";
 import { useJournal } from "../../../journal/journal-context";
 import { useLoadouts } from "../../../loadouts/loadouts-context";
-import { useHaptics, useSettings } from "../../../settings/settings-context";
+import { useHaptics, useSettings } from "../../../settings/SettingsContext.jsx";
 
 const COLUMNS = 3;
 const GAP = 8;

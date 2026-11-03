@@ -1,11 +1,11 @@
-import { Image } from 'expo-image';
-import { memo, useState } from 'react';
-import { LayoutAnimation, Pressable, StyleSheet, View } from 'react-native';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { Image } from "expo-image";
+import { memo, useState } from "react";
+import { LayoutAnimation, Pressable, StyleSheet, View } from "react-native";
+import Animated, { FadeIn } from "react-native-reanimated";
 
-import { HKFont } from '../../constants/hollow';
-import { useHaptics, useSettings } from '../../settings/settings-context';
-import { AppText } from './app-text';
+import { HKFont } from "../../constants/hollow";
+import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
+import { AppText } from "./app-text";
 
 function EntryCardBase({ image, name, summary, description, children }) {
   const { colors, settings } = useSettings();
@@ -23,9 +23,12 @@ function EntryCardBase({ image, name, summary, description, children }) {
       onPress={toggle}
       accessibilityRole="button"
       accessibilityLabel={name}
-      accessibilityHint={expanded ? 'Collapse details' : 'Expand details'}
+      accessibilityHint={expanded ? "Collapse details" : "Expand details"}
       accessibilityState={{ expanded }}
-      style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}
+      style={[
+        styles.card,
+        { backgroundColor: colors.card, borderColor: colors.border },
+      ]}
     >
       <View style={styles.top}>
         {image ? (
@@ -42,10 +45,14 @@ function EntryCardBase({ image, name, summary, description, children }) {
           <AppText style={styles.name}>{name}</AppText>
           {summary}
         </View>
-        <AppText style={[styles.chevron, { color: colors.muted }]}>{expanded ? '▲' : '▼'}</AppText>
+        <AppText style={[styles.chevron, { color: colors.muted }]}>
+          {expanded ? "▲" : "▼"}
+        </AppText>
       </View>
       {expanded && (
-        <Animated.View entering={settings.reduceMotion ? undefined : FadeIn.duration(250)}>
+        <Animated.View
+          entering={settings.reduceMotion ? undefined : FadeIn.duration(250)}
+        >
           <AppText style={styles.description}>{description}</AppText>
           {children}
         </Animated.View>
@@ -60,7 +67,9 @@ export function Stat({ label, value }) {
   const { colors } = useSettings();
   return (
     <AppText style={styles.stat}>
-      <AppText style={[styles.statLabel, { color: colors.muted }]}>{label}: </AppText>
+      <AppText style={[styles.statLabel, { color: colors.muted }]}>
+        {label}:{" "}
+      </AppText>
       {value}
     </AppText>
   );
@@ -74,12 +83,12 @@ const styles = StyleSheet.create({
     marginTop: 14,
     borderWidth: 1,
   },
-  top: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  top: { flexDirection: "row", alignItems: "center", gap: 12 },
   image: { width: 72, height: 72 },
   titleBlock: { flex: 1 },
   name: { fontFamily: HKFont, fontSize: 20 },
   chevron: { fontSize: 14 },
   description: { marginTop: 10, fontSize: 15, lineHeight: 22 },
   stat: { marginTop: 4, fontSize: 15 },
-  statLabel: { fontWeight: 'bold', fontSize: 15 },
+  statLabel: { fontWeight: "bold", fontSize: 15 },
 });

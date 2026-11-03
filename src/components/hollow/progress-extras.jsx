@@ -12,7 +12,7 @@ import {
 
 import { photoUri, useJournal } from "../../journal/journal-context";
 import { takePhoto } from "../../journal/take-photo";
-import { useHaptics, useSettings } from "../../settings/settings-context";
+import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
 import { Button } from "./button";
 import { Stat } from "./entry-card";
@@ -39,7 +39,7 @@ export function BossExtras({ name }) {
     useJournal();
   const [draft, setDraft] = useState(notes[name] ?? "");
   const bossPhotos = photos.filter(
-    (p) => p.tag?.type === "boss" && p.tag.name === name,
+    (p) => p.tag?.type === "boss" && p.tag.name === name
   );
 
   const attach = async () => {

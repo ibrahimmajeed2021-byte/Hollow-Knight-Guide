@@ -1,6 +1,6 @@
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from "react-native";
 
-import { useSettings } from '../../settings/settings-context';
+import { useSettings } from "../../settings/SettingsContext";
 
 export function AppText({ style, ...props }) {
   const { colors, fontScale } = useSettings();

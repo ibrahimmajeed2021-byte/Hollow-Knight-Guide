@@ -9,7 +9,7 @@ import { Body, Title } from "../../../components/hollow/section-text";
 import { silksongCollectibles } from "../../../data/silksong-collectibles";
 import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
-import { useSettings } from "../../../settings/settings-context";
+import { useSettings } from "../../../settings/SettingsContext.jsx";
 
 function percent(done, total) {
   return total ? Math.round((done / total) * 100) : 0;
@@ -51,7 +51,7 @@ export default function ProgressScreen() {
   const { defeated, collected, photos, resetProgress } = useJournal();
   const { config, gameId } = useGame();
   const collectDone = silksongCollectibles.filter(
-    (c) => collected[`c:${c.name}`],
+    (c) => collected[`c:${c.name}`]
   ).length;
   const bosses = config.bosses;
   const charms = config.items;
@@ -65,7 +65,7 @@ export default function ProgressScreen() {
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset", style: "destructive", onPress: resetProgress },
-      ],
+      ]
     );
 
   return (

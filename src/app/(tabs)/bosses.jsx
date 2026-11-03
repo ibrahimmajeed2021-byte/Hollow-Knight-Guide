@@ -1,19 +1,19 @@
 import { Image } from "expo-image";
 import { useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
-import { EntryCard, Stat } from "../../components/hollow/entry-card";
-import { SearchFilter } from "../../components/hollow/search-filter";
-import { Screen } from "../../components/hollow/screen";
-import { Body, Title } from "../../components/hollow/section-text";
 import { AppText } from "../../components/hollow/app-text";
-import { useJournal } from "../../journal/journal-context";
-import { useTabInset } from "../../hooks/use-tab-inset";
-import { useSettings } from "../../settings/settings-context";
+import { EntryCard, Stat } from "../../components/hollow/entry-card";
 import {
   BossExtras,
   BossSummary,
 } from "../../components/hollow/progress-extras";
+import { Screen } from "../../components/hollow/screen";
+import { SearchFilter } from "../../components/hollow/search-filter";
+import { Body, Title } from "../../components/hollow/section-text";
 import { useGame } from "../../games/game-context";
+import { useTabInset } from "../../hooks/use-tab-inset";
+import { useJournal } from "../../journal/journal-context";
+import { useSettings } from "../../settings/SettingsContext.jsx";
 const FILTERS = [
   { value: "all", label: "All" },
   { value: "todo", label: "Not defeated" },
@@ -33,7 +33,7 @@ export default function BossesScreen() {
     return bosses.filter(
       (b) =>
         (!q || b.name.toLowerCase().includes(q)) &&
-        (filter === "all" || (filter === "done") === !!defeated[b.name]),
+        (filter === "all" || (filter === "done") === !!defeated[b.name])
     );
   }, [bosses, query, filter, defeated]);
   return (
