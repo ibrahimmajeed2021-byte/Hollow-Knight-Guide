@@ -11,6 +11,7 @@ const FADE_MS = 600;
 const FADE_STEPS = 12;
 
 let current = null;
+let currentVolume = 0.8;
 let latestRequest = 0;
 let audioReady = null;
 
@@ -20,7 +21,20 @@ function prepareAudio() {
   return audioReady;
 }
 
+// Updates the sound that is already playing without restarting it.
+export function setSoundVolume(volume) {
+  currentVolume = Math.max(0, Math.min(1, volume));
+  if (current) {
+    try {
+      current.volume = currentVolume;
+    } catch {
+      // The player may already be stopping.
+    }
+  }
+}
+
 function fadeOutAndRelease(player) {
+  const startingVolume = player.volume;
   let step = 0;
   const timer = setInterval(() => {
     step += 1;
@@ -30,7 +44,7 @@ function fadeOutAndRelease(player) {
         player.pause();
         player.remove();
       } else {
-        player.volume = 1 - step / FADE_STEPS;
+        player.volume = startingVolume * (1 - step / FADE_STEPS);
       }
     } catch {
       clearInterval(timer);
@@ -48,8 +62,11 @@ async function play(source) {
     fadeOutAndRelease(current);
     current = null;
   }
+  if (!source || currentVolume === 0) return;
+
   try {
     const player = createAudioPlayer(source);
+    player.volume = currentVolume;
     player.play();
     current = player;
   } catch {
