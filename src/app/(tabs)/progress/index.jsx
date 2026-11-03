@@ -70,6 +70,7 @@ export default function ProgressScreen() {
 
   return (
     <Screen>
+      <Button label="Back" variant="outline" onPress={() => router.back()} style={{ marginHorizontal: 16, marginTop: 8, alignSelf: "flex-start" }} />
       <Title>Progress</Title>
       <Body>
         Tick bosses and {config.itemsLabel.toLowerCase()} on their pages to
