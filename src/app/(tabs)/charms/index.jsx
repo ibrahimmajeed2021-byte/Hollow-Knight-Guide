@@ -92,6 +92,7 @@ export default function CharmsScreen() {
         contentContainerStyle={{ paddingTop: 16, paddingBottom: inset + 16 }}
         ListHeaderComponent={
           <>
+            <Button label="Back" variant="outline" onPress={() => router.back()} style={{ marginHorizontal: 16, marginBottom: 8, alignSelf: "flex-start" }} />
             <Title>{config.itemsLabel}</Title>
             {config.hasLoadouts && (
               <Button
