@@ -443,6 +443,10 @@ const styles = StyleSheet.create({
   shareCrestName: { color: "#fff", fontSize: 16, fontWeight: "bold" },
   shareSection: { gap: 6, marginTop: 6 },
   shareSectionTitle: { fontSize: 13, fontWeight: "bold" },
-  shareGrid: { flexDirection: "row", flexWrap: "wrap", gap: 6 },
+  shareGrid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "center", gap: 8, marginTop: 8 },
+  shareItem: { width: 100, minHeight: 112, alignItems: "center", justifyContent: "flex-start", gap: 4, padding: 6, borderRadius: 8, backgroundColor: "#202532" },
+  shareImg: { width: 64, height: 64 },
+  shareName: { color: "#ffffff", fontSize: 12, fontWeight: "bold", textAlign: "center" },
+  shareCost: { fontSize: 10, fontWeight: "bold", textAlign: "center", textTransform: "uppercase" },
   shareFoot: { color: "#8590a3", fontSize: 10, textAlign: "center", marginTop: 8 },
 });
