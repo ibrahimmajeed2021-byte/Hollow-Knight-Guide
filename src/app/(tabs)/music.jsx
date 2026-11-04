@@ -45,7 +45,21 @@ export default function MusicScreen() {
   }, []);
 
   useEffect(() => {
-    // If the user switches games while this tab is mounted, reset to that game\u2019s first song.
+    AsyncStorage.getItem(FAVOURITES_KEY)
+      .then((saved) => { if (saved) setFavourites(JSON.parse(saved)); })
+      .catch(() => {})
+      .finally(() => setFavouritesLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (favouritesLoaded) AsyncStorage.setItem(FAVOURITES_KEY, JSON.stringify(favourites)).catch(() => {});
+  }, [favourites, favouritesLoaded]);
+
+  useEffect(() => {
+    player.loop = repeat;
+  }, [repeat, player]);
+
+  useEffect(() => {
     player.replace(gameTracks[0].source);
     setSelectedIndex(0);
   }, [gameId]);
@@ -86,10 +100,24 @@ export default function MusicScreen() {
   }
 
   function skipTrack(direction) {
-    const nextIndex =
-      (selectedIndex + direction + gameTracks.length) % gameTracks.length;
+    let nextIndex;
+    if (shuffle && direction > 0 && gameTracks.length > 1) {
+      do { nextIndex = Math.floor(Math.random() * gameTracks.length); }
+      while (nextIndex === selectedIndex);
+    } else {
+      nextIndex = (selectedIndex + direction + gameTracks.length) % gameTracks.length;
+    }
     playTrack(nextIndex);
   }
+
+  function toggleFavourite(track) {
+    setFavourites((current) => current.includes(track.title)
+      ? current.filter((title) => title !== track.title)
+      : [...current, track.title]);
+  }
+
+  const visibleTracks = gameTracks.map((track, index) => ({ track, index }))
+    .filter(({ track }) => !showFavourites || favourites.includes(track.title));
 
   return (
     <Screen>
@@ -145,38 +173,43 @@ export default function MusicScreen() {
         </View>
       </View>
 
-      <AppText style={styles.listHeading}>{gameTracks[0].game} songs</AppText>
+      <View style={styles.extraControls}>
+        <Pressable onPress={() => setShuffle((value) => !value)} accessibilityRole="button" accessibilityState={{ selected: shuffle }} style={[styles.modeButton, { borderColor: shuffle ? colors.accent : colors.border }]}>
+          <AppText style={[styles.modeText, { color: shuffle ? colors.accent : colors.muted }]}>⇄ Shuffle {shuffle ? "On" : "Off"}</AppText>
+        </Pressable>
+        <Pressable onPress={() => setRepeat((value) => !value)} accessibilityRole="button" accessibilityState={{ selected: repeat }} style={[styles.modeButton, { borderColor: repeat ? colors.accent : colors.border }]}>
+          <AppText style={[styles.modeText, { color: repeat ? colors.accent : colors.muted }]}>↻ Repeat {repeat ? "On" : "Off"}</AppText>
+        </Pressable>
+      </View>
+      <View style={styles.headingRow}>
+        <AppText style={styles.listHeading}>{gameTracks[0].game} songs</AppText>
+        <Pressable onPress={() => setShowFavourites((value) => !value)} accessibilityRole="button">
+          <AppText style={[styles.filterText, { color: colors.accent }]}>{showFavourites ? "Show all" : "♥ Favourites"}</AppText>
+        </Pressable>
+      </View>
       <View style={styles.trackList}>
         {visibleTracks.map(({ track, index }) => {
           const selected = index === selectedIndex;
+          const favourite = favourites.includes(track.title);
           return (
-            <Pressable
-              key={track.title}
-              onPress={() => playTrack(index)}
-              accessibilityRole="button"
-              accessibilityLabel={`Play ${track.title}, from ${track.game}`}
-              accessibilityState={{ selected }}
-              style={[
-                styles.trackRow,
-                { backgroundColor: colors.card, borderColor: colors.border },
-                selected && { borderColor: colors.accent, borderWidth: 2 },
-              ]}
-            >
-              <Pressable style={styles.trackMain} onPress={() => playTrack(index)} accessibilityRole="button" accessibilityLabel={`Play ${track.title}, from ${track.game}`} accessibilityState={{ selected }}>\n              <View style={styles.trackNumber}>
-                <AppText style={[styles.numberText, { color: colors.muted }]}>
-                  {String(index + 1).padStart(2, "0")}
-                </AppText>
-              </View>
-              <View style={styles.trackInfo}>
-                <AppText style={styles.listTrackTitle}>{track.title}</AppText>
-                <AppText style={[styles.trackGame, { color: colors.muted }]}>{track.game}</AppText>
-              </View>
-              <AppText style={[styles.listAction, { color: colors.accent }]}>
-                {selected && status.playing ? "Playing" : selected ? "Selected" : "Play"}
-              </AppText>
-            </Pressable>
+            <View key={track.title} style={[styles.trackRow, { backgroundColor: colors.card, borderColor: colors.border }, selected && { borderColor: colors.accent, borderWidth: 2 }]}>
+              <Pressable style={styles.trackMain} onPress={() => playTrack(index)} accessibilityRole="button" accessibilityLabel={`Play ${track.title}, from ${track.game}`} accessibilityState={{ selected }}>
+                <View style={styles.trackNumber}>
+                  <AppText style={[styles.numberText, { color: colors.muted }]}>{String(index + 1).padStart(2, "0")}</AppText>
+                </View>
+                <View style={styles.trackInfo}>
+                  <AppText style={styles.listTrackTitle}>{track.title}</AppText>
+                  <AppText style={[styles.trackGame, { color: colors.muted }]}>{track.game}</AppText>
+                </View>
+                <AppText style={[styles.listAction, { color: colors.accent }]}>{selected && status.playing ? "Playing" : selected ? "Selected" : "Play"}</AppText>
+              </Pressable>
+              <Pressable onPress={() => toggleFavourite(track)} accessibilityRole="button" accessibilityLabel={favourite ? `Remove ${track.title} from favourites` : `Add ${track.title} to favourites`} accessibilityState={{ selected: favourite }} style={styles.favouriteButton}>
+                <AppText style={[styles.favouriteIcon, { color: favourite ? colors.accent : colors.muted }]}>{favourite ? "♥" : "♡"}</AppText>
+              </Pressable>
+            </View>
           );
         })}
+        {visibleTracks.length === 0 && <AppText style={[styles.emptyText, { color: colors.muted }]}>No favourites yet. Tap the heart beside a song to save it here.</AppText>}
       </View>
     </Screen>
   );
@@ -240,11 +273,11 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   trackMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12 },
-  trackNumber: { width: 30, alignItems: "center" },
+  trackMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12 },\n  trackNumber: { width: 30, alignItems: "center" },
   numberText: { fontSize: 13, fontVariant: ["tabular-nums"] },
   trackInfo: { flex: 1, gap: 3 },
   listTrackTitle: { fontSize: 15, fontWeight: "bold" },
-  listAction: { fontSize: 13, fontWeight: "bold" },
+  listAction: { fontSize: 13, fontWeight: "bold" },\n  favouriteButton: { width: 40, minHeight: 44, alignItems: "center", justifyContent: "center" },\n  favouriteIcon: { fontSize: 25 },\n  emptyText: { padding: 16, textAlign: "center", lineHeight: 22 },
   favouriteButton: { width: 40, minHeight: 44, alignItems: "center", justifyContent: "center" },
   favouriteIcon: { fontSize: 25 },
   emptyText: { padding: 16, textAlign: "center", lineHeight: 22 },
