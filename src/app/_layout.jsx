@@ -17,6 +17,7 @@ import { HKFont } from "../constants/hollow";
 import { GameProvider, useGame } from "../games/game-context";
 import { JournalProvider } from "../journal/journal-context";
 import { LoadoutsProvider } from "../loadouts/loadouts-context";
+import { PurchasesProvider } from "../purchases/PurchasesContext";
 import {
   SettingsProvider,
   useHaptics,
@@ -70,11 +71,13 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SettingsProvider>
-        <GameProvider>
-          <GameData />
-        </GameProvider>
-      </SettingsProvider>
+      <PurchasesProvider>
+        <SettingsProvider>
+          <GameProvider>
+            <GameData />
+          </GameProvider>
+        </SettingsProvider>
+      </PurchasesProvider>
     </GestureHandlerRootView>
   );
 }
