@@ -1,11 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Slider from "@react-native-community/slider";
-import {
-  setAudioModeAsync,
-  useAudioPlaylist,
-  useAudioPlaylistStatus,
-} from "expo-audio";
+import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 
 import { AppText } from "../../components/hollow/app-text";
 import { Screen } from "../../components/hollow/screen";
@@ -24,89 +20,63 @@ function formatTime(seconds = 0) {
 export default function MusicScreen() {
   const { colors } = useSettings();
   const { gameId } = useGame();
-  const gameTracks = useMemo(
-    () => selectorTracks.filter((track) => track.id === (gameId ?? "hollow")),
-    [gameId]
-  );
-  const playlist = useAudioPlaylist({
-    sources: gameTracks.map((track) => track.source),
-    loop: "all",
-  });
-  const status = useAudioPlaylistStatus(playlist);
-  const selectedIndex = Math.max(0, Math.min(gameTracks.length - 1, status.currentIndex ?? 0));
-  const selectedTrack = gameTracks[selectedIndex] ?? gameTracks[0];
-  const duration = status.duration || 0;
-  const currentTime = status.currentTime || 0;
+  const gameTracks = selectorTracks.filter((track) => track.id === (gameId ?? "hollow"));
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const player = useAudioPlayer(gameTracks[0].source);
+  const status = useAudioPlayerStatus(player);
 
   useEffect(() => {
-    // Configure the audio session for background playback and stop the game-menu soundtrack.
+    // Keep the music playing when the app is backgrounded or the screen is locked.
     setAudioModeAsync({
       playsInSilentMode: true,
       shouldPlayInBackground: true,
       interruptionMode: "doNotMix",
     }).catch(() => {});
+    // Stop the automatic game-menu soundtrack before starting manual playback.
     stopSound();
   }, []);
 
   useEffect(() => {
-    // Keep the playlist limited to the selected game's soundtrack.
-    playlist.pause();
-    playlist.clear();
-    gameTracks.forEach((track) => playlist.add(track.source));
-    if (gameTracks.length > 0) playlist.skipTo(0);
-  }, [gameId, playlist]);
-
-  useEffect(() => {
-    // Keep the Dynamic Island / Lock Screen title in sync when its Next or Previous button is used.
-    const subscription = playlist.addListener("trackChanged", ({ currentIndex }) => {
-      const track = gameTracks[currentIndex];
-      if (track) {
-        playlist.updateLockScreenMetadata({
-          title: track.title,
-          artist: track.game,
-          albumTitle: "Hollow Knight Guide Soundtrack",
-        });
-      }
-    });
-    return () => subscription.remove();
-  }, [gameTracks, playlist]);
+    // If the user switches games while this tab is mounted, reset to that game\u2019s first song.
+    player.replace(gameTracks[0].source);
+    setSelectedIndex(0);
+  }, [gameId]);
+  const selectedTrack = gameTracks[selectedIndex];
+  const duration = status.duration || 0;
+  const currentTime = status.currentTime || 0;
 
   function activateLockScreenControls(track) {
-    playlist.setActiveForLockScreen(true, {
+    player.setActiveForLockScreen(true, {
       title: track.title,
       artist: track.game,
       albumTitle: "Hollow Knight Guide Soundtrack",
     }, {
       showNextTrack: true,
       showPreviousTrack: true,
-      showSeekForward: false,
-      showSeekBackward: false,
     });
   }
 
-  async function playTrack(index) {
+  function playTrack(index) {
     const nextIndex = Math.max(0, Math.min(gameTracks.length - 1, index));
-    // Apply the background audio session before playback starts, for either game's tracks.
-    await setAudioModeAsync({
-      playsInSilentMode: true,
-      shouldPlayInBackground: true,
-      interruptionMode: "doNotMix",
-    });
-    if (nextIndex !== selectedIndex) playlist.skipTo(nextIndex);
+    if (nextIndex !== selectedIndex) {
+      player.replace(gameTracks[nextIndex].source);
+      setSelectedIndex(nextIndex);
+    }
     activateLockScreenControls(gameTracks[nextIndex]);
-    playlist.play();
+    player.play();
   }
 
-  async function togglePlayback() {
-    if (status.playing) {
-      playlist.pause();
-    } else {
-      await playTrack(selectedIndex);
+  function togglePlayback() {
+    if (status.playing) player.pause();
+    else {
+      activateLockScreenControls(selectedTrack);
+      player.play();
     }
   }
 
   function skipTrack(direction) {
-    const nextIndex = (selectedIndex + direction + gameTracks.length) % gameTracks.length;
+    const nextIndex =
+      (selectedIndex + direction + gameTracks.length) % gameTracks.length;
     playTrack(nextIndex);
   }
 
@@ -126,7 +96,7 @@ export default function MusicScreen() {
           minimumTrackTintColor={colors.accent}
           maximumTrackTintColor={colors.border}
           thumbTintColor={colors.accent}
-          onSlidingComplete={(value) => playlist.seekTo(value)}
+          onSlidingComplete={(value) => player.seekTo(value)}
           accessibilityLabel="Song position"
         />
         <View style={styles.timeRow}>
