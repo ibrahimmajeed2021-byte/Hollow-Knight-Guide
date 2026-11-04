@@ -63,9 +63,9 @@ export function AdsProvider({ children }) {
       if (!active || !mayRequestAds) return;
 
       try {
-        if (DEBUG_OWN_UNIT_TEST) {
-          // Configure Google to treat this iPhone as a TEST DEVICE before
-          // AdMob initialization or any ad request can occur.
+        if (DEBUG_OWN_UNIT_TEST && DEBUG_TEST_DEVICE_ID) {
+          // SDK-level registration is needed for device-based testing only.
+          // AdMob app-level Test mode is managed in Google's dashboard.
           await mobileAds().setRequestConfiguration({
             testDeviceIdentifiers: [DEBUG_TEST_DEVICE_ID],
           });
