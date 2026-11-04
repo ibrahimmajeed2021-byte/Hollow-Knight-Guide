@@ -31,6 +31,8 @@ export function PurchasesProvider({ children }) {
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
+  // Development-only preview: never changes the real RevenueCat entitlement.
+  const [previewFree, setPreviewFree] = useState(false);
 
   const refreshCustomerInfo = useCallback(async () => {
     if (!sdkConfigured) return null;
@@ -165,11 +167,16 @@ export function PurchasesProvider({ children }) {
     setBusy(true);
     setError(null);
     try {
-      const result = await RevenueCatUI.presentPaywallIfNeeded({
-        requiredEntitlementIdentifier: PREMIUM_ENTITLEMENT,
-        offering: offerings.current,
-        displayCloseButton: true,
-      });
+      const result = __DEV__ && previewFree
+        ? await RevenueCatUI.presentPaywall({
+            offering: offerings.current,
+            displayCloseButton: true,
+          })
+        : await RevenueCatUI.presentPaywallIfNeeded({
+            requiredEntitlementIdentifier: PREMIUM_ENTITLEMENT,
+            offering: offerings.current,
+            displayCloseButton: true,
+          });
       if (result === RevenueCatUI.PAYWALL_RESULT.ERROR) {
         setError("Unable to display the RevenueCat paywall. Check its dashboard setup.");
       }
@@ -180,7 +187,7 @@ export function PurchasesProvider({ children }) {
     } finally {
       setBusy(false);
     }
-  }, [busy, offerings]);
+  }, [busy, offerings, previewFree]);
 
   const presentCustomerCenter = useCallback(async () => {
     if (!sdkConfigured || busy) return;
@@ -204,7 +211,10 @@ export function PurchasesProvider({ children }) {
     clearError: () => setError(null),
     customerInfo,
     offerings,
-    isPremium: hasPremium(customerInfo),
+    actualIsPremium: hasPremium(customerInfo),
+    isPremium: hasPremium(customerInfo) && !(__DEV__ && previewFree),
+    previewFree: __DEV__ ? previewFree : false,
+    setPreviewFree: (enabled) => { if (__DEV__) setPreviewFree(Boolean(enabled)); },
     refreshCustomerInfo,
     refreshOfferings,
     purchasePackage,
@@ -212,7 +222,7 @@ export function PurchasesProvider({ children }) {
     presentPaywall,
     presentCustomerCenter,
   }), [
-    ready, busy, error, customerInfo, offerings, refreshCustomerInfo,
+    ready, busy, error, customerInfo, offerings, previewFree, refreshCustomerInfo,
     refreshOfferings, purchasePackage, restorePurchases,
     presentPaywall, presentCustomerCenter,
   ]);
