@@ -44,6 +44,14 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
+      <NativeTabs.Trigger name="music">
+        <NativeTabs.Trigger.Label>Music</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf={{ default: "music.note", selected: "music.note.list" }}
+          md="music_note"
+        />
+      </NativeTabs.Trigger>
+
       <NativeTabs.Trigger name="progress">
         <NativeTabs.Trigger.Label>Progress</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
