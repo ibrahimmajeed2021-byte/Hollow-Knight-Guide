@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, Switch, View } from "react-native";
 
 import { AppText } from "../components/hollow/app-text";
 import { Screen } from "../components/hollow/screen";
@@ -18,7 +18,7 @@ function packageName(item) {
 export default function PremiumScreen() {
   const { colors } = useSettings();
   const {
-    ready, busy, error, clearError, isPremium, customerInfo, offerings,
+    ready, busy, error, clearError, isPremium, actualIsPremium, previewFree, setPreviewFree, customerInfo, offerings,
     purchasePackage, restorePurchases, presentPaywall, presentCustomerCenter,
   } = usePurchases();
 
@@ -30,6 +30,33 @@ export default function PremiumScreen() {
     <Screen>
       <View style={styles.content}>
         <Title>Premium</Title>
+        {__DEV__ ? (
+          <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
+            <AppText style={styles.heading}>Developer testing</AppText>
+            <View style={styles.testRow}>
+              <View style={{ flex: 1, gap: 4 }}>
+                <AppText style={{ fontWeight: "bold" }}>Preview Free Mode</AppText>
+                <AppText style={{ color: colors.muted, fontSize: 13 }}>
+                  {actualIsPremium
+                    ? "Simulate a free user to test locked themes, selector music and ads. Your test purchase remains active in RevenueCat."
+                    : "No active Premium entitlement is detected. You can still preview Free Mode."}
+                </AppText>
+              </View>
+              <Switch
+                accessibilityLabel="Preview Free Mode"
+                value={previewFree}
+                onValueChange={setPreviewFree}
+                trackColor={{ true: colors.button }}
+              />
+            </View>
+            {previewFree ? (
+              <AppText style={{ color: colors.muted, fontSize: 13 }}>
+                Free preview is ON. Turn it off to return to your actual Premium status.
+                A debug app reload resets this switch.
+              </AppText>
+            ) : null}
+          </View>
+        ) : null}
         <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <AppText style={styles.heading}>
             {isPremium ? "Premium is active" : ready ? "Unlock Premium" : "Checking your purchases…"}
@@ -145,6 +172,7 @@ const styles = StyleSheet.create({
   primaryText: { fontSize: 16, fontWeight: "bold" },
   purchaseRow: { borderWidth: 1, borderRadius: 12, minHeight: 68, padding: 14, alignItems: "center", flexDirection: "row", gap: 12 },
   packageText: { flex: 1, gap: 4 },
+  testRow: { flexDirection: "row", alignItems: "center", gap: 16 },
   productTitle: { fontSize: 17, fontWeight: "bold" },
   secondary: { borderWidth: 1, borderRadius: 12, minHeight: 48, alignItems: "center", justifyContent: "center", paddingHorizontal: 12 },
   note: { fontSize: 13, lineHeight: 19 },
