@@ -29,7 +29,7 @@ The app uses Google's **User Messaging Platform (UMP)** through `AdsConsent.gath
 
 ## 3. Set production IDs using environment variables
 
-Put real identifiers in `.env.production.local` for a local Release build, or set the same variables in your EAS **production** environment:
+For a local build, add real identifiers to your git-ignored `.env.local` (so Expo prebuild and bundling both see them), or export the variables in your terminal before running both commands. For EAS, configure the same variables in its **production** environment:
 
 ```dotenv
 EXPO_PUBLIC_ADMOB_IOS_APP_ID=ca-app-pub-REPLACE_WITH_YOUR_IOS_APP_ID
