@@ -1,8 +1,7 @@
 import { router, usePathname } from "expo-router";
-import { Pressable, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { HKFont } from "../../constants/hollow";
 import { useGame } from "../../games/game-context";
 import { useHaptics, useSettings } from "../../settings/SettingsContext";
 import { AppText } from "./app-text";
@@ -14,66 +13,59 @@ export function AppHeader() {
   const { config, clearGame } = useGame();
   const onSettings = usePathname() === "/settings";
 
-  const press = () => {
+  const pressSettings = () => {
     triggerHaptic();
     if (onSettings) router.back();
     else router.push("/settings");
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        { paddingTop: top + 8, backgroundColor: colors.header },
-      ]}
-    >
+    <View style={[styles.container, { paddingTop: top + 6, backgroundColor: colors.header, borderBottomColor: colors.border }]}>
       <Pressable
-        onPress={() => {
-          triggerHaptic();
-          clearGame();
-        }}
+        onPress={() => { triggerHaptic(); clearGame(); }}
         accessibilityRole="button"
         accessibilityLabel={`${config.guideTitle}. Tap to switch game`}
+        hitSlop={8}
+        style={styles.sideAction}
       >
-        <AppText style={[styles.title, { color: colors.headerText }]}>
-          {config.guideTitle}
-        </AppText>
+        <AppText style={[styles.actionIcon, { color: colors.headerText }]}>⇄</AppText>
       </Pressable>
+      <View style={styles.titleWrap} pointerEvents="none">
+        <AppText numberOfLines={1} style={[styles.title, { color: colors.headerText }]}>{config.guideTitle}</AppText>
+        <AppText style={[styles.subtitle, { color: colors.headerText }]}>FIELD GUIDE</AppText>
+      </View>
       <Pressable
-        onPress={() => {
-          triggerHaptic();
-          clearGame();
-        }}
-        hitSlop={12}
-        accessibilityRole="button"
-        accessibilityLabel="Main menu, switch game"
-        style={[styles.action, { top: top + 8, left: 12, right: undefined }]}
-      >
-        <Text style={[styles.icon, { color: colors.headerText }]}>⇄</Text>
-      </Pressable>
-      <Pressable
-        onPress={press}
-        hitSlop={12}
+        onPress={pressSettings}
+        hitSlop={8}
         accessibilityRole="button"
         accessibilityLabel={onSettings ? "Close settings" : "Settings"}
-        style={[styles.action, { top: top + 8 }]}
+        style={styles.sideAction}
       >
-        <Text style={[styles.icon, { color: colors.headerText }]}>
-          {onSettings ? "✕" : "⚙"}
-        </Text>
+        <AppText style={[styles.actionIcon, { color: colors.headerText }]}>{onSettings ? "×" : "⚙"}</AppText>
       </Pressable>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { paddingBottom: 12, paddingHorizontal: 48, alignItems: "center" },
-  title: { fontSize: 28, fontFamily: HKFont, textAlign: "center" },
-  action: {
-    position: "absolute",
-    right: 12,
-    height: 36,
+  container: {
+    minHeight: 58,
+    paddingHorizontal: 12,
+    paddingBottom: 9,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sideAction: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
     justifyContent: "center",
   },
-  icon: { fontSize: 26 },
+  actionIcon: { fontSize: 23, fontWeight: "500" },
+  titleWrap: { flex: 1, alignItems: "center", paddingHorizontal: 8, gap: 1 },
+  title: { fontSize: 19, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  subtitle: { fontSize: 9, fontWeight: "700", letterSpacing: 2, opacity: 0.72 },
 });
