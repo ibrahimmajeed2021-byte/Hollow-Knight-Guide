@@ -8,6 +8,7 @@ import { Screen } from "../components/hollow/screen";
 import { Title } from "../components/hollow/section-text";
 import LoadingSoundSetting from "../components/LoadingSoundSettings.js";
 import { useGame } from "../games/game-context";
+import { usePurchases } from "../purchases/PurchasesContext";
 import { useHaptics, useSettings } from "../settings/SettingsContext.jsx";
 import { previewSelectorSound, stopSound } from "../sound/game-sounds";
 
@@ -139,6 +140,7 @@ export default function SettingsScreen() {
   const { settings, update, reset, colors } = useSettings();
   const { clearGame, dataStatus } = useGame();
   const triggerHaptic = useHaptics();
+  const { isPremium } = usePurchases();
 
   // Stop a ringtone-style preview as soon as Settings is no longer focused.
   useFocusEffect(
@@ -151,6 +153,23 @@ export default function SettingsScreen() {
     <Screen>
       <Title>Settings</Title>
 
+      <Section title="Premium">
+        <AppText style={{ color: colors.muted }}>
+          {isPremium
+            ? "Premium is active. Your extra themes and selector music are unlocked."
+            : "Unlock Hollow Knight and Silksong themes and more game-selector music."}
+        </AppText>
+        <Pressable
+          onPress={() => router.push("/premium")}
+          accessibilityRole="button"
+          style={[styles.resetButton, { backgroundColor: colors.button, alignSelf: "stretch", marginTop: 4, alignItems: "center" }]}
+        >
+          <AppText style={[styles.resetText, { color: colors.buttonText }]}>
+            {isPremium ? "Manage Premium" : "Explore Premium"}
+          </AppText>
+        </Pressable>
+      </Section>
+
       <Section title="Appearance">
         <AppText style={styles.rowLabel}>Mode</AppText>
         <Segmented
@@ -160,9 +179,20 @@ export default function SettingsScreen() {
         />
         <AppText style={styles.rowLabel}>Style</AppText>
         <Segmented
-          options={STYLES}
+          options={STYLES.map((style) => ({
+            ...style,
+            label: !isPremium && style.value !== "default"
+              ? `${style.label} 🔒`
+              : style.label,
+          }))}
           value={settings.themeStyle}
-          onChange={(themeStyle) => update({ themeStyle })}
+          onChange={(themeStyle) => {
+            if (!isPremium && themeStyle !== "default") {
+              router.push("/premium");
+              return;
+            }
+            update({ themeStyle });
+          }}
         />
         <ToggleRow
           label="High contrast"
@@ -227,15 +257,20 @@ export default function SettingsScreen() {
                 <AppText style={styles.rowLabel}>Choose a song</AppText>
                 {SELECTOR_TRACKS.map((track) => {
                   const selected = (settings.selectorMusicTrack ?? 0) === track.value;
+                  const locked = !isPremium && track.value > 1;
                   return (
                     <Pressable
                       key={track.value}
                       onPress={() => {
+                        if (locked) {
+                          router.push("/premium");
+                          return;
+                        }
                         update({ selectorMusicTrack: track.value });
                         previewSelectorSound(track.value);
                       }}
                       accessibilityRole="radio"
-                      accessibilityLabel={`${track.label}, from ${track.game}`}
+                      accessibilityLabel={`${track.label}, from ${track.game}${locked ? ", Premium locked" : ""}`}
                       accessibilityState={{ selected }}
                       style={[
                         styles.trackOption,
@@ -267,6 +302,10 @@ export default function SettingsScreen() {
                       {selected ? (
                         <AppText style={{ color: colors.buttonText, fontWeight: "bold" }}>
                           Selected
+                        </AppText>
+                      ) : locked ? (
+                        <AppText style={{ color: colors.muted, fontWeight: "bold" }}>
+                          🔒 Premium
                         </AppText>
                       ) : null}
                     </Pressable>
