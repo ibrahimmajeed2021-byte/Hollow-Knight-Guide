@@ -6,12 +6,13 @@ import RevenueCatUI from "react-native-purchases-ui";
 // Both subscriptions and the lifetime purchase grant the same entitlement.
 export const PREMIUM_ENTITLEMENT = "hollow_knight_guide_pro";
 
-// This public Test Store key is safe for development, including iPhone builds.
-// Production requires a separate public SDK key for each real store.
+// The public Test Store key is only valid in Debug builds.
+// Release builds must use a real store key (appl_ / goog_) or disable purchases.
 const TEST_STORE_API_KEY = "test_WRaCfHJEiihXEjkKFzDNwJPvSBA";
-const API_KEY = Platform.OS === "ios"
-  ? process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY || TEST_STORE_API_KEY
-  : process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY || TEST_STORE_API_KEY;
+const storeApiKey = Platform.OS === "ios"
+  ? process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY
+  : process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY;
+const API_KEY = __DEV__ ? storeApiKey || TEST_STORE_API_KEY : storeApiKey;
 
 let sdkConfigured = false;
 const PurchasesContext = createContext(null);
@@ -55,6 +56,16 @@ export function PurchasesProvider({ children }) {
 
     if (Platform.OS === "web") {
       setError("In-app purchases require an iOS or Android app build.");
+      setReady(true);
+      return () => { mounted = false; };
+    }
+
+    if (!API_KEY || (!__DEV__ && API_KEY.startsWith("test_"))) {
+      // RevenueCat intentionally crashes Release builds configured with test_ keys.
+      // Do not initialize the SDK until a real store key is supplied.
+      setError(
+        "Purchases are disabled in this Release build. To test purchases, install a Debug build using npx expo run:ios --device. Production builds need an App Store or Google Play public SDK key."
+      );
       setReady(true);
       return () => { mounted = false; };
     }
