@@ -114,9 +114,11 @@ export function previewSelectorSound(trackIndex = 0) {
   return play(selectorSources[index]);
 }
 
-export function playSelectorSound(random = true, trackIndex = 0) {
+// Free players hear only the two title themes. Premium unlocks every track.
+export function playSelectorSound(random = true, trackIndex = 0, isPremium = false) {
+  const availableTracks = isPremium ? selectorSources.length : 2;
   const index = random
-    ? Math.floor(Math.random() * selectorSources.length)
-    : Math.max(0, Math.min(selectorSources.length - 1, trackIndex));
+    ? Math.floor(Math.random() * availableTracks)
+    : Math.max(0, Math.min(availableTracks - 1, trackIndex));
   return play(selectorSources[index]);
 }
