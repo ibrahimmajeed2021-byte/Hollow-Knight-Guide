@@ -7,6 +7,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 import { HKFont } from "../../constants/hollow";
 import { games } from "../../games/config";
 import { useGame } from "../../games/game-context";
+import { usePurchases } from "../../purchases/PurchasesContext";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import {
   pickRandomGameId,
@@ -20,6 +21,7 @@ const HOLD_MS = 3000;
 
 export function LoadingScreen() {
   const { settings } = useSettings();
+  const { isPremium } = usePurchases();
   const { config, gameId, loaded } = useGame();
   const launch = !gameId;
   // Which game's loading sound the launch screen uses; re-rolled on every launch.
@@ -61,7 +63,8 @@ export function LoadingScreen() {
     }
     playSelectorSound(
       settings.selectorMusicRandom ?? true,
-      settings.selectorMusicTrack ?? 0
+      settings.selectorMusicTrack ?? 0,
+      isPremium
     );
   }, [
     launch,
@@ -70,6 +73,7 @@ export function LoadingScreen() {
     settings.selectorMusicEnabled,
     settings.selectorMusicRandom,
     settings.selectorMusicTrack,
+    isPremium,
   ]);
 
   // A game's loading sound fades out as the guide appears.
