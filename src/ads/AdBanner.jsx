@@ -5,7 +5,7 @@ import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import { AppText } from "../components/hollow/app-text";
 import { usePurchases } from "../purchases/PurchasesContext";
 import { useAds } from "./AdsContext";
-import { ADS_AVAILABLE, BANNER_UNIT_ID, SHOW_LIVE_ADS } from "./ads-config";
+import { ADS_AVAILABLE, BANNER_UNIT_ID, DEBUG_OWN_UNIT_TEST, SHOW_LIVE_ADS } from "./ads-config";
 
 export function AdBanner() {
   const { isPremium } = usePurchases();
@@ -20,7 +20,7 @@ export function AdBanner() {
   return (
     <View style={styles.wrapper}>
       <AppText style={styles.label}>
-        {SHOW_LIVE_ADS ? "ADVERTISEMENT" : "TEST ADVERTISEMENT"}
+        {SHOW_LIVE_ADS ? "ADVERTISEMENT" : DEBUG_OWN_UNIT_TEST ? "YOUR ADMOB UNIT · TEST MODE" : "TEST ADVERTISEMENT"}
       </AppText>
       <BannerAd
         unitId={BANNER_UNIT_ID}
