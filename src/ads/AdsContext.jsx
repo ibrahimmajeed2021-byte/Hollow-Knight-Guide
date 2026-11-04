@@ -2,7 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import mobileAds, { AdsConsent } from "react-native-google-mobile-ads";
 
 import { usePurchases } from "../purchases/PurchasesContext";
-import { ADS_AVAILABLE } from "./ads-config";
+import { ADS_AVAILABLE, DEBUG_OWN_UNIT_TEST, DEBUG_TEST_DEVICE_ID } from "./ads-config";
 
 const AdsContext = createContext({
   ready: false,
@@ -31,9 +31,10 @@ export function AdsProvider({ children }) {
     setReady(false);
 
     async function startAds() {
-      // Only Google's sample ads may be shown without a configured UMP form.
-      // Live ads NEVER use this test-only consent fallback.
-      let mayRequestAds = __DEV__;
+      // The consent fallback applies ONLY to Google's sample unit.
+      // A registered real ad unit, even on a test device, requires UMP
+      // approval before we initialize the SDK.
+      let mayRequestAds = __DEV__ && !DEBUG_OWN_UNIT_TEST;
       try {
         await AdsConsent.gatherConsent();
         const info = await AdsConsent.getConsentInfo();
@@ -41,10 +42,10 @@ export function AdsProvider({ children }) {
         if (active) {
           setPrivacyOptionsRequired(info.privacyOptionsRequirementStatus === "REQUIRED");
         }
-        mayRequestAds = __DEV__ || info.canRequestAds === true;
+        mayRequestAds = (__DEV__ && !DEBUG_OWN_UNIT_TEST) || info.canRequestAds === true;
       } catch (error) {
         console.warn("AdMob consent check:", error?.message || error);
-        if (!__DEV__) {
+        if (!__DEV__ || DEBUG_OWN_UNIT_TEST) {
           // The UMP SDK can retain an eligible consent result from last launch.
           // Fail closed when that result is unavailable.
           try {
@@ -62,6 +63,15 @@ export function AdsProvider({ children }) {
       if (!active || !mayRequestAds) return;
 
       try {
+        if (DEBUG_OWN_UNIT_TEST) {
+          // Configure Google to treat this iPhone as a TEST DEVICE before
+          // AdMob initialization or any ad request can occur.
+          await mobileAds().setRequestConfiguration({
+            testDeviceIdentifiers: [DEBUG_TEST_DEVICE_ID],
+          });
+        }
+        if (!active) return;
+
         initializationPromise ??= mobileAds().initialize().catch((error) => {
           initializationPromise = null;
           throw error;
