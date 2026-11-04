@@ -19,23 +19,30 @@ const validAppId = /^ca-app-pub-\d{16}~\d{10}$/.test(platformAppId || "")
 const validBannerId = /^ca-app-pub-\d{16}\/\d{10}$/.test(platformBannerId || "")
   && !platformBannerId?.startsWith("ca-app-pub-3940256099942544/");
 
-// Testing a *real* ad unit on a physical iPhone is allowed only with Google's
-// test-device configuration. Never request live inventory on your own phone.
-// A 32-character hashed test-device ID can be found in the Xcode console.
+// Never test your own ad unit on an iPhone with unrestricted live traffic.
+// Google supports either a registered physical test device OR app-level Test
+// mode for this exact installed app version in AdMob > Settings > Test apps.
+// App-level Test mode MUST be turned on in the Google dashboard first; this
+// flag cannot enable Google's test mode by itself.
 const requestedOwnDebugUnit = process.env.EXPO_PUBLIC_ADMOB_TEST_OWN_UNIT === "true";
+const confirmedAppTestMode = process.env.EXPO_PUBLIC_ADMOB_TEST_APP_MODE === "true";
 const suppliedTestDeviceId = process.env.EXPO_PUBLIC_ADMOB_DEBUG_TEST_DEVICE_ID || "";
 const validTestDeviceId = /^[a-f0-9]{32}$/i.test(suppliedTestDeviceId);
 
-// Requires BOTH explicit opt-in AND a valid physical-device test ID.
-// Without them Debug keeps using Google's demo banner.
+// Defaults to Google's demo ad unit unless explicitly opted in to testing
+// your own unit, with either one of Google's supported safeguards configured.
 export const DEBUG_OWN_UNIT_TEST = __DEV__
   && Platform.OS === "ios"
   && requestedOwnDebugUnit
   && validAppId
   && validBannerId
-  && validTestDeviceId;
+  && (validTestDeviceId || confirmedAppTestMode);
 
-export const DEBUG_TEST_DEVICE_ID = DEBUG_OWN_UNIT_TEST ? suppliedTestDeviceId : null;
+// The SDK-level test-device setting is only needed for device-based testing.
+// App-level Test mode is enabled by Google based on app/version, not an ID.
+export const DEBUG_TEST_DEVICE_ID = DEBUG_OWN_UNIT_TEST && validTestDeviceId
+  ? suppliedTestDeviceId
+  : null;
 export const SHOW_LIVE_ADS = !__DEV__ && liveAdsRequested && validAppId && validBannerId;
 export const ADS_AVAILABLE = Platform.OS !== "web" && (__DEV__ || SHOW_LIVE_ADS);
 export const BANNER_UNIT_ID = __DEV__
