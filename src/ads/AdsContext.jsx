@@ -34,6 +34,8 @@ export function AdsProvider({ children }) {
         console.info("Test AdMob consent unavailable:", error?.message);
       }
 
+      if (!active) return;
+
       try {
         initializationPromise ??= mobileAds().initialize().catch((error) => {
           initializationPromise = null;
