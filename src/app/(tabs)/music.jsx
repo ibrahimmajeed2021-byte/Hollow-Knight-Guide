@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     padding: 18,
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: 18,
     gap: 8,
   },
   eyebrow: { fontSize: 12, fontWeight: "bold", letterSpacing: 2 },
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   trackRow: {
     minHeight: 68,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 14,
     paddingHorizontal: 12,
     paddingVertical: 9,
     flexDirection: "row",
