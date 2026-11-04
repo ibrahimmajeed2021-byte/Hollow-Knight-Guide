@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Slider from "@react-native-community/slider";
-import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+import { setAudioModeAsync, useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
 
 import { AppText } from "../../components/hollow/app-text";
 import { Screen } from "../../components/hollow/screen";
@@ -26,6 +26,12 @@ export default function MusicScreen() {
   const status = useAudioPlayerStatus(player);
 
   useEffect(() => {
+    // Keep the music playing when the app is backgrounded or the screen is locked.
+    setAudioModeAsync({
+      playsInSilentMode: true,
+      shouldPlayInBackground: true,
+      interruptionMode: "doNotMix",
+    }).catch(() => {});
     // Stop the automatic game-menu soundtrack before starting manual playback.
     stopSound();
   }, []);
@@ -39,18 +45,33 @@ export default function MusicScreen() {
   const duration = status.duration || 0;
   const currentTime = status.currentTime || 0;
 
+  function activateLockScreenControls(track) {
+    player.setActiveForLockScreen(true, {
+      title: track.title,
+      artist: track.game,
+      albumTitle: "Hollow Knight Guide Soundtrack",
+    }, {
+      showNextTrack: true,
+      showPreviousTrack: true,
+    });
+  }
+
   function playTrack(index) {
     const nextIndex = Math.max(0, Math.min(gameTracks.length - 1, index));
     if (nextIndex !== selectedIndex) {
       player.replace(gameTracks[nextIndex].source);
       setSelectedIndex(nextIndex);
     }
+    activateLockScreenControls(gameTracks[nextIndex]);
     player.play();
   }
 
   function togglePlayback() {
     if (status.playing) player.pause();
-    else player.play();
+    else {
+      activateLockScreenControls(selectedTrack);
+      player.play();
+    }
   }
 
   function skipTrack(direction) {
