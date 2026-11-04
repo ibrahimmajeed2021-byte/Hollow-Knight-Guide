@@ -2,6 +2,7 @@ import { router, useFocusEffect } from "expo-router";
 import { useCallback } from "react";
 import { Pressable, StyleSheet, Switch, View } from "react-native";
 
+import { useAds } from "../ads/AdsContext";
 import { AppText } from "../components/hollow/app-text";
 import { BackupSection } from "../components/hollow/backup-section";
 import { Screen } from "../components/hollow/screen";
@@ -141,6 +142,7 @@ export default function SettingsScreen() {
   const { clearGame, dataStatus } = useGame();
   const triggerHaptic = useHaptics();
   const { isPremium } = usePurchases();
+  const { privacyOptionsRequired, showPrivacyOptions } = useAds();
 
   // Stop a ringtone-style preview as soon as Settings is no longer focused.
   useFocusEffect(
@@ -169,6 +171,23 @@ export default function SettingsScreen() {
           </AppText>
         </Pressable>
       </Section>
+
+      {privacyOptionsRequired ? (
+        <Section title="Ad privacy">
+          <AppText style={{ color: colors.muted }}>
+            Review or update the advertising privacy choices you made earlier.
+          </AppText>
+          <Pressable
+            accessibilityRole="button"
+            onPress={showPrivacyOptions}
+            style={[styles.resetButton, { backgroundColor: colors.button, alignSelf: "stretch", marginTop: 4, alignItems: "center" }]}
+          >
+            <AppText style={[styles.resetText, { color: colors.buttonText }]}>
+              Manage ad privacy choices
+            </AppText>
+          </Pressable>
+        </Section>
+      ) : null}
 
       <Section title="Appearance">
         <AppText style={styles.rowLabel}>Mode</AppText>
