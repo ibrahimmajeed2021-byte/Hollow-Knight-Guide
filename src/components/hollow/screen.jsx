@@ -4,7 +4,7 @@ import { useTabInset } from "../../hooks/use-tab-inset";
 import { useSettings } from "../../settings/SettingsContext";
 import { AppHeader } from "./app-header";
 
-export function Screen({ children, scroll = true }) {
+export function Screen({ children, scroll = true, contentStyle }) {
   const { colors } = useSettings();
   const inset = useTabInset();
   return (
@@ -12,21 +12,21 @@ export function Screen({ children, scroll = true }) {
       <AppHeader />
       {scroll ? (
         <ScrollView
+          showsVerticalScrollIndicator={false}
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: inset + 16 },
+            { paddingBottom: inset + 24 },
+            contentStyle,
           ]}
         >
           {children}
         </ScrollView>
-      ) : (
-        children
-      )}
+      ) : children}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  content: { paddingTop: 16, paddingBottom: 32 },
+  content: { paddingTop: 18, paddingBottom: 32 },
 });
