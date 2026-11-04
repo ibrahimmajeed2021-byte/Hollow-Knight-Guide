@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Slider from "@react-native-community/slider";
 import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
@@ -7,7 +7,7 @@ import { AppText } from "../../components/hollow/app-text";
 import { Screen } from "../../components/hollow/screen";
 import { Title } from "../../components/hollow/section-text";
 import { useSettings } from "../../settings/SettingsContext.jsx";
-import { selectorTracks } from "../../sound/game-sounds";
+import { selectorTracks, stopSound } from "../../sound/game-sounds";
 
 function formatTime(seconds = 0) {
   const safe = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
@@ -21,6 +21,11 @@ export default function MusicScreen() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const player = useAudioPlayer(selectorTracks[0].source);
   const status = useAudioPlayerStatus(player);
+
+  useEffect(() => {
+    // Stop the automatic game-menu soundtrack before starting manual playback.
+    stopSound();
+  }, []);
   const selectedTrack = selectorTracks[selectedIndex];
   const duration = status.duration || 0;
   const currentTime = status.currentTime || 0;
