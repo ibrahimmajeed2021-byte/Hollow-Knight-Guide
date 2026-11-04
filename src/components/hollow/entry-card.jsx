@@ -89,8 +89,8 @@ export function Stat({ label, value }) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 12,
-    padding: 14,
+    borderRadius: 16,
+    padding: 16,
     marginHorizontal: 16,
     marginTop: 14,
     borderWidth: 1,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 12,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 10,
   },
   closeDetailsText: { fontSize: 14, fontWeight: "bold" },
   stat: { marginTop: 4, fontSize: 15 },
