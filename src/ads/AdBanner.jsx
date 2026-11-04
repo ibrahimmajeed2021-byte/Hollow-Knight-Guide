@@ -1,39 +1,38 @@
 import { useState } from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
-import { useAds } from "./AdsContext";
-import { usePurchases } from "../purchases/PurchasesContext";
 import { AppText } from "../components/hollow/app-text";
-
-// Official Google demo units. Never use these in a production release.
-const TEST_BANNER_ID = TestIds.BANNER;
+import { usePurchases } from "../purchases/PurchasesContext";
+import { useAds } from "./AdsContext";
+import { ADS_AVAILABLE, BANNER_UNIT_ID, SHOW_LIVE_ADS } from "./ads-config";
 
 export function AdBanner() {
   const { isPremium } = usePurchases();
   const { ready } = useAds();
   const [failed, setFailed] = useState(false);
 
-  // No ads for Premium. Production ads are disabled until a real AdMob
-  // account, consent message and native app IDs have been configured.
-  if (!__DEV__ || isPremium || !ready || Platform.OS === "web") return null;
+  // No ads for Premium users, web, or an unconfigured Release build.
+  if (!ADS_AVAILABLE || isPremium || !ready || Platform.OS === "web" || failed) {
+    return null;
+  }
 
   return (
     <View style={styles.wrapper}>
-      <AppText style={styles.label}>TEST ADVERTISEMENT</AppText>
-      {failed ? (
-        <AppText style={styles.status}>Test ad could not load. Check the Metro logs.</AppText>
-      ) : (
-        <BannerAd
-          unitId={TEST_BANNER_ID}
-          size={BannerAdSize.BANNER}
-          requestOptions={{ requestNonPersonalizedAdsOnly: true }}
-          onAdFailedToLoad={(error) => {
-            console.warn("AdMob demo banner failed:", error?.message);
-            setFailed(true);
-          }}
-        />
-      )}
+      <AppText style={styles.label}>
+        {SHOW_LIVE_ADS ? "ADVERTISEMENT" : "TEST ADVERTISEMENT"}
+      </AppText>
+      <BannerAd
+        unitId={BANNER_UNIT_ID}
+        size={BannerAdSize.BANNER}
+        // Start with non-personalized ads. UMP consent is checked in AdsContext
+        // before this component is ever mounted.
+        requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+        onAdFailedToLoad={(error) => {
+          if (__DEV__) console.warn("AdMob banner failed:", error?.message || error);
+          setFailed(true);
+        }}
+      />
     </View>
   );
 }
@@ -49,10 +48,5 @@ const styles = StyleSheet.create({
     fontSize: 11,
     opacity: 0.65,
     letterSpacing: 1,
-  },
-  status: {
-    fontSize: 12,
-    textAlign: "center",
-    opacity: 0.7,
   },
 });
