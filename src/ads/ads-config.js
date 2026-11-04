@@ -1,11 +1,13 @@
 import { Platform } from "react-native";
 import { TestIds } from "react-native-google-mobile-ads";
+import savedIds from "../../admob.config.json";
 
-// Expo inlines EXPO_PUBLIC_* values into the JavaScript bundle at build time.
-// These AdMob identifiers are PUBLIC identifiers, not account passwords.
-const iosAppId = process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID;
+// The registered iOS App ID and Banner Unit ID are stored in admob.config.json.
+// EXPO_PUBLIC_* overrides remain supported for future replacements.
+// These IDs are public identifiers, not account passwords.
+const iosAppId = process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID || savedIds.iosAppId;
 const androidAppId = process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID;
-const iosBannerUnitId = process.env.EXPO_PUBLIC_ADMOB_IOS_BANNER_UNIT_ID;
+const iosBannerUnitId = process.env.EXPO_PUBLIC_ADMOB_IOS_BANNER_UNIT_ID || savedIds.iosBannerUnitId;
 const androidBannerUnitId = process.env.EXPO_PUBLIC_ADMOB_ANDROID_BANNER_UNIT_ID;
 const liveAdsRequested = process.env.EXPO_PUBLIC_ADMOB_ENABLE_LIVE_ADS === "true";
 
