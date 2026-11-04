@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   big: { fontSize: 32 },
   gap: { marginTop: 24 },
   list: { padding: 16, gap: 12 },
-  card: { borderWidth: 1, borderRadius: 12, padding: 14, gap: 8 },
+  card: { borderWidth: 1, borderRadius: 16, padding: 16, gap: 8 },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
