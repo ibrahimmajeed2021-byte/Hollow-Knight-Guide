@@ -1,6 +1,6 @@
 # RevenueCat setup — Hollow Knight Guide
 
-This Expo Router / React Native app uses RevenueCat's **Test Store** while developing.
+This Expo Router / React Native app uses RevenueCat's **Test Store** in **Debug builds only**. Test Store keys intentionally crash Release builds if passed into `Purchases.configure`. Our app skips RevenueCat initialization in Release until a real store key is supplied.
 
 ## 1. Install the native packages (from the VS Code terminal)
 
@@ -11,11 +11,13 @@ npm install --save react-native-purchases@10.14.0 react-native-purchases-ui@10.1
 
 As of **4 November 2026**, do not install RevenueCat React Native 11.x with Expo's CocoaPods setup: the native PurchasesHybridCommon dependency for 11.0.0 is not yet on CocoaPods trunk (expected after 7 November). The pinned 10.14.0 versions avoid that particular issue. We have not yet verified a successful build on your Mac.
 
-Both packages are native modules. **Rebuild the installed iPhone app** after installing them:
+Both packages are native modules. **Rebuild the installed iPhone app as Debug** to test with RevenueCat Test Store:
 
 ```bash
-npx expo run:ios --configuration Release --device
+npx expo run:ios --device
 ```
+
+Keep VS Code's Metro server running while using the Debug build. If the app shows a development server connection screen, run `npx expo start --dev-client` in the project directory. **Do not add `--configuration Release` when using a `test_` API key.**
 
 Do not use Expo Go to test real native purchases. No need to copy RevenueCat's sample `App()`; this project uses `src/app/_layout.jsx`.
 
@@ -87,7 +89,7 @@ The app's actual implementation handles errors in UI state, updates entitlement 
 
 ## 5. How to test on your iPhone
 
-1. Build/install the app after npm install.
+1. Build/install the **Debug** app after npm install using `npx expo run:ios --device` (not the Release command).
 2. Open your game's **Settings > Explore Premium**.
 3. Confirm the three product buttons and their prices appear. If not, check that the offering is set to **Current** and the products belong to your Test Store.
 4. Purchase monthly using the Test Store, then confirm `hollow_knight_guide_pro` becomes active. Go back to Settings: both special themes and all selector tracks should unlock.
@@ -97,7 +99,7 @@ The app's actual implementation handles errors in UI state, updates entitlement 
 
 ## 6. Before production
 
-The source contains a **public Test Store** key. Never use that key for actual App Store purchases. After joining the Apple Developer Program and configuring App Store Connect products, set the appropriate platform-specific *public* SDK key in the build environment:
+The source contains a **public Test Store** key for Debug only. Release builds skip purchase initialization if no real store key is configured, instead of crashing. Never use a Test Store key for App Store purchases. After joining the Apple Developer Program and configuring App Store Connect products, set the appropriate platform-specific *public* SDK key in the build environment:
 
 ```bash
 EXPO_PUBLIC_REVENUECAT_IOS_API_KEY=appl_your_public_ios_key
@@ -107,7 +109,7 @@ EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY=goog_your_public_android_key
 
 These environment variables are embedded in the app at build time; **they are not secrets**. Do not put RevenueCat secret API keys in the app.
 
-Set up App Store Connect products with the correct types, subscription group, prices, localization and agreements, and attach them to the same entitlement in RevenueCat. Confirm the production offering and paywall, test Apple Sandbox, restore, expiration and refund behavior, and rebuild for release.
+Set up App Store Connect products with the correct types, subscription group, prices, localization and agreements, and attach them to the same entitlement in RevenueCat. Confirm the production offering and paywall, test Apple Sandbox, restore, expiration and refund behavior, and then rebuild in Release with your production platform SDK key. **Never supply a `test_` key as a Release environment variable.**
 
 RevenueCat docs:
 - https://www.revenuecat.com/docs/getting-started/installation/expo
