@@ -1,18 +1,19 @@
 // Expo reads app.json first, then applies this dynamic configuration.
-// Without any environment variables the current working demo build is unchanged.
-const DEMO_IOS_APP_ID = "ca-app-pub-3940256099942544~1458002511";
+// Real iOS IDs are public and shared with the JavaScript banner configuration.
+// Debug builds still use Google's TEST BANNER UNIT and never serve live ads.
+const savedIds = require("./admob.config.json");
 const DEMO_ANDROID_APP_ID = "ca-app-pub-3940256099942544~3347511713";
 
 const appIdPattern = /^ca-app-pub-\d{16}~\d{10}$/;
 
-function chooseAppId(value, demoId) {
-  return value && appIdPattern.test(value) && value !== demoId ? value : demoId;
+function chooseAppId(value, fallbackId) {
+  return value && appIdPattern.test(value) ? value : fallbackId;
 }
 
 module.exports = ({ config }) => {
   const iosAppId = chooseAppId(
     process.env.EXPO_PUBLIC_ADMOB_IOS_APP_ID,
-    DEMO_IOS_APP_ID
+    savedIds.iosAppId
   );
   const androidAppId = chooseAppId(
     process.env.EXPO_PUBLIC_ADMOB_ANDROID_APP_ID,
