@@ -8,6 +8,7 @@ import { Title } from "../components/hollow/section-text";
 import LoadingSoundSetting from "../components/LoadingSoundSettings.js";
 import { useGame } from "../games/game-context";
 import { useHaptics, useSettings } from "../settings/SettingsContext.jsx";
+import { previewSelectorSound } from "../sound/game-sounds";
 
 const MODES = [
   { value: "light", label: "Light" },
@@ -221,7 +222,10 @@ export default function SettingsScreen() {
                   return (
                     <Pressable
                       key={track.value}
-                      onPress={() => update({ selectorMusicTrack: track.value })}
+                      onPress={() => {
+                        update({ selectorMusicTrack: track.value });
+                        previewSelectorSound(track.value);
+                      }}
                       accessibilityRole="radio"
                       accessibilityLabel={`${track.label}, from ${track.game}`}
                       accessibilityState={{ selected }}
