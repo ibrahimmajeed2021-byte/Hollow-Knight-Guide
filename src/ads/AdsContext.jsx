@@ -24,11 +24,14 @@ export function AdsProvider({ children }) {
         // Consent must be gathered before initializing Mobile Ads.
         // During initial testing Google's demo app IDs may not have a UMP form.
         const result = await AdsConsent.gatherConsent();
-        if (!result.canRequestAds) return;
+        if (!result.canRequestAds) {
+          // Test-only Google demo creative; no real ad request or revenue.
+          console.info("AdMob consent not available; displaying demo units only.");
+        }
       } catch (error) {
         // Demo ad units only: permit test ad initialization if the demo app
         // cannot serve a consent form. This is NOT safe for production ads.
-        console.warn("Test AdMob consent unavailable:", error?.message);
+        console.info("Test AdMob consent unavailable:", error?.message);
       }
 
       try {
