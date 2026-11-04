@@ -2,19 +2,16 @@
 
 This project now supports **Google demo banners in Debug** and **opt-in, non-personalized real banners in Release**. No real ad request is made unless IDs and the explicit release toggle have been provided.
 
-## 1. Create your AdMob app and banner unit
+## 1. Registered iOS AdMob IDs
 
-1. Go to https://admob.google.com and sign in.
-2. Go to **Apps > Add app**, choose **iOS**, then choose **No** if the app is not in the App Store yet.
-3. Enter `Hollow Knight Guide` and finish the unpublished app setup.
-4. Open the app in AdMob, choose **Ad units > Add ad unit > Banner**, name it `Home Banner`, then create it.
-5. Copy the two *public* identifiers:
-   - **App ID**: `ca-app-pub-1234567890123456~1234567890` (tilde)
-   - **Banner ad unit ID**: `ca-app-pub-1234567890123456/1234567890` (slash)
+The iOS app and Home Banner have been created in AdMob. Their public identifiers are committed to the repository in `admob.config.json`:
 
-These strings are examples only. Never share an AdMob login, password or banking details.
+- **App ID**: `ca-app-pub-7179160927714394~9893591797`
+- **Home Banner ad unit ID**: `ca-app-pub-7179160927714394/3004961847`
 
-The identifier formats are different and cannot be interchanged.
+The App ID is used by the native iOS Google Mobile Ads SDK. The Banner ad unit is used for the Home screen's ad request. **Do not interchange them.** Debug builds continue using Google's official test ad unit.
+
+No AdMob account password, payment information, or secret is stored in source code. The public IDs were supplied by the app owner.
 
 ## 2. Configure privacy BEFORE attempting live ads
 
@@ -27,19 +24,19 @@ The app uses Google's **User Messaging Platform (UMP)** through `AdsConsent.gath
 - If you later implement personalized tracking with IDFA, add the correct ATT usage text and permission flow, and honor the user's choice.
 - Review the privacy policy, App Store privacy answers, age rating, ad content policies and optional SKAdNetwork configuration before submission.
 
-## 3. Set production IDs using environment variables
+## 3. Enable live adverts only after release readiness
 
-For a local build, add real identifiers to your git-ignored `.env.local` (so Expo prebuild and bundling both see them), or export the variables in your terminal before running both commands. For EAS, configure the same variables in its **production** environment:
+**The iOS App ID and Home Banner ID are already in `admob.config.json`; no further ID copying is required.** Expo reads this shared file for native configuration and for the banner in JavaScript. In a future Release build, once Google app verification, GDPR/UK consent, RevenueCat production billing, and intellectual-property requirements are complete, explicitly opt in to live ads.
+
+For a local build, put the following in your git-ignored `.env.local` (or export it into the terminal before building). For EAS, set it in your production environment instead:
 
 ```dotenv
-EXPO_PUBLIC_ADMOB_IOS_APP_ID=ca-app-pub-REPLACE_WITH_YOUR_IOS_APP_ID
-EXPO_PUBLIC_ADMOB_IOS_BANNER_UNIT_ID=ca-app-pub-REPLACE_WITH_YOUR_BANNER_UNIT_ID
 EXPO_PUBLIC_ADMOB_ENABLE_LIVE_ADS=true
 ```
 
-**Replace** the example strings with the real, correctly formatted values. Public AdMob identifiers are not secrets.
+**Do not set this flag yet.** The default is safe: live ads are disabled.
 
-The optional Android variables are `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID` and `EXPO_PUBLIC_ADMOB_ANDROID_BANNER_UNIT_ID`; configure those only after making a separate Android app and unit in AdMob.
+The optional `EXPO_PUBLIC_ADMOB_IOS_APP_ID` and `EXPO_PUBLIC_ADMOB_IOS_BANNER_UNIT_ID` environment variables still allow you to override the registered IDs later. The optional Android variables are `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID` and `EXPO_PUBLIC_ADMOB_ANDROID_BANNER_UNIT_ID`; first create a separate Android app and unit in AdMob.
 
 How it works:
 - **Debug** (`__DEV__ === true`): always uses Google's safe demo ad unit, even if real IDs are present.
@@ -61,7 +58,7 @@ npx expo prebuild --platform ios
 plutil -extract GADApplicationIdentifier raw -o - ios/HollowKnightGuide/Info.plist
 ```
 
-The final command MUST print **your own** real iOS AdMob App ID, not `ca-app-pub-3940256099942544~1458002511`, before you make a Release build.
+The final command must print `ca-app-pub-7179160927714394~9893591797`, **not** Google's demo App ID, before you make a Release build.
 
 When your App Store billing and privacy flows are ready, a local iPhone Release build can be created with:
 
@@ -86,7 +83,8 @@ Before full serving:
 
 ## 6. Current implementation
 
-- `app.config.js`: overrides demo native App IDs when valid real IDs are supplied and delays measurement.
+- `admob.config.json`: public registered iOS App ID and Home Banner ad unit ID (single source of truth).
+- `app.config.js`: applies the registered native iOS App ID and delays measurement.
 - `src/ads/ads-config.js`: chooses Debug demo vs Release live units, validates format and opt-in.
 - `src/ads/AdsContext.jsx`: UMP consent, Premium gating, SDK initialization and privacy options.
 - `src/ads/AdBanner.jsx`: Home banner (test in Debug, real in configured Release, none for Premium).
