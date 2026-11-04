@@ -116,9 +116,6 @@ export default function MusicScreen() {
       : [...current, track.title]);
   }
 
-  const visibleTracks = gameTracks.map((track, index) => ({ track, index }))
-    .filter(({ track }) => !showFavourites || favourites.includes(track.title));
-
   return (
     <Screen>
       <Title style={styles.pageTitle}>Music player</Title>
