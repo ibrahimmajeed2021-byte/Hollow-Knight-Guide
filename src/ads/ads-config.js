@@ -19,8 +19,25 @@ const validAppId = /^ca-app-pub-\d{16}~\d{10}$/.test(platformAppId || "")
 const validBannerId = /^ca-app-pub-\d{16}\/\d{10}$/.test(platformBannerId || "")
   && !platformBannerId?.startsWith("ca-app-pub-3940256099942544/");
 
-// Debug ALWAYS uses Google's test banner even if real IDs are configured.
-// Release displays live ads only when explicitly enabled with both valid IDs.
+// Testing a *real* ad unit on a physical iPhone is allowed only with Google's
+// test-device configuration. Never request live inventory on your own phone.
+// A 32-character hashed test-device ID can be found in the Xcode console.
+const requestedOwnDebugUnit = process.env.EXPO_PUBLIC_ADMOB_TEST_OWN_UNIT === "true";
+const suppliedTestDeviceId = process.env.EXPO_PUBLIC_ADMOB_DEBUG_TEST_DEVICE_ID || "";
+const validTestDeviceId = /^[a-f0-9]{32}$/i.test(suppliedTestDeviceId);
+
+// Requires BOTH explicit opt-in AND a valid physical-device test ID.
+// Without them Debug keeps using Google's demo banner.
+export const DEBUG_OWN_UNIT_TEST = __DEV__
+  && Platform.OS === "ios"
+  && requestedOwnDebugUnit
+  && validAppId
+  && validBannerId
+  && validTestDeviceId;
+
+export const DEBUG_TEST_DEVICE_ID = DEBUG_OWN_UNIT_TEST ? suppliedTestDeviceId : null;
 export const SHOW_LIVE_ADS = !__DEV__ && liveAdsRequested && validAppId && validBannerId;
 export const ADS_AVAILABLE = Platform.OS !== "web" && (__DEV__ || SHOW_LIVE_ADS);
-export const BANNER_UNIT_ID = __DEV__ ? TestIds.BANNER : platformBannerId;
+export const BANNER_UNIT_ID = __DEV__
+  ? (DEBUG_OWN_UNIT_TEST ? platformBannerId : TestIds.BANNER)
+  : platformBannerId;
