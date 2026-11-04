@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 16,
     marginTop: 16,
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
     gap: 10,
   },
@@ -358,7 +358,7 @@ const styles = StyleSheet.create({
   segmented: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   option: {
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 11,
     paddingHorizontal: 12,
     paddingVertical: 8,
     minHeight: 40,
