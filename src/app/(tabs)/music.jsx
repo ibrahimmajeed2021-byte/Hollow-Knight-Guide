@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
 import Slider from "@react-native-community/slider";
@@ -9,6 +10,8 @@ import { Title } from "../../components/hollow/section-text";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { useGame } from "../../games/game-context";
 import { selectorTracks, stopSound } from "../../sound/game-sounds";
+
+const FAVOURITES_KEY = "hollow-knight-guide:music-favourites";
 
 function formatTime(seconds = 0) {
   const safe = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
@@ -22,6 +25,11 @@ export default function MusicScreen() {
   const { gameId } = useGame();
   const gameTracks = selectorTracks.filter((track) => track.id === (gameId ?? "hollow"));
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [favourites, setFavourites] = useState([]);
+  const [favouritesLoaded, setFavouritesLoaded] = useState(false);
+  const [showFavourites, setShowFavourites] = useState(false);
+  const [shuffle, setShuffle] = useState(false);
+  const [repeat, setRepeat] = useState(false);
   const player = useAudioPlayer(gameTracks[0].source);
   const status = useAudioPlayerStatus(player);
 
@@ -44,6 +52,9 @@ export default function MusicScreen() {
   const selectedTrack = gameTracks[selectedIndex];
   const duration = status.duration || 0;
   const currentTime = status.currentTime || 0;
+  const visibleTracks = gameTracks
+    .map((track, index) => ({ track, index }))
+    .filter(({ track }) => !showFavourites || favourites.includes(track.title));
 
   function activateLockScreenControls(track) {
     player.setActiveForLockScreen(true, {
@@ -136,7 +147,7 @@ export default function MusicScreen() {
 
       <AppText style={styles.listHeading}>{gameTracks[0].game} songs</AppText>
       <View style={styles.trackList}>
-        {gameTracks.map((track, index) => {
+        {visibleTracks.map(({ track, index }) => {
           const selected = index === selectedIndex;
           return (
             <Pressable
@@ -151,7 +162,7 @@ export default function MusicScreen() {
                 selected && { borderColor: colors.accent, borderWidth: 2 },
               ]}
             >
-              <View style={styles.trackNumber}>
+              <Pressable style={styles.trackMain} onPress={() => playTrack(index)} accessibilityRole="button" accessibilityLabel={`Play ${track.title}, from ${track.game}`} accessibilityState={{ selected }}>\n              <View style={styles.trackNumber}>
                 <AppText style={[styles.numberText, { color: colors.muted }]}>
                   {String(index + 1).padStart(2, "0")}
                 </AppText>
@@ -211,7 +222,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   playText: { fontSize: 25, fontWeight: "bold" },
-  listHeading: { fontSize: 21, fontWeight: "bold", marginHorizontal: 16, marginTop: 24 },
+  extraControls: { flexDirection: "row", justifyContent: "center", gap: 10, marginTop: 10 },
+  modeButton: { borderWidth: 1, borderRadius: 18, paddingVertical: 8, paddingHorizontal: 12 },
+  modeText: { fontSize: 13, fontWeight: "bold" },
+  headingRow: { marginHorizontal: 16, marginTop: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  listHeading: { fontSize: 21, fontWeight: "bold" },
+  filterText: { fontSize: 14, fontWeight: "bold" },
   trackList: { paddingHorizontal: 16, paddingTop: 10, gap: 8 },
   trackRow: {
     minHeight: 68,
@@ -223,9 +239,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
   },
+  trackMain: { flex: 1, flexDirection: "row", alignItems: "center", gap: 12 },
   trackNumber: { width: 30, alignItems: "center" },
   numberText: { fontSize: 13, fontVariant: ["tabular-nums"] },
   trackInfo: { flex: 1, gap: 3 },
   listTrackTitle: { fontSize: 15, fontWeight: "bold" },
   listAction: { fontSize: 13, fontWeight: "bold" },
+  favouriteButton: { width: 40, minHeight: 44, alignItems: "center", justifyContent: "center" },
+  favouriteIcon: { fontSize: 25 },
+  emptyText: { padding: 16, textAlign: "center", lineHeight: 22 },
 });
