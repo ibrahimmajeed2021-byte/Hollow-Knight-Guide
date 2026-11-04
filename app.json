@@ -60,7 +60,12 @@
         }
       ],
       "expo-sharing",
-      "expo-audio"
+      [
+        "expo-audio",
+        {
+          "enableBackgroundPlayback": true
+        }
+      ]
     ],
     "experiments": {
       "reactCompiler": true
