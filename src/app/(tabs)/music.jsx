@@ -29,6 +29,12 @@ export default function MusicScreen() {
     // Stop the automatic game-menu soundtrack before starting manual playback.
     stopSound();
   }, []);
+
+  useEffect(() => {
+    // If the user switches games while this tab is mounted, reset to that game\u2019s first song.
+    player.replace(gameTracks[0].source);
+    setSelectedIndex(0);
+  }, [gameId]);
   const selectedTrack = gameTracks[selectedIndex];
   const duration = status.duration || 0;
   const currentTime = status.currentTime || 0;
