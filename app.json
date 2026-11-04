@@ -10,7 +10,8 @@
     "ios": {
       "icon": "./assets/images/HollowKnightGuideAppIcon V1.0.0.png",
       "infoPlist": {
-        "CADisableMinimumFrameRateOnPhone": true
+        "CADisableMinimumFrameRateOnPhone": true,
+        "GADApplicationIdentifier": "ca-app-pub-3940256099942544~1458002511"
       },
       "bundleIdentifier": "com.ibrahimmajeed.Hollow-Knight-Guide"
     },
