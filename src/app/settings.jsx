@@ -1,4 +1,5 @@
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
+import { useCallback } from "react";
 import { Pressable, StyleSheet, Switch, View } from "react-native";
 
 import { AppText } from "../components/hollow/app-text";
@@ -8,7 +9,7 @@ import { Title } from "../components/hollow/section-text";
 import LoadingSoundSetting from "../components/LoadingSoundSettings.js";
 import { useGame } from "../games/game-context";
 import { useHaptics, useSettings } from "../settings/SettingsContext.jsx";
-import { previewSelectorSound } from "../sound/game-sounds";
+import { previewSelectorSound, stopSound } from "../sound/game-sounds";
 
 const MODES = [
   { value: "light", label: "Light" },
@@ -138,6 +139,13 @@ export default function SettingsScreen() {
   const { settings, update, reset, colors } = useSettings();
   const { clearGame, dataStatus } = useGame();
   const triggerHaptic = useHaptics();
+
+  // Stop a ringtone-style preview as soon as Settings is no longer focused.
+  useFocusEffect(
+    useCallback(() => {
+      return () => stopSound();
+    }, [])
+  );
 
   return (
     <Screen>
