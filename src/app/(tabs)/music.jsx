@@ -1,0 +1,196 @@
+import { useState } from "react";
+import { Pressable, StyleSheet, View } from "react-native";
+import Slider from "@react-native-community/slider";
+import { useAudioPlayer, useAudioPlayerStatus } from "expo-audio";
+
+import { AppText } from "../../components/hollow/app-text";
+import { Screen } from "../../components/hollow/screen";
+import { Title } from "../../components/hollow/section-text";
+import { useSettings } from "../../settings/SettingsContext.jsx";
+import { selectorTracks } from "../../sound/game-sounds";
+
+function formatTime(seconds = 0) {
+  const safe = Number.isFinite(seconds) ? Math.max(0, seconds) : 0;
+  const minutes = Math.floor(safe / 60);
+  const remaining = Math.floor(safe % 60);
+  return `${minutes}:${String(remaining).padStart(2, "0")}`;
+}
+
+export default function MusicScreen() {
+  const { colors } = useSettings();
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const player = useAudioPlayer(selectorTracks[0].source);
+  const status = useAudioPlayerStatus(player);
+  const selectedTrack = selectorTracks[selectedIndex];
+  const duration = status.duration || 0;
+  const currentTime = status.currentTime || 0;
+
+  function playTrack(index) {
+    const nextIndex = Math.max(0, Math.min(selectorTracks.length - 1, index));
+    if (nextIndex !== selectedIndex) {
+      player.replace(selectorTracks[nextIndex].source);
+      setSelectedIndex(nextIndex);
+    }
+    player.play();
+  }
+
+  function togglePlayback() {
+    if (status.playing) player.pause();
+    else player.play();
+  }
+
+  function skipTrack(direction) {
+    const nextIndex =
+      (selectedIndex + direction + selectorTracks.length) % selectorTracks.length;
+    playTrack(nextIndex);
+  }
+
+  return (
+    <Screen>
+      <Title style={styles.pageTitle}>Music player</Title>
+      <View style={[styles.nowPlaying, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <AppText style={[styles.eyebrow, { color: colors.muted }]}>NOW PLAYING</AppText>
+        <AppText style={styles.trackTitle}>{selectedTrack.title}</AppText>
+        <AppText style={[styles.trackGame, { color: colors.muted }]}>{selectedTrack.game}</AppText>
+
+        <Slider
+          style={styles.slider}
+          minimumValue={0}
+          maximumValue={Math.max(duration, 1)}
+          value={Math.min(currentTime, duration || 0)}
+          minimumTrackTintColor={colors.accent}
+          maximumTrackTintColor={colors.border}
+          thumbTintColor={colors.accent}
+          onSlidingComplete={(value) => player.seekTo(value)}
+          accessibilityLabel="Song position"
+        />
+        <View style={styles.timeRow}>
+          <AppText style={[styles.timeText, { color: colors.muted }]}>{formatTime(currentTime)}</AppText>
+          <AppText style={[styles.timeText, { color: colors.muted }]}>{formatTime(duration)}</AppText>
+        </View>
+
+        <View style={styles.controls}>
+          <Pressable
+            onPress={() => skipTrack(-1)}
+            accessibilityRole="button"
+            accessibilityLabel="Previous song"
+            style={[styles.controlButton, { borderColor: colors.border }]}
+          >
+            <AppText style={styles.controlText}>|◀</AppText>
+          </Pressable>
+          <Pressable
+            onPress={togglePlayback}
+            accessibilityRole="button"
+            accessibilityLabel={status.playing ? "Pause" : "Play"}
+            style={[styles.playButton, { backgroundColor: colors.button }]}
+          >
+            <AppText style={[styles.playText, { color: colors.buttonText }]}>
+              {status.playing ? "Ⅱ" : "▶"}
+            </AppText>
+          </Pressable>
+          <Pressable
+            onPress={() => skipTrack(1)}
+            accessibilityRole="button"
+            accessibilityLabel="Next song"
+            style={[styles.controlButton, { borderColor: colors.border }]}
+          >
+            <AppText style={styles.controlText}>▶|</AppText>
+          </Pressable>
+        </View>
+      </View>
+
+      <AppText style={styles.listHeading}>All songs</AppText>
+      <View style={styles.trackList}>
+        {selectorTracks.map((track, index) => {
+          const selected = index === selectedIndex;
+          return (
+            <Pressable
+              key={track.title}
+              onPress={() => playTrack(index)}
+              accessibilityRole="button"
+              accessibilityLabel={`Play ${track.title}, from ${track.game}`}
+              accessibilityState={{ selected }}
+              style={[
+                styles.trackRow,
+                { backgroundColor: colors.card, borderColor: colors.border },
+                selected && { borderColor: colors.accent, borderWidth: 2 },
+              ]}
+            >
+              <View style={styles.trackNumber}>
+                <AppText style={[styles.numberText, { color: colors.muted }]}>
+                  {String(index + 1).padStart(2, "0")}
+                </AppText>
+              </View>
+              <View style={styles.trackInfo}>
+                <AppText style={styles.listTrackTitle}>{track.title}</AppText>
+                <AppText style={[styles.trackGame, { color: colors.muted }]}>{track.game}</AppText>
+              </View>
+              <AppText style={[styles.listAction, { color: colors.accent }]}>
+                {selected && status.playing ? "Playing" : selected ? "Selected" : "Play"}
+              </AppText>
+            </Pressable>
+          );
+        })}
+      </View>
+    </Screen>
+  );
+}
+
+const styles = StyleSheet.create({
+  pageTitle: { fontSize: 30, marginHorizontal: 16 },
+  nowPlaying: {
+    marginHorizontal: 16,
+    marginTop: 16,
+    padding: 18,
+    borderWidth: 1,
+    borderRadius: 14,
+    gap: 8,
+  },
+  eyebrow: { fontSize: 12, fontWeight: "bold", letterSpacing: 2 },
+  trackTitle: { fontSize: 23, fontWeight: "bold", lineHeight: 30 },
+  trackGame: { fontSize: 13 },
+  slider: { width: "100%", height: 34, marginTop: 12 },
+  timeRow: { flexDirection: "row", justifyContent: "space-between" },
+  timeText: { fontSize: 12, fontVariant: ["tabular-nums"] },
+  controls: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 22,
+    marginTop: 12,
+  },
+  controlButton: {
+    width: 48,
+    height: 48,
+    borderWidth: 1,
+    borderRadius: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  controlText: { fontSize: 19 },
+  playButton: {
+    width: 62,
+    height: 62,
+    borderRadius: 31,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  playText: { fontSize: 25, fontWeight: "bold" },
+  listHeading: { fontSize: 21, fontWeight: "bold", marginHorizontal: 16, marginTop: 24 },
+  trackList: { paddingHorizontal: 16, paddingTop: 10, gap: 8 },
+  trackRow: {
+    minHeight: 68,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+  },
+  trackNumber: { width: 30, alignItems: "center" },
+  numberText: { fontSize: 13, fontVariant: ["tabular-nums"] },
+  trackInfo: { flex: 1, gap: 3 },
+  listTrackTitle: { fontSize: 15, fontWeight: "bold" },
+  listAction: { fontSize: 13, fontWeight: "bold" },
+});
