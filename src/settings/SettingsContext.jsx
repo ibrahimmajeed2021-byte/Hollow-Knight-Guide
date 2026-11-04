@@ -10,6 +10,8 @@ import {
 } from "react";
 import { useColorScheme } from "react-native";
 
+import { usePurchases } from "../purchases/PurchasesContext";
+
 import {
   defaultSettings,
   fontScales,
@@ -41,6 +43,7 @@ export function SettingsProvider({ children }) {
   const [settings, setSettings] = useState(defaultSettings);
   const [loaded, setLoaded] = useState(false);
   const systemScheme = useColorScheme();
+  const { isPremium } = usePurchases();
 
   useEffect(() => {
     AsyncStorage.getItem(STORAGE_KEY)
@@ -63,10 +66,22 @@ export function SettingsProvider({ children }) {
   const reset = useCallback(() => update(defaultSettings), [update]);
 
   const value = useMemo(() => {
+    // Use free choices whenever the entitlement is inactive, including expiry.
+    // Keep saved premium selections so they return if the user subscribes again.
+    const visibleSettings = isPremium
+      ? settings
+      : {
+          ...settings,
+          themeStyle: "default",
+          selectorMusicTrack:
+            (settings.selectorMusicTrack ?? 0) < 2
+              ? settings.selectorMusicTrack ?? 0
+              : 0,
+        };
     const isDark =
-      settings.mode === "dark" ||
-      (settings.mode === "system" && systemScheme === "dark");
-    const style = settings.themeStyle;
+      visibleSettings.mode === "dark" ||
+      (visibleSettings.mode === "system" && systemScheme === "dark");
+    const style = visibleSettings.themeStyle;
     const paletteKey =
       style === "default"
         ? isDark
@@ -75,18 +90,18 @@ export function SettingsProvider({ children }) {
         : isDark
         ? `${style}Dark`
         : style;
-    const colors = settings.highContrast
+    const colors = visibleSettings.highContrast
       ? highContrast[isDark ? "dark" : "light"]
       : palettes[paletteKey];
     return {
-      settings,
+      settings: visibleSettings,
       update,
       reset,
       isDark,
       colors,
-      fontScale: fontScales[settings.fontSize] ?? 1,
+      fontScale: fontScales[visibleSettings.fontSize] ?? 1,
     };
-  }, [settings, systemScheme, update, reset]);
+  }, [settings, isPremium, systemScheme, update, reset]);
 
   if (!loaded) return null;
   return (
