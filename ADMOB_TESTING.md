@@ -11,7 +11,7 @@ git pull origin master
 npx expo install react-native-google-mobile-ads
 ```
 
-The project includes Google's **official demo AdMob App IDs** in `app.json` and a dynamic `app.config.js` which can replace them at native build time for configured production builds:
+The base `app.json` retains Google's **official demo App IDs** as placeholders. Expo's `app.config.js` now overrides the iOS App ID with the real, public identifier in `admob.config.json` on native rebuild, while keeping the banner's ad-unit ID as Google's **test ad unit** for every Debug build:
 - iOS demo App ID: `ca-app-pub-3940256099942544~1458002511`
 - Android demo App ID: `ca-app-pub-3940256099942544~3347511713`
 
@@ -63,7 +63,8 @@ RevenueCat's Test Store monthly/yearly subscriptions expire automatically on an 
 - `src/ads/AdBanner.jsx`: Google demo banner in Debug; uses a real unit only in explicitly configured Release builds (free only; disappears for Premium).
 - `src/app/_layout.jsx`: wires AdsProvider below PurchasesProvider.
 - `src/app/(tabs)/index.jsx`: places a test banner near the bottom of the Home screen.
-- `app.config.js`: safely provides native demo App IDs by default and overrides them only when valid real IDs are supplied.
+- `admob.config.json`: contains the registered public real iOS App ID and banner unit ID.
+- `app.config.js`: applies the registered real iOS App ID at native build time and keeps an Android demo App ID until Android is set up. Debug still displays test banners only.
 
 ## 4. Before actual monetization
 
