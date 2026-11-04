@@ -1,6 +1,7 @@
 import { router } from "expo-router";
 import { Linking, Pressable, StyleSheet, View } from "react-native";
 
+import { AdBanner } from "../../ads/AdBanner";
 import { AppText } from "../../components/hollow/app-text";
 import { Button } from "../../components/hollow/button";
 import { ProgressBar } from "../../components/hollow/progress-bar";
@@ -113,6 +114,8 @@ export default function HomeScreen() {
           </Card>
         )}
       </View>
+
+      <AdBanner />
 
       <Title style={[styles.big, styles.gap]}>Welcome!</Title>
       <Body>
