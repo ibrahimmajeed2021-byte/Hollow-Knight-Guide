@@ -7,6 +7,7 @@ import { AppText } from "../../components/hollow/app-text";
 import { Screen } from "../../components/hollow/screen";
 import { Title } from "../../components/hollow/section-text";
 import { useSettings } from "../../settings/SettingsContext.jsx";
+import { useGame } from "../../games/game-context";
 import { selectorTracks, stopSound } from "../../sound/game-sounds";
 
 function formatTime(seconds = 0) {
@@ -18,22 +19,24 @@ function formatTime(seconds = 0) {
 
 export default function MusicScreen() {
   const { colors } = useSettings();
+  const { gameId } = useGame();
+  const gameTracks = selectorTracks.filter((track) => track.id === (gameId ?? "hollow"));
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const player = useAudioPlayer(selectorTracks[0].source);
+  const player = useAudioPlayer(gameTracks[0].source);
   const status = useAudioPlayerStatus(player);
 
   useEffect(() => {
     // Stop the automatic game-menu soundtrack before starting manual playback.
     stopSound();
   }, []);
-  const selectedTrack = selectorTracks[selectedIndex];
+  const selectedTrack = gameTracks[selectedIndex];
   const duration = status.duration || 0;
   const currentTime = status.currentTime || 0;
 
   function playTrack(index) {
-    const nextIndex = Math.max(0, Math.min(selectorTracks.length - 1, index));
+    const nextIndex = Math.max(0, Math.min(gameTracks.length - 1, index));
     if (nextIndex !== selectedIndex) {
-      player.replace(selectorTracks[nextIndex].source);
+      player.replace(gameTracks[nextIndex].source);
       setSelectedIndex(nextIndex);
     }
     player.play();
@@ -46,7 +49,7 @@ export default function MusicScreen() {
 
   function skipTrack(direction) {
     const nextIndex =
-      (selectedIndex + direction + selectorTracks.length) % selectorTracks.length;
+      (selectedIndex + direction + gameTracks.length) % gameTracks.length;
     playTrack(nextIndex);
   }
 
@@ -104,9 +107,9 @@ export default function MusicScreen() {
         </View>
       </View>
 
-      <AppText style={styles.listHeading}>All songs</AppText>
+      <AppText style={styles.listHeading}>{gameTracks[0].game} songs</AppText>
       <View style={styles.trackList}>
-        {selectorTracks.map((track, index) => {
+        {gameTracks.map((track, index) => {
           const selected = index === selectedIndex;
           return (
             <Pressable
