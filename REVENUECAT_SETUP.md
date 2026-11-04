@@ -6,8 +6,10 @@ This Expo Router / React Native app uses RevenueCat's **Test Store** while devel
 
 ```bash
 git pull origin master
-npm install --save react-native-purchases react-native-purchases-ui
+npm install --save react-native-purchases@10.14.0 react-native-purchases-ui@10.14.0
 ```
+
+As of **4 November 2026**, do not install RevenueCat React Native 11.x with Expo's CocoaPods setup: the native PurchasesHybridCommon dependency for 11.0.0 is not yet on CocoaPods trunk (expected after 7 November). The pinned 10.14.0 versions avoid that particular issue. We have not yet verified a successful build on your Mac.
 
 Both packages are native modules. **Rebuild the installed iPhone app** after installing them:
 
@@ -17,7 +19,7 @@ npx expo run:ios --configuration Release --device
 
 Do not use Expo Go to test real native purchases. No need to copy RevenueCat's sample `App()`; this project uses `src/app/_layout.jsx`.
 
-If Xcode reports missing pods, from your project root run `npx pod-install ios` and rebuild. If Xcode 27 reports an iOS deployment-target CocoaPods issue, see RevenueCat's React Native installation page for its specific `post_install` workaround; don't change unrelated Podfile settings preemptively.
+If Xcode reports missing pods, from your project root run `npx pod-install ios` and rebuild. Expo SDK 58 normally applies the iOS deployment-target adjustment needed for Xcode 27. If you get a CocoaPods deployment-target error, check the actual build log before changing the Podfile.
 
 ## 2. Configure RevenueCat Test Store
 
