@@ -6,20 +6,22 @@ const loadingSources = {
   silksong: require("../../assets/sounds/silksong-loading.mp3"),
 };
 // Every track in assets/sounds/Game Selector is bundled explicitly for Expo.
-const selectorSources = [
-  require("../../assets/sounds/Game Selector/game-selector.mp3"),
-  require("../../assets/sounds/Game Selector/selector1.mp3"),
-  require("../../assets/sounds/Game Selector/selector2.mp3"),
-  require("../../assets/sounds/Game Selector/selector3.mp3"),
-  require("../../assets/sounds/Game Selector/selector4.mp3"),
-  require("../../assets/sounds/Game Selector/selector5.mp3"),
-  require("../../assets/sounds/Game Selector/selector6.mp3"),
-  require("../../assets/sounds/Game Selector/selector7.mp3"),
-  require("../../assets/sounds/Game Selector/selector8.mp3"),
-  require("../../assets/sounds/Game Selector/selector9.mp3"),
-  require("../../assets/sounds/Game Selector/selector10.mp3"),
-  require("../../assets/sounds/Game Selector/selector11.mp3"),
+export const selectorTracks = [
+  { title: "Hollow Knight Title Theme", game: "Hollow Knight", source: require("../../assets/sounds/Game Selector/game-selector.mp3") },
+  { title: "Silksong Title Theme", game: "Silksong", source: require("../../assets/sounds/Game Selector/selector1.mp3") },
+  { title: "Bone Bottom", game: "Silksong", source: require("../../assets/sounds/Game Selector/selector2.mp3") },
+  { title: "Bilewater", game: "Silksong", source: require("../../assets/sounds/Game Selector/selector3.mp3") },
+  { title: "Choral Chambers", game: "Silksong", source: require("../../assets/sounds/Game Selector/selector4.mp3") },
+  { title: "Lost Verdania", game: "Silksong", source: require("../../assets/sounds/Game Selector/selector5.mp3") },
+  { title: "Songclave", game: "Silksong", source: require("../../assets/sounds/Game Selector/selector6.mp3") },
+  { title: "High Halls", game: "Silksong", source: require("../../assets/sounds/Game Selector/selector7.mp3") },
+  { title: "Dirtmouth", game: "Hollow Knight", source: require("../../assets/sounds/Game Selector/selector8.mp3") },
+  { title: "Greenpath", game: "Hollow Knight", source: require("../../assets/sounds/Game Selector/selector9.mp3") },
+  { title: "City of Tears", game: "Hollow Knight", source: require("../../assets/sounds/Game Selector/selector10.mp3") },
+  { title: "Resting Grounds", game: "Hollow Knight", source: require("../../assets/sounds/Game Selector/selector11.mp3") },
 ];
+
+const selectorSources = selectorTracks.map((track) => track.source);
 
 const FADE_MS = 600;
 const FADE_STEPS = 12;
