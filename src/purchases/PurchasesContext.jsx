@@ -6,12 +6,12 @@ import RevenueCatUI from "react-native-purchases-ui";
 // Both subscriptions and the lifetime purchase grant the same entitlement.
 export const PREMIUM_ENTITLEMENT = "hollow_knight_guide_pro";
 
-// PUBLIC RevenueCat SDK key for development with Test Store.
-// Set EXPO_PUBLIC_REVENUECAT_API_KEY to the platform's production public SDK
-// key when you switch to App Store / Google Play purchases.
-const API_KEY =
-  process.env.EXPO_PUBLIC_REVENUECAT_API_KEY ||
-  "test_WRaCfHJEiihXEjkKFzDNwJPvSBA";
+// This public Test Store key is safe for development, including iPhone builds.
+// Production requires a separate public SDK key for each real store.
+const TEST_STORE_API_KEY = "test_WRaCfHJEiihXEjkKFzDNwJPvSBA";
+const API_KEY = Platform.OS === "ios"
+  ? process.env.EXPO_PUBLIC_REVENUECAT_IOS_API_KEY || TEST_STORE_API_KEY
+  : process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_API_KEY || TEST_STORE_API_KEY;
 
 let sdkConfigured = false;
 const PurchasesContext = createContext(null);
