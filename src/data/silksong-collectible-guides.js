@@ -113,30 +113,9 @@ const groupArticle = {
 // Acquisition references for skills that were previously missing location text.
 // Their wiki article remains the source of truth for route requirements.
 const abilityLocations = {
-  "Silkspear": "Mosshome — learn Silkspear at the Weaver Burial Spire.",
-  "Thread Storm": "Craw Lake, Greymoor — learn Thread Storm at the Weaver Burial Spire.",
-  "Cross Stitch": "Exhaust Organ, Bilewater — defeat Phantom to learn Cross Stitch.",
-  "Sharpdart": "Weavenest Karn, Wormways — find the Weaver Burial Spire.",
-  "Rune Rage": "The Slab — defeat the First Sinner.",
-  "Pale Nails": "The Cradle — obtain during the Grand Mother Silk sequence in Act 3.",
-  "Swift Step": "Deep Docks — learn at the northern Weaver Burial Spire.",
-  "Cling Grip": "Shellwood — reach the Weaver Burial Spire beyond Sister Splinter.",
-  "Needolin": "Bellhart — obtained after defeating Widow.",
-  "Clawline": "The Cauldron, Underworks — find the Weaver Burial Spire.",
-  "Silk Soar": "Weavenest Absolom, The Abyss — learn Silk Soar in Act 3.",
-  "Sylphsong": "Weavenest Atla — learn Sylphsong from Eva.",
-  "Conductor's Melody": "High Halls — receive from Conductor Ballador after his challenge.",
-  "Architect's Melody": "Cogwork Core — find the Architect's Melody in the upper core.",
-  "Vaultkeeper's Melody": "Whispering Vaults — visit Vaultkeeper Cardinius and the Sacred Cylinder.",
-  "Beastling Call": "Bellway travel routes — defeat Bell Eater in Act 3.",
-  "Elegy of the Deep": "Moss Grotto — visit the Ruined Chapel and Snail Shamans after the Spell Seeker wish.",
-  "Bind": "Available from the start — this is an innate ability, not a map pickup.",
-  "Silk Heart": "Silk Hearts are awarded for defeating Bell Beast, The Unravelled and Lace.",
-  "Needle Strike": "Blasted Steps — train with the Pinstress.",
-  "Drifter's Cloak": "Far Fields — receive from the Seamstress after the Flexile Spines wish.",
-  "Faydown Cloak": "Mount Fay — complete the summit challenge.",
-  "Farsight": "Weavenest Absolom, The Abyss — recover Farsight and install it at Bellhome.",
-  "Everbloom": "Red Memory, Moss Grotto — receive Everbloom from the White Lady.",
+  "Silk Soar": "Weavenest Absolom in the Abyss — acquire at the Weaver Burial Spire.",
+  "Farsight": "Weavenest Absolom in the Abyss — found in the eastern passage.",
+  "Everbloom": "Red Memory in Moss Grotto — acquire from the White Lady.",
 };
 
 // Confirmed files from the wiki's 'X SS Maps' media index. These are marked
@@ -161,6 +140,7 @@ const regionMaps = [
   ["Grand Gate", "Grand Gate Map Marked.png"],
   ["Greymoor", "Greymoor Map Marked.png"],
   ["Halfway Home", "Halfway Home Map Marked.png"],
+  ["Hunter's March", "Hunter's March Map Marked.png"],
   ["High Halls", "High Halls Map Marked.png"],
 ];
 
@@ -211,7 +191,13 @@ export function getCollectibleGuide(item) {
   const location = item.location || abilityLocations[item.name] || null;
   // Only add a regional overview where no exact/quest-specific map exists.
   // The caption makes clear this is not an individual pickup pin.
-  const matchedMap = map || getRegionalMap(location);
+  const wishwall = item.group === "wishes"
+    ? (location?.startsWith("Bellhart Wishwall") ? ["Mapshot SS Bellhart Wishwall.png", "Bellhart Wishwall — quest posting point, not the objective"]
+      : location?.startsWith("Songclave Wishwall") ? ["Mapshot SS Songclave Wishwall.png", "Songclave Wishwall — quest posting point, not the objective"]
+      : location?.startsWith("Bone Bottom Wishwall") ? ["Mapshot SS Bone Bottom Wishwall.png", "Bone Bottom Wishwall — quest posting point, not the objective"]
+      : null)
+    : null;
+  const matchedMap = map || wishwall || getRegionalMap(location);
   const article = groupArticle[item.group] || articleOverrides[item.name] || item.name;
   const sourcePage = wikiUrl(article);
   const defaultArtwork = artwork[item.group];
