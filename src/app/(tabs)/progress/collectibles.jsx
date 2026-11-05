@@ -9,11 +9,14 @@ import {
   CharmSummary,
 } from "../../../components/hollow/progress-extras";
 import { AppText } from "../../../components/hollow/app-text";
+import { WikiLocationSection } from "../../../components/hollow/wiki-location-section";
 import { SearchFilter } from "../../../components/hollow/search-filter";
 import { Screen } from "../../../components/hollow/screen";
 import { Body, Title } from "../../../components/hollow/section-text";
 import { useTabInset } from "../../../hooks/use-tab-inset";
 import { useJournal } from "../../../journal/journal-context";
+import { getCollectibleGuide } from "../../../data/silksong-collectible-guides";
+import { useGame } from "../../../games/game-context";
 import {
   silksongCollectibleGroups,
   silksongCollectibles,
@@ -29,6 +32,8 @@ const keyOf = (item) => `c:${item.name}`;
 
 export default function CollectiblesScreen() {
   const { collected } = useJournal();
+  const { config } = useGame();
+  const collectibles = config.collectibles ?? silksongCollectibles;
   const inset = useTabInset();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
@@ -37,17 +42,17 @@ export default function CollectiblesScreen() {
   const groupFilters = useMemo(
     () =>
       silksongCollectibleGroups.map((g) => {
-        const items = silksongCollectibles.filter((i) => i.group === g.id);
+        const items = collectibles.filter((i) => i.group === g.id);
         const done = items.filter((i) => collected[keyOf(i)]).length;
         return { value: g.id, label: `${g.title} ${done}/${items.length}` };
       }),
-    [collected],
+    [collected, collectibles],
   );
   const current = silksongCollectibleGroups.find((g) => g.id === group);
 
   const data = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return silksongCollectibles.filter(
+    return collectibles.filter(
       (i) =>
         i.group === group &&
         (!q ||
@@ -55,7 +60,7 @@ export default function CollectiblesScreen() {
           (i.location ?? "").toLowerCase().includes(q)) &&
         (filter === "all" || (filter === "done") === !!collected[keyOf(i)]),
     );
-  }, [group, query, filter, collected]);
+  }, [group, query, filter, collected, collectibles]);
 
   const header = (
     <>
@@ -93,6 +98,8 @@ export default function CollectiblesScreen() {
         ListEmptyComponent={<Body>Nothing matches.</Body>}
         contentContainerStyle={{ paddingBottom: inset }}
         initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={7}
         renderItem={({ item }) => (
           <EntryCard
             name={item.name}
@@ -105,9 +112,11 @@ export default function CollectiblesScreen() {
               </>
             }
           >
-            {item.location ? (
-              <Stat label="Location" value={item.location} />
-            ) : null}
+            <WikiLocationSection
+              item={item}
+              gameId="silksong"
+              guideOverride={getCollectibleGuide(item)}
+            />
             {item.requires ? (
               <Stat label="Requires" value={item.requires} />
             ) : null}
