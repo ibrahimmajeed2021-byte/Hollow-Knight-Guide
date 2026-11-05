@@ -31,10 +31,34 @@ const silksongCollectibles = await load(
 );
 const tips = await load("tips.js", "tips");
 
+const getWikiLocationGuide = await load(
+  "wiki-location-guides.js",
+  "getWikiLocationGuide",
+);
+
+// Publish acquisition directions and attribution alongside the existing item
+// descriptions. The app can download these updates without a native rebuild.
+const withWikiLocations = (items, gameId) =>
+  items.map((item) => {
+    const guide = getWikiLocationGuide(item, gameId);
+    return {
+      ...item,
+      ...(guide?.location ? { location: guide.location } : {}),
+      ...(guide?.wikiUrl ? { wikiUrl: guide.wikiUrl } : {}),
+      ...(guide?.imageUrl
+        ? {
+            locationMapUrl: guide.imageUrl,
+            locationMapSource: guide.fileUrl,
+            locationMapLabel: guide.mapLabel,
+          }
+        : {}),
+    };
+  });
+
 write("hollow/bosses.json", bosses);
-write("hollow/items.json", charms);
+write("hollow/items.json", withWikiLocations(charms, "hollow"));
 write("silksong/bosses.json", silksongBosses);
-write("silksong/items.json", silksongItems);
+write("silksong/items.json", withWikiLocations(silksongItems, "silksong"));
 write("silksong/collectibles.json", silksongCollectibles);
 write("tips.json", tips);
 write("index.json", {
