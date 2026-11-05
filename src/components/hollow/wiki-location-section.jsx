@@ -34,10 +34,10 @@ function WikiSourceLink({ label, url, colors }) {
 
 // Rendered inside an expanded item card only, so remote map images aren't
 // downloaded for the entire list on initial load. No native build required.
-export function WikiLocationSection({ item, gameId }) {
+export function WikiLocationSection({ item, gameId, guideOverride }) {
   const { colors } = useSettings();
   const [failedImageUrl, setFailedImageUrl] = useState(null);
-  const guide = getWikiLocationGuide(item, gameId);
+  const guide = guideOverride || getWikiLocationGuide(item, gameId);
   if (!guide) return null;
 
   const displayMap = guide.imageUrl && failedImageUrl !== guide.imageUrl;
@@ -84,7 +84,7 @@ export function WikiLocationSection({ item, gameId }) {
       <AppText style={[styles.credit, { color: colors.muted }]}>
         Location reference: Hollow Knight Wiki. Map screenshots are copyrighted
         game artwork; image credits and usage details are on the linked file page.
-        Map previews require internet.
+        Map previews require internet and may be unavailable.
       </AppText>
     </View>
   );
