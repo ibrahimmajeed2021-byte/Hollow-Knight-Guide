@@ -68,6 +68,7 @@ const withCollectibleLocations = (entries) =>
     return {
       ...item,
       wikiUrl: guide.wikiUrl,
+      ...(guide.location ? { location: guide.location } : {}),
       ...(guide.artworkUrl
         ? {
             artworkUrl: guide.artworkUrl,
