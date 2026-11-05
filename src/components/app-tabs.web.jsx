@@ -24,6 +24,11 @@ export default function AppTabs() {
           <TabTrigger name="bosses" href="/bosses" asChild>
             <TabButton>Bosses</TabButton>
           </TabTrigger>
+          {config.id === "silksong" && (
+            <TabTrigger name="quests" href="/quests" asChild>
+              <TabButton>Quests</TabButton>
+            </TabTrigger>
+          )}
           <TabTrigger name="progress" href="/progress" asChild>
             <TabButton>Progress</TabButton>
           </TabTrigger>

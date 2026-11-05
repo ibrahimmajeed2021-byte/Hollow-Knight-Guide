@@ -118,7 +118,9 @@ export default function ProgressScreen() {
           label={isSilksong ? "Tools & Crests collected" : "Charms collected"}
           done={itemDone}
           total={items.length}
-          onPress={() => router.push("/charms")}
+          onPress={() => isSilksong
+            ? router.push({ pathname: "/charms", params: { category: "equipment" } })
+            : router.push("/charms")}
         />
 
         {isSilksong && (
@@ -136,7 +138,14 @@ export default function ProgressScreen() {
                 label={group.title}
                 done={group.done}
                 total={group.total}
-                onPress={() => router.push("/progress/collectibles")}
+                onPress={() =>
+                  group.id === "wishes"
+                    ? router.push("/quests")
+                    : router.push({
+                        pathname: "/charms",
+                        params: { category: group.id },
+                      })
+                }
               />
             ))}
           </>
