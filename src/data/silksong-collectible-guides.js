@@ -93,6 +93,8 @@ const namedMaps = {
   "Great Taste of Pharloom": ["Mapshot SS Loyal Mergwin 01.png", "Loyal Mergwin (quest)"],
   "Silk Heart": ["Screenshot SS Silk Heart 01.png", "Silk Heart pickup (illustration)"],
   "Architect's Melody": ["Mapshot SS Architect's Melody.png", "Architect's Melody location"],
+  "Everbloom": ["Mapshot SS Red Memory.png", "Red Memory entrance in Moss Grotto; Everbloom is acquired inside"],
+  "Elegy of the Deep": ["Mapshot SS Red Memory.png", "Red Memory / Ruined Chapel area in Moss Grotto, not an exact reward marker"],
 };
 // Pages used by all numbered entries are verified wiki articles; unnumbered
 // abilities and wishes use their own wiki article or search page.
@@ -107,6 +109,73 @@ const groupArticle = {
 // These are actual item/group art files confirmed on the wiki's Items page,
 // plus the Wishwall and Skills/Abilities pages. They are CATEGORY thumbnails,
 // never presented as a precise location map.
+
+// Acquisition references for skills that were previously missing location text.
+// Their wiki article remains the source of truth for route requirements.
+const abilityLocations = {
+  "Silkspear": "Mosshome — learn Silkspear at the Weaver Burial Spire.",
+  "Thread Storm": "Craw Lake, Greymoor — learn Thread Storm at the Weaver Burial Spire.",
+  "Cross Stitch": "Exhaust Organ, Bilewater — defeat Phantom to learn Cross Stitch.",
+  "Sharpdart": "Weavenest Karn, Wormways — find the Weaver Burial Spire.",
+  "Rune Rage": "The Slab — defeat the First Sinner.",
+  "Pale Nails": "The Cradle — obtain during the Grand Mother Silk sequence in Act 3.",
+  "Swift Step": "Deep Docks — learn at the northern Weaver Burial Spire.",
+  "Cling Grip": "Shellwood — reach the Weaver Burial Spire beyond Sister Splinter.",
+  "Needolin": "Bellhart — obtained after defeating Widow.",
+  "Clawline": "The Cauldron, Underworks — find the Weaver Burial Spire.",
+  "Silk Soar": "Weavenest Absolom, The Abyss — learn Silk Soar in Act 3.",
+  "Sylphsong": "Weavenest Atla — learn Sylphsong from Eva.",
+  "Conductor's Melody": "High Halls — receive from Conductor Ballador after his challenge.",
+  "Architect's Melody": "Cogwork Core — find the Architect's Melody in the upper core.",
+  "Vaultkeeper's Melody": "Whispering Vaults — visit Vaultkeeper Cardinius and the Sacred Cylinder.",
+  "Beastling Call": "Bellway travel routes — defeat Bell Eater in Act 3.",
+  "Elegy of the Deep": "Moss Grotto — visit the Ruined Chapel and Snail Shamans after the Spell Seeker wish.",
+  "Bind": "Available from the start — this is an innate ability, not a map pickup.",
+  "Silk Heart": "Silk Hearts are awarded for defeating Bell Beast, The Unravelled and Lace.",
+  "Needle Strike": "Blasted Steps — train with the Pinstress.",
+  "Drifter's Cloak": "Far Fields — receive from the Seamstress after the Flexile Spines wish.",
+  "Faydown Cloak": "Mount Fay — complete the summit challenge.",
+  "Farsight": "Weavenest Absolom, The Abyss — recover Farsight and install it at Bellhome.",
+  "Everbloom": "Red Memory, Moss Grotto — receive Everbloom from the White Lady.",
+};
+
+// Confirmed files from the wiki's 'X SS Maps' media index. These are marked
+// REGIONAL maps, never exact item pins. The first area mentioned is used,
+// typically the wish's quest board or NPC, not every objective on its route.
+const regionMaps = [
+  ["Bellhart", "Bellhart Map Marked.png"],
+  ["Songclave", "Choral Chambers Map Marked.png"],
+  ["Choral Chambers", "Choral Chambers Map Marked.png"],
+  ["Bone Bottom", "Bone Bottom Map Marked.png"],
+  ["Bilewater", "Bilewater Map Marked.png"],
+  ["Blasted Steps", "Blasted Steps Map Marked.png"],
+  ["Brightvein", "Brightvein Map Marked.png"],
+  ["Chapel of the Beast", "Chapel of the Beast Map Marked.png"],
+  ["Cogwork Core", "Cogwork Core Map Marked.png"],
+  ["Craw Lake", "Craw Lake Map Marked.png"],
+  ["Deep Docks", "Deep Docks Map Marked.png"],
+  ["Exhaust Organ", "Exhaust Organ Map Marked.png"],
+  ["Far Fields", "Far Fields Map Marked.png"],
+  ["Fleatopia", "Fleatopia Map Marked.png"],
+  ["Grand Bellway", "Grand Bellway Map Marked.png"],
+  ["Grand Gate", "Grand Gate Map Marked.png"],
+  ["Greymoor", "Greymoor Map Marked.png"],
+  ["Halfway Home", "Halfway Home Map Marked.png"],
+  ["High Halls", "High Halls Map Marked.png"],
+];
+
+const getRegionalMap = (location) => {
+  if (!location) return null;
+  const lower = location.toLowerCase();
+  const match = regionMaps
+    .map(([area, file]) => ({ area, file, index: lower.indexOf(area.toLowerCase()) }))
+    .filter((candidate) => candidate.index >= 0)
+    .sort((a, b) => a.index - b.index || b.area.length - a.area.length)[0];
+  return match
+    ? [match.file, match.area + " regional map — area overview, not an exact pickup or quest marker"]
+    : null;
+};
+
 const artwork = {
   maskshards: ["Mask Shard (Silksong).png", "Mask Shard artwork"],
   spoolfragments: ["Spool Fragment.png", "Spool Fragment artwork"],
@@ -139,16 +208,20 @@ export function getCollectibleGuide(item) {
     case "craftmetal": map = craftmetal[number]; break;
     default: map = namedMaps[item.name] || null;
   }
+  const location = item.location || abilityLocations[item.name] || null;
+  // Only add a regional overview where no exact/quest-specific map exists.
+  // The caption makes clear this is not an individual pickup pin.
+  const matchedMap = map || getRegionalMap(location);
   const article = groupArticle[item.group] || articleOverrides[item.name] || item.name;
   const sourcePage = wikiUrl(article);
   const defaultArtwork = artwork[item.group];
   const artworkFilename = defaultArtwork?.[0];
   const artworkPreview = item.artworkUrl ||
     (artworkFilename ? imageUrl(artworkFilename) : null);
-  const mapPreview = item.locationMapUrl || (map ? imageUrl(map[0]) : null);
-  const mapPage = item.locationMapSource || (map ? fileUrl(map[0]) : null);
+  const mapPreview = item.locationMapUrl || (matchedMap ? imageUrl(matchedMap[0]) : null);
+  const mapPage = item.locationMapSource || (matchedMap ? fileUrl(matchedMap[0]) : null);
   return {
-    location: item.location || null,
+    location,
     wikiUrl: item.wikiUrl || sourcePage,
     artworkUrl: artworkPreview,
     artworkSource: item.artworkSource ||
@@ -157,7 +230,7 @@ export function getCollectibleGuide(item) {
     fileUrl: mapPage || item.artworkSource ||
       (artworkFilename ? fileUrl(artworkFilename) : null),
     mapLabel: mapPreview
-      ? (item.locationMapLabel || map?.[1] || "Location map")
+      ? (item.locationMapLabel || matchedMap?.[1] || "Location map")
       : defaultArtwork?.[1] || "Collectible artwork",
     imageType: mapPreview ? "map" : "artwork",
   };
