@@ -16,10 +16,11 @@ artwork thumbnail, and expanding a row shows **Where to find it**:
 | Craftmetal | 8 | 8 |
 | Wishes | 54 | 9 |
 | Skills & Abilities | 24 | 2 |
-| **Total** | **150** | **71** |
+| **Total** | **150** | **117 (exact, quest-related and regional combined)** |
 
-The remaining entries show **category artwork** rather than a fabricated
-location map. In particular, wish entries can display a Wishwall illustration
+The remaining **33** entries show **category artwork** rather than a fabricated
+location map. Regional maps are labelled as overviews, not item pins. Verified
+Wishwall screenshots indicate the board where the quest is posted, not its objective. In particular, wish entries can display a Wishwall illustration
 and ability entries an ability-category illustration. The caption explicitly
 distinguishes representative artwork from a specific pickup location.
 
@@ -45,7 +46,7 @@ use the source links only.
   `artworkUrl`, `artworkSource`, plus optional `locationMapUrl`,
   `locationMapSource`, `locationMapLabel`.
 - `public/api/silksong/collectibles.json`: regenerated JSON, with existing
-  locations and progress names preserved.
+  locations and progress names preserved, and three verified ability locations filled.
 
 ### Update and test
 
