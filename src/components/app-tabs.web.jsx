@@ -29,9 +29,6 @@ export default function AppTabs() {
               <TabButton>Quests</TabButton>
             </TabTrigger>
           )}
-          <TabTrigger name="music" href="/music" asChild>
-            <TabButton>Music</TabButton>
-          </TabTrigger>
           <TabTrigger name="progress" href="/progress" asChild>
             <TabButton>Progress</TabButton>
           </TabTrigger>
@@ -63,6 +60,6 @@ const styles = StyleSheet.create({
     paddingBottom: "max(10px, env(safe-area-inset-bottom))",
   },
   button: { flex: 1, alignItems: "center" },
-  label: { fontSize: 13 },
+  label: { fontSize: 16 },
   focused: { fontWeight: "bold" },
 });
