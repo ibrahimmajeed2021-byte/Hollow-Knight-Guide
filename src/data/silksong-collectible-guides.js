@@ -104,6 +104,19 @@ const groupArticle = {
   paleoil: "Pale Oil",
   craftmetal: "Craftmetal",
 };
+// These are actual item/group art files confirmed on the wiki's Items page,
+// plus the Wishwall and Skills/Abilities pages. They are CATEGORY thumbnails,
+// never presented as a precise location map.
+const artwork = {
+  maskshards: ["Mask Shard (Silksong).png", "Mask Shard artwork"],
+  spoolfragments: ["Spool Fragment.png", "Spool Fragment artwork"],
+  memorylockets: ["Memory Locket.png", "Memory Locket artwork"],
+  silkhearts: ["Icon SS Silk Heart.png", "Silk Heart artwork"],
+  paleoil: ["Pale Oil.png", "Pale Oil artwork"],
+  craftmetal: ["Craftmetal.png", "Craftmetal artwork"],
+  wishes: ["Wishwall Bellhart.png", "Wishwall illustration (not the quest location)"],
+  abilities: ["Icon SS Farsight Art.png", "Ability-category artwork (Farsight; not this ability's location)"],
+};
 const articleOverrides = {
   "The Lost Fleas": "The Lost Fleas",
   "LEARN: Bugs of Pharloom": "Bugs of Pharloom",
@@ -128,11 +141,24 @@ export function getCollectibleGuide(item) {
   }
   const article = groupArticle[item.group] || articleOverrides[item.name] || item.name;
   const sourcePage = wikiUrl(article);
+  const defaultArtwork = artwork[item.group];
+  const artworkFilename = defaultArtwork?.[0];
+  const artworkPreview = item.artworkUrl ||
+    (artworkFilename ? imageUrl(artworkFilename) : null);
+  const mapPreview = item.locationMapUrl || (map ? imageUrl(map[0]) : null);
+  const mapPage = item.locationMapSource || (map ? fileUrl(map[0]) : null);
   return {
     location: item.location || null,
     wikiUrl: item.wikiUrl || sourcePage,
-    imageUrl: item.locationMapUrl || (map ? imageUrl(map[0]) : null),
-    fileUrl: item.locationMapSource || (map ? fileUrl(map[0]) : null),
-    mapLabel: item.locationMapLabel || map?.[1] || "Location reference",
+    artworkUrl: artworkPreview,
+    artworkSource: item.artworkSource ||
+      (artworkFilename ? fileUrl(artworkFilename) : null),
+    imageUrl: mapPreview || artworkPreview,
+    fileUrl: mapPage || item.artworkSource ||
+      (artworkFilename ? fileUrl(artworkFilename) : null),
+    mapLabel: mapPreview
+      ? (item.locationMapLabel || map?.[1] || "Location map")
+      : defaultArtwork?.[1] || "Collectible artwork",
+    imageType: mapPreview ? "map" : "artwork",
   };
 }
