@@ -57,11 +57,12 @@ export default function ProgressScreen() {
   const isSilksong = config.id === "silksong";
   const bosses = config.bosses;
   const items = config.items;
+  const collectibles = config.collectibles ?? silksongCollectibles;
   const bossDone = bosses.filter((boss) => defeated[boss.name]).length;
   const itemDone = items.filter((item) => collected[item.name]).length;
 
   const collectibleProgress = silksongCollectibleGroups.map((group) => {
-    const groupItems = silksongCollectibles.filter((item) => item.group === group.id);
+    const groupItems = collectibles.filter((item) => item.group === group.id);
     const done = groupItems.filter((item) => collected[`c:${item.name}`]).length;
     return { ...group, done, total: groupItems.length };
   });
