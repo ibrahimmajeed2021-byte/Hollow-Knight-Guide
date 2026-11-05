@@ -54,3 +54,25 @@ Join our community of developers creating universal apps.
 
 - [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
 - [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+
+
+## Silksong Items and Quests navigation
+
+- **Items** replaces the Silksong **Tools & Crests** tab and includes tools,
+  crests, Mask Shards, Spool Fragments, Memory Lockets, Silk Hearts,
+  Pale Oil, Craftmetal, and Skills & Abilities.
+- Swipe the category filters to focus on an item family; search and
+  collected/not-collected filters work across the combined list.
+- **Quests** is a separate Silksong-only tab showing all 54 wishes, with quest
+  type, location, rewards, search, and completed/not-completed filters.
+- **Progress** keeps its existing completion breakdown. Tapping a category
+  opens the relevant Items filter or Quests tab. The old all-collectibles
+  checklist remains available as a combined view.
+- The original item names and `c:<name>` keys remain unchanged, so existing
+  checkmarks and notes carry over automatically. Quests are marked **Completed**.
+- The Hollow Knight **Charms** tab remains unchanged.
+
+These are JavaScript-only navigation changes; test with the existing Expo
+  development client. No API rebuild or new native binary is needed unless
+  you change native dependencies. Publishing the Surge data API separately
+  is only necessary for data changes, not these tab UI changes.

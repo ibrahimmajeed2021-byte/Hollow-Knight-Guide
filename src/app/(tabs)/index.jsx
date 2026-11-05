@@ -45,8 +45,13 @@ export default function HomeScreen() {
 
   const bossDone = bosses.filter((b) => defeated[b.name]).length;
   const charmDone = charms.filter((c) => collected[c.name]).length;
-  const total = bosses.length + charms.length;
-  const pct = total ? Math.round(((bossDone + charmDone) / total) * 100) : 0;
+  const isSilksong = config.id === "silksong";
+  const collectibles = isSilksong ? config.collectibles ?? [] : [];
+  const collectibleDone = collectibles.filter((item) => collected[`c:${item.name}`]).length;
+  const total = bosses.length + charms.length + collectibles.length;
+  const pct = total
+    ? Math.round(((bossDone + charmDone + collectibleDone) / total) * 100)
+    : 0;
   const nextBoss = bosses.find((b) => !defeated[b.name]);
   const lastLoadout = loadouts[0];
 
@@ -65,7 +70,8 @@ export default function HomeScreen() {
           <ProgressBar pct={pct} label="Overall progress" />
           <AppText style={[styles.small, { color: colors.muted }]}>
             {bossDone}/{bosses.length} bosses · {charmDone}/{charms.length}{" "}
-            {config.itemsLabel.toLowerCase()}
+            {isSilksong ? "tools & crests" : "charms"}
+            {isSilksong ? ` · ${collectibleDone}/${collectibles.length} collectibles & quests` : ""}
           </AppText>
         </Card>
 
