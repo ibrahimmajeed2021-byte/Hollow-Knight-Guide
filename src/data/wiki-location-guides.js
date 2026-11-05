@@ -65,6 +65,23 @@ export const silksongCrestLocations = {
 // Filenames found on Hollow Knight Wiki's file pages or map-file categories.
 // The Grubfather map identifies the reward NPC, not a pickup on the ground.
 const hkMaps = {
+  "Wayward Compass": "Mapshot HK Iselda 01.png",
+  "Gathering Swarm": "Mapshot HK Sly 01.png",
+  "Stalwart Shell": "Mapshot HK Sly 01.png",
+  "Sprintmaster": "Mapshot HK Sly 01.png",
+  "Heavy Blow": "Mapshot HK Sly 01.png",
+  "Nailmaster's Glory": "Mapshot HK Sly 01.png",
+  "Shaman Stone": "Mapshot HK Salubra 01.png",
+  "Steady Body": "Mapshot HK Salubra 01.png",
+  "Longnail": "Mapshot HK Salubra 01.png",
+  "Quick Focus": "Mapshot HK Salubra 01.png",
+  "Lifeblood Heart": "Mapshot HK Salubra 01.png",
+  "Fragile Heart": "Mapshot HK Leg Eater 01.png",
+  "Fragile Greed": "Mapshot HK Leg Eater 01.png",
+  "Fragile Strength": "Mapshot HK Leg Eater 01.png",
+  "Carefree Melody": "Mapshot HK Nymm 01.png",
+  "Dream Wielder": "Mapshot HK Seer 01.png",
+  "Kingsoul": "Mapshot HK White Lady 01.png",
   "Soul Eater": "Mapshot HK Soul Eater.png",
   "Lifeblood Core": "Mapshot HK Lifeblood Core.png",
   "Spore Shroom": "Mapshot HK Spore Shroom.png",
@@ -75,6 +92,12 @@ const hkMaps = {
   "Grubberfly's Elegy": "Mapshot HK Mask Shard 02.png",
 };
 const ssMaps = {
+  "Hunter Crest": "Mapshot SS Eva 01.png",
+  "Cursed Crest": "Mapshot SS Greyroot.png",
+  "Shaman Crest": "Mapshot SS Red Memory.png",
+  "Cloakless Crest": "Mapshot SS Wardenfly 02.png",
+  "Pollip Pouch": "Mapshot SS Greyroot.png",
+  "Tacks": "Mapshot SS Crull and Benjin 01.png",
   "Architect Crest": "Mapshot SS Architect Crest.png",
   "Beast Crest": "Mapshot SS Beast Crest.png",
   "Reaper Crest": "Mapshot SS Reaper Crest.png",
@@ -82,6 +105,33 @@ const ssMaps = {
   "Barbed Bracelet": "Mapshot SS Barbed Bracelet.png",
   "Weighted Belt": "Mapshot SS Weighted Belt.png",
   "Snare Setter": "Mapshot SS Snare Setter 01.png",
+};
+const mapCaptions = {
+  "Grubsong": "Grubfather's location",
+  "Grubberfly's Elegy": "Grubfather's location",
+  "Wayward Compass": "Iselda's shop",
+  "Gathering Swarm": "Sly's shop",
+  "Stalwart Shell": "Sly's shop",
+  "Sprintmaster": "Sly's shop",
+  "Heavy Blow": "Sly's shop",
+  "Nailmaster's Glory": "Sly's location",
+  "Shaman Stone": "Salubra's shop",
+  "Steady Body": "Salubra's shop",
+  "Longnail": "Salubra's shop",
+  "Quick Focus": "Salubra's shop",
+  "Lifeblood Heart": "Salubra's shop",
+  "Fragile Heart": "Leg Eater's location",
+  "Fragile Greed": "Leg Eater's location",
+  "Fragile Strength": "Leg Eater's location",
+  "Carefree Melody": "Nymm's location",
+  "Dream Wielder": "The Seer's location",
+  "Kingsoul": "White Lady (one Kingsoul half)",
+  "Hunter Crest": "Eva's location (Crest upgrades)",
+  "Cursed Crest": "Greyroot's location (quest)",
+  "Shaman Crest": "Red Memory location",
+  "Cloakless Crest": "Wardenfly location (capture)",
+  "Pollip Pouch": "Greyroot's location (quest)",
+  "Tacks": "Crull and Benjin's location",
 };
 const articleOverrides = {
   "Grimm Child": "Grimmchild",
@@ -108,7 +158,6 @@ export function getWikiLocationGuide(item, gameId) {
     // can fail (offline, remote server changes), and the UI must hide it.
     imageUrl: file ? WIKI + "Special:Redirect/file/" + wikiSlug(file) : null,
     fileUrl: file ? WIKI + "File:" + wikiSlug(file) : null,
-    mapLabel: ["Grubsong", "Grubberfly's Elegy"].includes(item.name)
-      ? "Grubfather's location" : "Location map",
+    mapLabel: mapCaptions[item.name] || "Location map",
   };
 }
