@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
@@ -44,7 +44,13 @@ export function SearchFilter({
           />
         </View>
       )}
-      <View style={styles.chips} accessibilityRole="radiogroup">
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        accessibilityRole="radiogroup"
+        contentContainerStyle={styles.chips}
+      >
         {filters.map((f) => {
           const on = filter === f.value;
           return (
@@ -73,7 +79,7 @@ export function SearchFilter({
             </Pressable>
           );
         })}
-      </View>
+      </ScrollView>
     </View>
   );
 }
@@ -88,7 +94,7 @@ const styles = StyleSheet.create({
   },
   inputWrap: { borderWidth: 1, borderRadius: 12, paddingHorizontal: 14 },
   input: { paddingVertical: 10 },
-  chips: { flexDirection: "row", gap: 8 },
+  chips: { flexDirection: "row", gap: 8, paddingRight: 16 },
   chip: {
     borderWidth: 1,
     borderRadius: 18,

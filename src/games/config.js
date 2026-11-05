@@ -36,7 +36,7 @@ export const games = {
     guideTitle: "Silksong Guide",
     tagline: "Pharloom",
     storageSuffix: ":silksong",
-    itemsLabel: "Tools & Crests",
+    itemsLabel: "Items",
     itemLabel: "Tool",
     hasLoadouts: true,
     largeBossImage: true,

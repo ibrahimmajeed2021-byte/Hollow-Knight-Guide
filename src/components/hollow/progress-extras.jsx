@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   thumb: { width: 64, height: 64, borderRadius: 8 },
 });
 
-export function CharmSummary({ name, notches, id = name }) {
+export function CharmSummary({ name, notches, id = name, completedLabel = "Collected" }) {
   const { collected } = useJournal();
   const { colors } = useSettings();
   return (
@@ -129,27 +129,27 @@ export function CharmSummary({ name, notches, id = name }) {
       {notches != null ? <Stat label="Notches" value={notches} /> : null}
       {collected[id] ? (
         <AppText style={[styles.badge, { color: colors.accent }]}>
-          ✓ Collected
+          ✓ {completedLabel}
         </AppText>
       ) : null}
     </>
   );
 }
 
-export function CharmExtras({ name, id = name }) {
+export function CharmExtras({ name, id = name, label = "Collected" }) {
   const { colors } = useSettings();
   const triggerHaptic = useHaptics();
   const { collected, toggleCollected } = useJournal();
   return (
     <View style={[styles.wrap, styles.row]}>
-      <AppText style={styles.label}>Collected</AppText>
+      <AppText style={styles.label}>{label}</AppText>
       <Switch
         value={!!collected[id]}
         onValueChange={() => {
           triggerHaptic();
           toggleCollected(id);
         }}
-        accessibilityLabel={`Mark ${name} as collected`}
+        accessibilityLabel={`Mark ${name} as ${label.toLowerCase()}`}
         trackColor={{ true: colors.button }}
       />
     </View>

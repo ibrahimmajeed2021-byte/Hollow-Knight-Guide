@@ -44,6 +44,16 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
+      {config.id === "silksong" && (
+        <NativeTabs.Trigger name="quests">
+          <NativeTabs.Trigger.Label>Quests</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon
+            sf={{ default: "list.bullet.clipboard", selected: "checklist" }}
+            md="assignment"
+          />
+        </NativeTabs.Trigger>
+      )}
+
       <NativeTabs.Trigger name="music">
         <NativeTabs.Trigger.Label>Music</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon
