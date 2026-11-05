@@ -8,6 +8,7 @@ import {
   CharmSummary,
 } from "../../../components/hollow/progress-extras";
 import { AppText } from "../../../components/hollow/app-text";
+import { WikiLocationSection } from "../../../components/hollow/wiki-location-section";
 import { SearchFilter } from "../../../components/hollow/search-filter";
 import { useTabInset } from "../../../hooks/use-tab-inset";
 import { Screen } from "../../../components/hollow/screen";
@@ -28,13 +29,13 @@ const KIND_FILTERS = [
   { value: "Yellow Tool", label: "Yellow" },
 ];
 
-function ItemDetails({ item }) {
+function ItemDetails({ item, gameId }) {
   return (
     <>
-      {item.location ? <Stat label="Location" value={item.location} /> : null}
       {Object.entries(item.details ?? {}).map(([label, value]) => (
         <Stat key={label} label={label} value={value} />
       ))}
+      <WikiLocationSection item={item} gameId={gameId} />
     </>
   );
 }
@@ -131,7 +132,7 @@ export default function CharmsScreen() {
               )
             }
           >
-            {item.kind ? <ItemDetails item={item} /> : null}
+            <ItemDetails item={item} gameId={config.id} />
             <CharmExtras name={item.name} />
           </EntryCard>
         )}
