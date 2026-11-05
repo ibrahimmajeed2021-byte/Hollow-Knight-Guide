@@ -52,6 +52,7 @@ export function GameProvider({ children }) {
     Object.keys(games).forEach((id) => {
       load(id, "bosses");
       load(id, "items");
+      if (id === "silksong") load(id, "collectibles");
     });
     return () => {
       cancelled = true;
@@ -88,12 +89,14 @@ export function GameProvider({ children }) {
     const base = games[id];
     const bosses = remote[`${id}/bosses.json`];
     const items = remote[`${id}/items.json`];
+    const collectibles = remote[`${id}/collectibles.json`];
     const config = {
       ...base,
       bosses: mergeList(base.bosses, bosses),
       items: mergeList(base.items, items),
+      collectibles: mergeList(base.collectibles ?? [], collectibles),
     };
-    const found = ["bosses", "items"]
+    const found = (id === "silksong" ? ["bosses", "items", "collectibles"] : ["bosses", "items"])
       .map((kind) => sources[`${id}/${kind}.json`])
       .filter(Boolean);
     const online = found.some((s) => s.source === "online");
