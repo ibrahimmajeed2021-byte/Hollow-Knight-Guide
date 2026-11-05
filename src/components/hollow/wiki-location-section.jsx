@@ -65,6 +65,10 @@ export function WikiLocationSection({ item, gameId, guideOverride }) {
             onError={() => setFailedImageUrl(guide.imageUrl)}
           />
         </>
+      ) : guide.imageUrl ? (
+        <AppText style={[styles.mapLabel, { color: colors.muted }]}>
+          Wiki image could not load. Use the source link below to view its location map or artwork.
+        </AppText>
       ) : null}
 
       <View style={styles.links}>
