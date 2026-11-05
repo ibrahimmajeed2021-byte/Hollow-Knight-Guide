@@ -5,6 +5,7 @@ import {
   silksongItemImages,
 } from "../data/silksong-images";
 import { silksongItems } from "../data/silksong-items";
+import { silksongCollectibles } from "../data/silksong-collectibles";
 import { silksongBosses } from "../data/silksong-bosses";
 import { charms as hkCharms } from "../data/charms";
 import { bossImages, charmImages, locationImages } from "../data/images";
@@ -45,6 +46,7 @@ export const games = {
     loadingImageSize: { width: 124, height: 144 },
     bosses: silksongBosses,
     items: silksongItems,
+    collectibles: silksongCollectibles,
     bossImages: silksongBossImages,
     itemImages: silksongItemImages,
     locationImages: silksongLocationImages,
