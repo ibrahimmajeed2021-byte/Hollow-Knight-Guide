@@ -58,7 +58,7 @@ export function WikiLocationSection({ item, gameId, guideOverride }) {
           </AppText>
           <Image
             source={{ uri: guide.imageUrl }}
-            style={[styles.map, { backgroundColor: colors.background }]}
+            style={[guide.imageType === "artwork" ? styles.artwork : styles.map, { backgroundColor: colors.background }]}
             contentFit="contain"
             cachePolicy="memory-disk"
             accessibilityLabel={`${item.name}: ${guide.mapLabel.toLowerCase()} from Hollow Knight Wiki`}
@@ -70,7 +70,7 @@ export function WikiLocationSection({ item, gameId, guideOverride }) {
       <View style={styles.links}>
         {guide.fileUrl ? (
           <WikiSourceLink
-            label="Open map and credits on Wiki"
+            label={guide.imageType === "artwork" ? "Open artwork and credits on Wiki" : "Open map and credits on Wiki"}
             url={guide.fileUrl}
             colors={colors}
           />
@@ -111,6 +111,11 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: 190,
+    borderRadius: 12,
+  },
+  artwork: {
+    width: "100%",
+    height: 115,
     borderRadius: 12,
   },
   links: {
