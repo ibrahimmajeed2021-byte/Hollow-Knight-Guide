@@ -4,10 +4,10 @@ This project now supports **Google demo banners in Debug** and **opt-in, non-per
 
 ## 1. Registered iOS AdMob IDs
 
-The iOS app and Home Banner have been created in AdMob. Their public identifiers are committed to the repository in `admob.config.json`:
+The replacement iOS app and Home Banner have been created in the user's new AdMob account. Their public identifiers are committed to the repository in `admob.config.json`:
 
-- **App ID**: `ca-app-pub-7179160927714394~9893591797`
-- **Home Banner ad unit ID**: `ca-app-pub-7179160927714394/3004961847`
+- **App ID**: `ca-app-pub-3058832476599990~1514809839`
+- **Home Banner ad unit ID**: `ca-app-pub-3058832476599990/3832842252`
 
 The App ID is used by the native iOS Google Mobile Ads SDK. The Banner ad unit is used for the Home screen's ad request. **Do not interchange them.** Debug builds continue using Google's official test ad unit.
 
@@ -58,7 +58,7 @@ npx expo prebuild --platform ios
 plutil -extract GADApplicationIdentifier raw -o - ios/HollowKnightGuide/Info.plist
 ```
 
-The final command must print `ca-app-pub-7179160927714394~9893591797`, **not** Google's demo App ID, before you make a Release build.
+The final command must print `ca-app-pub-3058832476599990~1514809839`, **not** Google's demo App ID, before you make a Release build.
 
 When your App Store billing and privacy flows are ready, a local iPhone Release build can be created with:
 
