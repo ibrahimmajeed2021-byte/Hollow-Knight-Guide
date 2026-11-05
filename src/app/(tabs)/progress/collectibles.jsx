@@ -102,6 +102,7 @@ export default function CollectiblesScreen() {
         windowSize={7}
         renderItem={({ item }) => (
           <EntryCard
+            image={{ uri: getCollectibleGuide(item).artworkUrl }}
             name={item.name}
             description={item.description ?? ""}
             summary={
