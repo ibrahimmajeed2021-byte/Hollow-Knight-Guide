@@ -66,6 +66,8 @@ export const silksongCrestLocations = {
 // The Grubfather map identifies the reward NPC, not a pickup on the ground.
 const hkMaps = {
   "Soul Eater": "Mapshot HK Soul Eater.png",
+  "Lifeblood Core": "Mapshot HK Lifeblood Core.png",
+  "Spore Shroom": "Mapshot HK Spore Shroom.png",
   "Quick Slash": "Mapshot HK Quick Slash.png",
   "Spell Twister": "Mapshot HK Spell Twister.png",
   DreamShield: "Mapshot HK Dreamshield.png",
@@ -96,7 +98,7 @@ export function getWikiLocationGuide(item, gameId) {
   if (!item?.name) return null;
   const hk = gameId === "hollow";
   const location = hk
-    ? hollowCharmLocations[item.name] || item.location || null
+    ? item.location || hollowCharmLocations[item.name] || null
     : item.location || silksongCrestLocations[item.name] || null;
   const file = (hk ? hkMaps : ssMaps)[item.name];
   return {
