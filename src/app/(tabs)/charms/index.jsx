@@ -1,8 +1,9 @@
-import { router } from "expo-router";
-import { useMemo, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList } from "react-native";
 import { Button } from "../../../components/hollow/button";
 import { EntryCard, Stat } from "../../../components/hollow/entry-card";
+import { CollectionEntry } from "../../../components/hollow/collection-entry";
 import {
   CharmExtras,
   CharmSummary,
@@ -15,6 +16,7 @@ import { Screen } from "../../../components/hollow/screen";
 import { Body, Title } from "../../../components/hollow/section-text";
 import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
+import { silksongCollectibleGroups } from "../../../data/silksong-collectibles";
 const FILTERS = [
   { value: "all", label: "All" },
   { value: "todo", label: "Not collected" },
@@ -40,7 +42,7 @@ function ItemDetails({ item, gameId }) {
   );
 }
 
-export default function CharmsScreen() {
+function HollowCharmsScreen() {
   const { collected } = useJournal();
   const { config } = useGame();
   const charms = config.items;
@@ -139,4 +141,156 @@ export default function CharmsScreen() {
       />
     </Screen>
   );
+}
+
+
+// These category tabs bring the Silksong collectibles into Items, while
+// Wishes have their own Quests tab. They still use their existing c:<name>
+// journal keys, so progress is shared with the Progress screen.
+const SILKSONG_CATEGORIES = [
+  { value: "all", label: "All items" },
+  { value: "equipment", label: "Tools & Crests" },
+  { value: "tools", label: "Tools" },
+  { value: "crests", label: "Crests" },
+  { value: "Red Tool", label: "Red tools" },
+  { value: "Blue Tool", label: "Blue tools" },
+  { value: "Yellow Tool", label: "Yellow tools" },
+  { value: "collectibles", label: "Collectibles" },
+  ...silksongCollectibleGroups
+    .filter((group) => group.id !== "wishes")
+    .map((group) => ({ value: group.id, label: group.title })),
+];
+
+const matchesCategory = (row, category) => {
+  if (category === "all") return true;
+  if (category === "equipment") return row.type === "equipment";
+  if (category === "tools") return row.type === "equipment" && row.item.kind?.endsWith("Tool");
+  if (category === "crests") return row.type === "equipment" && row.item.kind === "Crest";
+  if (category === "collectibles") return row.type === "collectible";
+  return row.type === "equipment"
+    ? row.item.kind === category
+    : row.item.group === category;
+};
+
+function SilksongItemsScreen() {
+  const { config } = useGame();
+  const { collected } = useJournal();
+  const { category: routeCategory } = useLocalSearchParams();
+  const inset = useTabInset();
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("all");
+  const [category, setCategory] = useState("all");
+
+  // Deep links from Progress open the corresponding category automatically.
+  useEffect(() => {
+    const requested = typeof routeCategory === "string" ? routeCategory : "all";
+    setCategory(SILKSONG_CATEGORIES.some((option) => option.value === requested) ? requested : "all");
+  }, [routeCategory]);
+
+  const rows = useMemo(
+    () => [
+      ...config.items.map((item) => ({
+        type: "equipment",
+        key: `e:${item.name}`,
+        journalKey: item.name,
+        item,
+      })),
+      ...(config.collectibles ?? [])
+        .filter((item) => item.group !== "wishes")
+        .map((item) => ({
+          type: "collectible",
+          key: `c:${item.name}`,
+          journalKey: `c:${item.name}`,
+          item,
+        })),
+    ],
+    [config.items, config.collectibles],
+  );
+
+  const data = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    return rows.filter(
+      (row) =>
+        matchesCategory(row, category) &&
+        (!q ||
+          row.item.name.toLowerCase().includes(q) ||
+          (row.item.location ?? "").toLowerCase().includes(q) ||
+          (row.item.description ?? "").toLowerCase().includes(q)) &&
+        (filter === "all" || (filter === "done") === !!collected[row.journalKey]),
+    );
+  }, [rows, query, category, filter, collected]);
+
+  return (
+    <Screen scroll={false}>
+      <SearchFilter
+        value={query}
+        onChangeText={setQuery}
+        placeholder="Search items and collectibles"
+        filters={FILTERS}
+        filter={filter}
+        onFilter={setFilter}
+      />
+      <SearchFilter
+        hideSearch
+        filters={SILKSONG_CATEGORIES}
+        filter={category}
+        onFilter={setCategory}
+      />
+      <FlatList
+        data={data}
+        keyboardShouldPersistTaps="handled"
+        keyExtractor={(row) => row.key}
+        initialNumToRender={8}
+        maxToRenderPerBatch={8}
+        windowSize={7}
+        contentContainerStyle={{ paddingBottom: inset + 16 }}
+        ListHeaderComponent={
+          <>
+            <Title>Items</Title>
+            <Body>
+              Tools, crests, Mask Shards, Spool Fragments, Memory Lockets,
+              Silk Hearts, materials and abilities. Swipe the category filters
+              to find what you need.
+            </Body>
+            <Button
+              label="Crest & tool loadout builder"
+              onPress={() => router.push("/charms/silksong-loadout")}
+              style={{ marginHorizontal: 16, marginTop: 12 }}
+            />
+            <Body>Showing {data.length} of {rows.length} items.</Body>
+          </>
+        }
+        ListEmptyComponent={<Body>No items match your filters.</Body>}
+        renderItem={({ item: row }) => {
+          if (row.type === "collectible") {
+            return <CollectionEntry item={row.item} />;
+          }
+          const item = row.item;
+          return (
+            <EntryCard
+              image={config.itemImages[item.image]}
+              name={item.name}
+              description={item.description}
+              summary={
+                <>
+                  <Stat label="Type" value={item.kind ?? "Tool"} />
+                  <CharmSummary name={item.name} />
+                </>
+              }
+            >
+              <ItemDetails item={item} gameId="silksong" />
+              <CharmExtras name={item.name} />
+            </EntryCard>
+          );
+        }}
+      />
+    </Screen>
+  );
+}
+
+export default function CharmsScreen() {
+  const { config } = useGame();
+  return config.id === "silksong"
+    ? <SilksongItemsScreen />
+    : <HollowCharmsScreen />;
 }
