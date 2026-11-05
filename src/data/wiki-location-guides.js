@@ -153,11 +153,11 @@ export function getWikiLocationGuide(item, gameId) {
   const file = (hk ? hkMaps : ssMaps)[item.name];
   return {
     location,
-    wikiUrl: WIKI + wikiSlug(articleOverrides[item.name] || item.name),
+    wikiUrl: item.wikiUrl || WIKI + wikiSlug(articleOverrides[item.name] || item.name),
     // The documented MediaWiki external image redirect. An image request
     // can fail (offline, remote server changes), and the UI must hide it.
-    imageUrl: file ? WIKI + "Special:Redirect/file/" + wikiSlug(file) : null,
-    fileUrl: file ? WIKI + "File:" + wikiSlug(file) : null,
-    mapLabel: mapCaptions[item.name] || "Location map",
+    imageUrl: item.locationMapUrl || (file ? WIKI + "Special:Redirect/file/" + wikiSlug(file) : null),
+    fileUrl: item.locationMapSource || (file ? WIKI + "File:" + wikiSlug(file) : null),
+    mapLabel: item.locationMapLabel || mapCaptions[item.name] || "Location map",
   };
 }
