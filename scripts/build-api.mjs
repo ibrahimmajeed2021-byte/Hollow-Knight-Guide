@@ -68,7 +68,13 @@ const withCollectibleLocations = (entries) =>
     return {
       ...item,
       wikiUrl: guide.wikiUrl,
-      ...(guide.imageUrl
+      ...(guide.artworkUrl
+        ? {
+            artworkUrl: guide.artworkUrl,
+            artworkSource: guide.artworkSource,
+          }
+        : {}),
+      ...(guide.imageType === "map"
         ? {
             locationMapUrl: guide.imageUrl,
             locationMapSource: guide.fileUrl,
