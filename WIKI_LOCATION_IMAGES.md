@@ -1,5 +1,79 @@
 # Item acquisition locations and wiki map previews
 
+## Silksong collectibles, wishes and abilities (November 2026 update)
+
+The **100% Completion → Collectibles** screen now contains all **150**
+existing entries across eight groups. Each row displays a group-specific
+artwork thumbnail, and expanding a row shows **Where to find it**:
+
+| Group | Entries | Mapped wiki reference files |
+|---|---:|---:|
+| Mask Shards | 20 | 15 |
+| Spool Fragments | 18 | 15 |
+| Memory Lockets | 20 | 17 |
+| Silk Hearts | 3 | 2 |
+| Pale Oil | 3 | 3 |
+| Craftmetal | 8 | 8 |
+| Wishes | 54 | 9 |
+| Skills & Abilities | 24 | 2 |
+| **Total** | **150** | **71** |
+
+The remaining entries show **category artwork** rather than a fabricated
+location map. In particular, wish entries can display a Wishwall illustration
+and ability entries an ability-category illustration. The caption explicitly
+distinguishes representative artwork from a specific pickup location.
+
+**Important**: The original wiki graphics are copyrighted game assets, and
+the app links to the original image and file credits. Preview availability,
+image embedding permission, the correctness of all entries on a live device,
+and publication rights are **not guaranteed**. Confirm commercial reuse rights
+before App Store release. If remote previews are not allowed, remove them and
+use the source links only.
+
+### Files
+
+- `src/data/silksong-collectible-guides.js`: explicit mapping between our
+  checklist numbers and the wiki file names. Memory Locket wiki map number
+  differs from the checklist number: **do not generate names using the raw
+  collectible index**.
+- `src/app/(tabs)/progress/collectibles.jsx`: image thumbnails, location map
+  previews, wiki credits and links on each expanded row.
+- `src/games/game-context.jsx` and `src/games/config.js`: download and cache
+  `silksong/collectibles.json` with the original bundled 150-entry fallback.
+- `src/app/(tabs)/progress/index.jsx`: completion totals use fetched entries.
+- `scripts/build-api.mjs`: exports all 150 entries with `wikiUrl`,
+  `artworkUrl`, `artworkSource`, plus optional `locationMapUrl`,
+  `locationMapSource`, `locationMapLabel`.
+- `public/api/silksong/collectibles.json`: regenerated JSON, with existing
+  locations and progress names preserved.
+
+### Update and test
+
+From VS Code:
+```bash
+git pull --rebase --autostash origin master
+npx expo start --dev-client --clear
+```
+
+Open **Silksong → Progress → Collectibles**. Expand a Mask Shard, Memory
+Locket, Wish and Ability to check each type of image. This is JavaScript-only,
+so an existing iOS development-client build does not need rebuilding.
+Standard Expo Go is not suitable because the full app includes native
+RevenueCat and AdMob modules.
+
+When ready to publish the static API to your existing Surge account:
+```bash
+npm run build:api
+npx expo export --platform web
+npx surge ./dist hollow-knight-guide-ibrahim.surge.sh
+```
+
+Updating GitHub is not the same as deploying Surge. The app will show the
+bundled data until the static API is deployed and successfully fetched.
+
+---
+
+
 The **Charms** tab in Hollow Knight and **Tools & Crests** tab in Silksong
 now share an expanded **Where to find it** section with:
 
