@@ -3,8 +3,8 @@
 Google allows a real AdMob **ad unit ID** to show production-style creatives in **TEST MODE** when either your physical iPhone is registered as a test device **or** the exact installed app version is added under **AdMob > Settings > Test apps**. Do not request unrestricted live ads or click them on your own device. Requests/impressions/clicks in test mode earn **no revenue**.
 
 The app currently has:
-- Your real iOS AdMob App ID: `ca-app-pub-7179160927714394~9893591797`
-- Your real Home Banner ad unit: `ca-app-pub-7179160927714394/3004961847`
+- Your real iOS AdMob App ID: `ca-app-pub-3058832476599990~1514809839`
+- Your real Home Banner ad unit: `ca-app-pub-3058832476599990/3832842252`
 - A working Google demo banner as the **default** for all Debug builds.
 - Optional mode using **your own Home Banner unit** with explicit opt-in plus either Google app-level Test mode (simpler; no device ID), or your iPhone's 32-character hashed test-device ID.
 
