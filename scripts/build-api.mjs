@@ -36,6 +36,11 @@ const getWikiLocationGuide = await load(
   "getWikiLocationGuide",
 );
 
+const getCollectibleGuide = await load(
+  "silksong-collectible-guides.js",
+  "getCollectibleGuide",
+);
+
 // Publish acquisition directions and attribution alongside the existing item
 // descriptions. The app can download these updates without a native rebuild.
 const withWikiLocations = (items, gameId) =>
@@ -55,11 +60,29 @@ const withWikiLocations = (items, gameId) =>
     };
   });
 
+// Location map fields are optional: some checklist entries have no verified
+// wiki map. Every entry still receives a source article link and its location.
+const withCollectibleLocations = (entries) =>
+  entries.map((item) => {
+    const guide = getCollectibleGuide(item);
+    return {
+      ...item,
+      wikiUrl: guide.wikiUrl,
+      ...(guide.imageUrl
+        ? {
+            locationMapUrl: guide.imageUrl,
+            locationMapSource: guide.fileUrl,
+            locationMapLabel: guide.mapLabel,
+          }
+        : {}),
+    };
+  });
+
 write("hollow/bosses.json", bosses);
 write("hollow/items.json", withWikiLocations(charms, "hollow"));
 write("silksong/bosses.json", silksongBosses);
 write("silksong/items.json", withWikiLocations(silksongItems, "silksong"));
-write("silksong/collectibles.json", silksongCollectibles);
+write("silksong/collectibles.json", withCollectibleLocations(silksongCollectibles));
 write("tips.json", tips);
 write("index.json", {
   updatedAt: new Date().toISOString(),
