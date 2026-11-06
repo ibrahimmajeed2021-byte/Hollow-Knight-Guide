@@ -5,6 +5,7 @@ import { FlatList, Linking, Pressable, StyleSheet, View } from "react-native";
 import { AppText } from "../../components/hollow/app-text";
 import { Button } from "../../components/hollow/button";
 import { EntryCard, Stat } from "../../components/hollow/entry-card";
+import { EmptyState } from "../../components/hollow/empty-state";
 import {
   BossExtras,
   BossSummary,
@@ -59,7 +60,7 @@ export default function BossesScreen() {
         data={data}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
-          <AppText style={styles.empty}>No bosses match.</AppText>
+          <EmptyState title="No bosses found" description="Try another name or switch the defeated filter." />
         }
         keyExtractor={(b) => b.name}
         initialNumToRender={6}
