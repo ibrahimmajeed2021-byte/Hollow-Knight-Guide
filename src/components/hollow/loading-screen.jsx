@@ -79,6 +79,9 @@ export function LoadingScreen() {
     if (!loaded) return;
     let cancelled = false;
     let timer;
+    // Never trap the user behind the splash if audio setup/playback stalls.
+    // This fallback runs independently of the playback promise.
+    const safetyTimer = setTimeout(() => setVisible(false), MUSIC_HOLD_MS + 1500);
     const prefs = startupSettings.current;
     const soundEnabled = prefs.soundEnabled !== false
       && (prefs.soundVolume ?? 80) > 0;
@@ -104,6 +107,7 @@ export function LoadingScreen() {
 
     return () => {
       cancelled = true;
+      clearTimeout(safetyTimer);
       if (timer) clearTimeout(timer);
     };
   }, [loaded, launch, launchPick, gameId]);
