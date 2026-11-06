@@ -325,7 +325,7 @@ export default function HomeScreen() {
       </Pressable>
 
       <View style={styles.content}>
-        <View style={styles.summaryRow}>
+        {showSection("overview") ? <View style={styles.summaryRow}>
           <SummaryTile
             initial="B"
             image={bossTileArtwork.image}
@@ -367,8 +367,9 @@ export default function HomeScreen() {
               <AppText style={[styles.tileLabel, { color: colors.muted }]}>Collectibles</AppText>
             </DashboardCard>
           )}
-        </View>
+        </View> : null}
 
+        {showSection("search") ? <>
         <SectionHeading title="Find something" subtitle="Search bosses, items, locations and quests" />
         <View style={[styles.searchWrap, { backgroundColor: colors.card, borderColor: colors.border }]}>
           <AppText style={[styles.searchIcon, { color: colors.accent }]}>⌕</AppText>
@@ -422,55 +423,59 @@ export default function HomeScreen() {
             )}
           </View>
         ) : null}
+        </> : null}
 
+        {showSection("continue") ? <>
         <SectionHeading title="Continue exploring" subtitle="Pick up where you left off" />
         <View style={styles.nextList}>
           <NextRow
             initial="B"
-            image={nextBossArtwork.image}
-            fallbackImage={nextBossArtwork.fallbackImage}
+            image={nextBossSafe ? nextBossArtwork.image : null}
+            fallbackImage={nextBossSafe ? nextBossArtwork.fallbackImage : null}
             title="NEXT BOSS"
-            name={nextBoss?.name ?? "All bosses defeated"}
+            name={nextBossSafe ? (nextBoss?.name ?? "All bosses defeated") : guided.hiddenLabel("boss")}
             detail="Open boss guide and location"
             complete={!nextBoss}
-            onPress={() => navigateTo("/bosses", nextBoss?.name)}
+            onPress={() => navigateTo("/bosses", nextBossSafe ? nextBoss?.name : null)}
           />
           <NextRow
             initial={isSilksong ? "I" : "C"}
-            image={nextItemArtwork.image}
-            fallbackImage={nextItemArtwork.fallbackImage}
+            image={nextItemSafe ? nextItemArtwork.image : null}
+            fallbackImage={nextItemSafe ? nextItemArtwork.fallbackImage : null}
             title={isSilksong ? "NEXT ITEM" : "NEXT CHARM"}
-            name={nextItem?.name ?? (isSilksong ? "All items collected" : "All charms collected")}
+            name={nextItemSafe ? (nextItem?.name ?? (isSilksong ? "All items collected" : "All charms collected")) : guided.hiddenLabel(nextItemKind)}
             detail={nextEquipment ? "Open equipment guide" : "View location and acquisition details"}
             complete={!nextItem}
-            onPress={() => navigateTo("/charms", nextItem?.name)}
+            onPress={() => navigateTo("/charms", nextItemSafe ? nextItem?.name : null)}
           />
           {!isSilksong ? (
             <NextRow
               initial="G"
-              image={nextPickupArtwork.image}
-              fallbackImage={nextPickupArtwork.fallbackImage}
+              image={nextPickupSafe ? nextPickupArtwork.image : null}
+              fallbackImage={nextPickupSafe ? nextPickupArtwork.fallbackImage : null}
               title="NEXT COLLECTIBLE"
-              name={nextPickup?.name ?? "All collectibles completed"}
-              detail={nextPickup?.location ?? "See your Hallownest checklist"}
+              name={nextPickupSafe ? (nextPickup?.name ?? "All collectibles completed") : guided.hiddenLabel("collectible")}
+              detail={nextPickupSafe ? (nextPickup?.location ?? "See your Hallownest checklist") : "Explore more to reveal this discovery"}
               complete={!nextPickup}
-              onPress={() => navigateTo("/progress/collectibles", nextPickup?.name)}
+              onPress={() => navigateTo("/progress/collectibles", nextPickupSafe ? nextPickup?.name : null)}
             />
           ) : null}
           {isSilksong ? (
             <NextRow
               initial="Q"
-              image={nextQuestArtwork.image}
-              fallbackImage={nextQuestArtwork.fallbackImage}
+              image={nextQuestSafe ? nextQuestArtwork.image : null}
+              fallbackImage={nextQuestSafe ? nextQuestArtwork.fallbackImage : null}
               title="NEXT QUEST"
-              name={nextQuest?.name ?? "All quests completed"}
+              name={nextQuestSafe ? (nextQuest?.name ?? "All quests completed") : guided.hiddenLabel("collectible")}
               detail="See requirements and rewards"
               complete={!nextQuest}
-              onPress={() => navigateTo("/quests", nextQuest?.name)}
+              onPress={() => navigateTo("/quests", nextQuestSafe ? nextQuest?.name : null)}
             />
           ) : null}
         </View>
+        </> : null}
 
+        {showSection("toolkit") ? <>
         <SectionHeading title="Your toolkit" subtitle="Useful shortcuts for your next session" />
         <DashboardCard>
           <AppText style={styles.toolkitTitle}>{loadout ? loadout.name : "Your loadout"}</AppText>
@@ -486,6 +491,25 @@ export default function HomeScreen() {
             onPress={() => router.push(isSilksong ? "/charms/silksong-loadout" : "/charms/loadout")}
           />
         </DashboardCard>
+        </> : null}
+
+        {isPremium ? (
+          <>
+            <SectionHeading
+              title="Premium companion"
+              subtitle="Tailor your guide and plan your next milestone"
+            />
+            <DashboardCard>
+              <AppText style={styles.toolkitTitle}>Plan, explore, personalise</AppText>
+              <AppText style={[styles.toolkitNote, { color: colors.muted }]}>
+                Explore without spoilers, follow your personalised route, or customise the look and layout.
+              </AppText>
+              <Button label="Spoiler-free Guided Mode" onPress={() => router.push("/guided")} />
+              <Button label="Smart progression planner" onPress={() => router.push("/planner")} />
+              <Button label="Customisation studio" onPress={() => router.push("/premium-studio")} />
+            </DashboardCard>
+          </>
+        ) : null}
 
         <Pressable onPress={() => router.push("/about")} accessibilityRole="button" accessibilityLabel="About, credits and privacy" style={styles.footerLink}>
           <AppText style={[styles.footerText, { color: colors.muted }]}>
