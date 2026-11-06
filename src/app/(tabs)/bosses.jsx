@@ -87,15 +87,15 @@ export default function BossesScreen() {
         }
         renderItem={({ item }) => (
           <EntryCard
-            image={bossImages[item.image]}
-            fallbackImage={getBossFallbackArtwork(item, bossImages)}
+            image={item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]}
+            fallbackImage={getBossFallbackArtwork(item, bossImages) ?? bossImages[item.image]}
             name={item.name}
             description={item.description}
             summary={<BossSummary name={item.name} health={item.health} />}
           >
-            {config.largeBossImage && bossImages[item.image] ? (
+            {config.largeBossImage && (item.iconUrl || bossImages[item.image]) ? (
               <Image
-                source={bossImages[item.image]}
+                source={item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]}
                 style={styles.bossImage}
                 contentFit="contain"
                 cachePolicy="memory-disk"
@@ -113,7 +113,7 @@ export default function BossesScreen() {
               <View key={loc.name} style={styles.location}>
                 {loc.image ? (
                   <Image
-                    source={locationImages[loc.image]}
+                    source={loc.imageUrl ? { uri: loc.imageUrl } : locationImages[loc.image]}
                     style={styles.locationImage}
                     contentFit="contain"
                     cachePolicy="memory-disk"
