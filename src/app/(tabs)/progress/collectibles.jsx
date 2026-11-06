@@ -1,13 +1,10 @@
-import { router } from "expo-router";
-import { useMemo, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList } from "react-native";
 
 import { Button } from "../../../components/hollow/button";
 import { EntryCard, Stat } from "../../../components/hollow/entry-card";
-import {
-  CharmExtras,
-  CharmSummary,
-} from "../../../components/hollow/progress-extras";
+import { CharmExtras, CharmSummary } from "../../../components/hollow/progress-extras";
 import { AppText } from "../../../components/hollow/app-text";
 import { WikiLocationSection } from "../../../components/hollow/wiki-location-section";
 import { SearchFilter } from "../../../components/hollow/search-filter";
@@ -17,55 +14,67 @@ import { useTabInset } from "../../../hooks/use-tab-inset";
 import { useJournal } from "../../../journal/journal-context";
 import { getCollectibleGuide } from "../../../data/silksong-collectible-guides";
 import { useGame } from "../../../games/game-context";
-import {
-  silksongCollectibleGroups,
-  silksongCollectibles,
-} from "../../../data/silksong-collectibles";
 
-const FILTERS = [
+const STATUS = [
   { value: "all", label: "All" },
-  { value: "todo", label: "Not collected" },
-  { value: "done", label: "Collected" },
+  { value: "todo", label: "Not completed" },
+  { value: "done", label: "Completed" },
 ];
-
 const keyOf = (item) => `c:${item.name}`;
 
 export default function CollectiblesScreen() {
-  const { collected } = useJournal();
   const { config } = useGame();
-  const collectibles = config.collectibles ?? silksongCollectibles;
+  const { collected } = useJournal();
+  const { group: routeGroup, query: routeQuery } = useLocalSearchParams();
+  const items = config.collectibles ?? [];
+  const groups = config.collectibleGroups ?? [];
+  const isSilksong = config.id === "silksong";
   const inset = useTabInset();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
   const [filter, setFilter] = useState("all");
-  const [group, setGroup] = useState(silksongCollectibleGroups[0].id);
+  const [group, setGroup] = useState(
+    typeof routeGroup === "string" ? routeGroup : groups[0]?.id ?? "all",
+  );
+
+  useEffect(() => {
+    const desiredQuery = typeof routeQuery === "string" ? routeQuery : "";
+    setQuery(desiredQuery);
+    // Deep links from Home select the collection to which an item belongs.
+    const match = desiredQuery
+      ? items.find((item) => item.name === desiredQuery)
+      : null;
+    const wanted = match?.group ||
+      (typeof routeGroup === "string" ? routeGroup : groups[0]?.id);
+    if (wanted && groups.some((g) => g.id === wanted)) setGroup(wanted);
+  }, [routeQuery, routeGroup, items, groups]);
 
   const groupFilters = useMemo(
-    () =>
-      silksongCollectibleGroups.map((g) => {
-        const items = collectibles.filter((i) => i.group === g.id);
-        const done = items.filter((i) => collected[keyOf(i)]).length;
-        return { value: g.id, label: `${g.title} ${done}/${items.length}` };
-      }),
-    [collected, collectibles],
+    () => groups.map((g) => {
+      const inGroup = items.filter((item) => item.group === g.id);
+      const done = inGroup.filter((item) => collected[keyOf(item)]).length;
+      return { value: g.id, label: `${g.title} ${done}/${inGroup.length}` };
+    }),
+    [groups, items, collected],
   );
-  const current = silksongCollectibleGroups.find((g) => g.id === group);
 
+  const current = groups.find((g) => g.id === group);
   const data = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return collectibles.filter(
-      (i) =>
-        i.group === group &&
-        (!q ||
-          i.name.toLowerCase().includes(q) ||
-          (i.location ?? "").toLowerCase().includes(q)) &&
-        (filter === "all" || (filter === "done") === !!collected[keyOf(i)]),
+    return items.filter((item) =>
+      item.group === group &&
+      (!q || item.name.toLowerCase().includes(q) ||
+        (item.location ?? "").toLowerCase().includes(q)) &&
+      (filter === "all" || (filter === "done") === !!collected[keyOf(item)]),
     );
-  }, [group, query, filter, collected, collectibles]);
+  }, [items, group, query, filter, collected]);
 
   const header = (
     <>
-      <Title>Collectibles</Title>
-      <Body>{current.blurb} Entries are ordered by when they're normally reachable, rather than collectible number.</Body>
+      <Title>{isSilksong ? "Silksong Collectibles" : "Hallownest Collectibles"}</Title>
+      <Body>
+        {current?.blurb ?? "Collectibles, upgrades and optional challenges."}
+        {" "}Entries follow a recommended route; optional discoveries may be found in a different order.
+      </Body>
       <Button
         label="Back to progress"
         variant="outline"
@@ -78,11 +87,11 @@ export default function CollectiblesScreen() {
         onFilter={setGroup}
         value={query}
         onChangeText={setQuery}
-        placeholder="Search collectibles"
+        placeholder="Search collectibles and upgrades"
       />
       <SearchFilter
         hideSearch
-        filters={FILTERS}
+        filters={STATUS}
         filter={filter}
         onFilter={setFilter}
       />
@@ -95,37 +104,56 @@ export default function CollectiblesScreen() {
         data={data}
         keyExtractor={(item) => item.name}
         ListHeaderComponent={header}
-        ListEmptyComponent={<Body>Nothing matches.</Body>}
-        contentContainerStyle={{ paddingBottom: inset }}
+        ListEmptyComponent={<Body>No entries match these filters.</Body>}
+        contentContainerStyle={{ paddingBottom: inset + 16 }}
+        keyboardShouldPersistTaps="handled"
         initialNumToRender={8}
         maxToRenderPerBatch={8}
         windowSize={7}
-        renderItem={({ item }) => (
-          <EntryCard
-            image={{ uri: getCollectibleGuide(item).artworkUrl }}
-            name={item.name}
-            description={item.description ?? ""}
-            summary={
-              <>
-                {item.kind ? <Stat label="Type" value={item.kind} /> : null}
-                {item.act ? <Stat label="Act" value={item.act} /> : null}
-                <CharmSummary id={keyOf(item)} name={item.name} />
-              </>
-            }
-          >
-            <WikiLocationSection
-              item={item}
-              gameId="silksong"
-              guideOverride={getCollectibleGuide(item)}
-            />
-            {item.requires ? (
-              <Stat label="Requires" value={item.requires} />
-            ) : null}
-            {item.reward ? <Stat label="Reward" value={item.reward} /> : null}
-            {item.quote ? <AppText>{item.quote}</AppText> : null}
-            <CharmExtras id={keyOf(item)} name={item.name} />
-          </EntryCard>
-        )}
+        renderItem={({ item }) => {
+          const guide = isSilksong
+            ? getCollectibleGuide(item)
+            : {
+                location: item.location ?? null,
+                wikiUrl: item.wikiUrl ?? "https://hollowknight.wiki/w/Items_(Hollow_Knight)",
+                imageUrl: item.locationMapUrl ?? null,
+                fileUrl: item.locationMapSource ?? null,
+                mapLabel: item.locationMapLabel ?? "Location reference",
+              };
+          const isTask = ["wishes", "objectives", "godhome", "trials", "dreamers", "milestones"].includes(item.group);
+          return (
+            <EntryCard
+              image={guide?.artworkUrl ? { uri: guide.artworkUrl } : undefined}
+              name={item.name}
+              description={item.description ?? ""}
+              summary={
+                <>
+                  {item.kind ? <Stat label="Type" value={item.kind} /> : null}
+                  {item.act ? <Stat label="Act" value={String(item.act)} /> : null}
+                  <CharmSummary
+                    id={keyOf(item)}
+                    name={item.name}
+                    completedLabel={isTask ? "Completed" : "Collected"}
+                  />
+                </>
+              }
+            >
+              <WikiLocationSection
+                item={item}
+                gameId={config.id}
+                guideOverride={guide}
+              />
+              {item.requires ? <Stat label="Requires" value={item.requires} /> : null}
+              {item.reward ? <Stat label="Reward" value={item.reward} /> : null}
+              {item.quote ? <AppText>{item.quote}</AppText> : null}
+              <CharmExtras
+                id={keyOf(item)}
+                name={item.name}
+                label={isTask ? "Completed" : "Collected"}
+              />
+            </EntryCard>
+          );
+        }}
       />
     </Screen>
   );

@@ -4,15 +4,17 @@ import { CharmExtras, CharmSummary } from "./progress-extras";
 import { WikiLocationSection } from "./wiki-location-section";
 import { getCollectibleGuide } from "../../data/silksong-collectible-guides";
 import { silksongCollectibleGroups } from "../../data/silksong-collectibles";
+import { silksongExtraCollectibleGroups } from "../../data/silksong-extra-collectibles";
 
 const groupNames = Object.fromEntries(
-  silksongCollectibleGroups.map((group) => [group.id, group.title]),
+  [...silksongCollectibleGroups, ...silksongExtraCollectibleGroups]
+    .map((group) => [group.id, group.title]),
 );
 
 // Both Items and Quests use their original progress key: c:<name>.
 // This preserves all saved checkmarks, notes and completion totals.
 export function CollectionEntry({ item }) {
-  const isQuest = item.group === "wishes";
+  const isQuest = item.group === "wishes" || item.group === "objectives";
   const guide = getCollectibleGuide(item);
   const key = `c:${item.name}`;
   return (

@@ -1,12 +1,17 @@
 import { bosses as hkBosses } from "../data/bosses";
+import { hollowExtraBosses } from "../data/hollow-extra-bosses";
+import { hollowExtraCharms } from "../data/hollow-extra-charms";
+import { hollowCollectibles, hollowCollectibleGroups } from "../data/hollow-collectibles";
 import {
   silksongBossImages,
   silksongLocationImages,
   silksongItemImages,
 } from "../data/silksong-images";
 import { silksongItems } from "../data/silksong-items";
-import { silksongCollectibles } from "../data/silksong-collectibles";
+import { silksongCollectibles, silksongCollectibleGroups } from "../data/silksong-collectibles";
+import { silksongExtraCollectibles, silksongExtraCollectibleGroups } from "../data/silksong-extra-collectibles";
 import { silksongBosses } from "../data/silksong-bosses";
+import { silksongExtraBosses } from "../data/silksong-extra-bosses";
 import { charms as hkCharms } from "../data/charms";
 import { bossImages, charmImages, locationImages } from "../data/images";
 
@@ -24,8 +29,10 @@ export const games = {
     itemsLabel: "Charms",
     itemLabel: "Charm",
     hasLoadouts: true,
-    bosses: hkBosses,
-    items: hkCharms,
+    bosses: [...hkBosses, ...hollowExtraBosses],
+    items: [...hkCharms, ...hollowExtraCharms],
+    collectibles: hollowCollectibles,
+    collectibleGroups: hollowCollectibleGroups,
     bossImages,
     itemImages: charmImages,
     locationImages,
@@ -44,9 +51,10 @@ export const games = {
     loadingColor: "#06140a",
     loadingBackground: require("../../assets/hollow/silksong/MossGrotto.png"),
     loadingImageSize: { width: 124, height: 144 },
-    bosses: silksongBosses,
+    bosses: [...silksongBosses, ...silksongExtraBosses],
     items: silksongItems,
-    collectibles: silksongCollectibles,
+    collectibles: [...silksongCollectibles, ...silksongExtraCollectibles],
+    collectibleGroups: [...silksongCollectibleGroups, ...silksongExtraCollectibleGroups],
     bossImages: silksongBossImages,
     itemImages: silksongItemImages,
     locationImages: silksongLocationImages,

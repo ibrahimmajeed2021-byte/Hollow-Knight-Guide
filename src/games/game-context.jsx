@@ -16,11 +16,17 @@ const STORAGE_KEY = "hollow-knight-guide:game";
 const SETTINGS_KEY = "hollow-knight-guide:settings";
 const GameContext = createContext(null);
 
-// Online entries win, but fields missing from an older API copy come from the bundled data.
+// Online values win for existing entries, but an older published API must
+// NEVER remove new bundled guide entries (or their saved journal keys).
+// Remote-only entries are appended and sorted by progression afterward.
 function mergeList(bundled, remote) {
-  if (!remote?.length) return bundled;
-  const byName = new Map(bundled.map((entry) => [entry.name, entry]));
-  return remote.map((entry) => ({ ...byName.get(entry.name), ...entry }));
+  if (!Array.isArray(remote) || !remote.length) return bundled;
+  const bundledNames = new Set(bundled.map((entry) => entry.name));
+  const remoteByName = new Map(remote.map((entry) => [entry.name, entry]));
+  return [
+    ...bundled.map((entry) => ({ ...entry, ...(remoteByName.get(entry.name) ?? {}) })),
+    ...remote.filter((entry) => !bundledNames.has(entry.name)),
+  ];
 }
 
 export function GameProvider({ children }) {
@@ -53,7 +59,7 @@ export function GameProvider({ children }) {
     Object.keys(games).forEach((id) => {
       load(id, "bosses");
       load(id, "items");
-      if (id === "silksong") load(id, "collectibles");
+      load(id, "collectibles");
     });
     return () => {
       cancelled = true;
@@ -99,7 +105,7 @@ export function GameProvider({ children }) {
         id, "collectibles", mergeList(base.collectibles ?? [], collectibles),
       ),
     };
-    const found = (id === "silksong" ? ["bosses", "items", "collectibles"] : ["bosses", "items"])
+    const found = ["bosses", "items", "collectibles"]
       .map((kind) => sources[`${id}/${kind}.json`])
       .filter(Boolean);
     const online = found.some((s) => s.source === "online");
