@@ -32,7 +32,7 @@ function homeArtwork(item, kind, config) {
   if (kind === "equipment") {
     return {
       image: item.iconUrl ? { uri: item.iconUrl } : config.itemImages[item.image],
-      fallbackImage: config.itemImages[item.image] ?? getCharmFallbackArtwork(item, config.itemImages),
+      fallbackImage: getCharmFallbackArtwork(item, config.itemImages) ?? config.itemImages[item.image],
     };
   }
   const wikiArtwork = config.id === "silksong"
