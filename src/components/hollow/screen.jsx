@@ -1,4 +1,5 @@
 import { ScrollView, StyleSheet, View } from "react-native";
+import { useIsFocused } from "expo-router";
 
 import { useTabInset } from "../../hooks/use-tab-inset";
 import { useSettings } from "../../settings/SettingsContext";
@@ -9,9 +10,10 @@ import { layout } from "../../ui/design-system";
 export function Screen({ children, scroll = true, contentStyle }) {
   const { colors } = useSettings();
   const inset = useTabInset();
+  const isFocused = useIsFocused();
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
-      <ThemeBackdrop />
+      <ThemeBackdrop active={isFocused} />
       <AppHeader />
       {scroll ? (
         <ScrollView
