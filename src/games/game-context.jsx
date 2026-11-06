@@ -10,6 +10,7 @@ import {
 
 import { fetchRemote, readCached } from "../api/remote-data";
 import { games } from "./config";
+import { sortByProgression } from "../data/progression-order";
 
 const STORAGE_KEY = "hollow-knight-guide:game";
 const SETTINGS_KEY = "hollow-knight-guide:settings";
@@ -92,9 +93,11 @@ export function GameProvider({ children }) {
     const collectibles = remote[`${id}/collectibles.json`];
     const config = {
       ...base,
-      bosses: mergeList(base.bosses, bosses),
-      items: mergeList(base.items, items),
-      collectibles: mergeList(base.collectibles ?? [], collectibles),
+      bosses: sortByProgression(id, "bosses", mergeList(base.bosses, bosses)),
+      items: sortByProgression(id, "items", mergeList(base.items, items)),
+      collectibles: sortByProgression(
+        id, "collectibles", mergeList(base.collectibles ?? [], collectibles),
+      ),
     };
     const found = (id === "silksong" ? ["bosses", "items", "collectibles"] : ["bosses", "items"])
       .map((kind) => sources[`${id}/${kind}.json`])

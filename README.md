@@ -14,6 +14,19 @@ A fan-made companion for **Hollow Knight** and **Hollow Knight: Silksong** built
 
 The **Progress** screen keeps its full completion breakdown, and checkmarks use the original journal keys. Changing screens does not reset saved progress.
 
+## Recommended chronological order
+
+Bosses, charms, tools, crests, collectibles and quests follow a recommended
+in-game progression order across both games. Because each game is non-linear,
+optional areas and late rewards can be found at different times. The source
+data and progress keys are unchanged; the lists are sorted after bundled or
+remote API data is loaded. Home's next-unfinished suggestions use the same
+ordering, including the mixed Silksong Items list.
+
+Read [progression ordering assumptions and sources](PROGRESSION_ORDER.md).
+Run `npm run test:progression` to verify all curated entries and key ordering
+regressions before testing on device.
+
 ## Run and test
 
 Install dependencies in your local clone:

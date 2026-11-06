@@ -78,6 +78,10 @@ export default function BossesScreen() {
               every boss and where they can be found so you can improve faster, build confidence,
               and enjoy the game without feeling stuck.`}
             </Body>
+            <Body>
+              Listed in recommended encounter order. Optional bosses and
+              alternate routes may change when you meet them.
+            </Body>
           </>
         }
         renderItem={({ item }) => (
