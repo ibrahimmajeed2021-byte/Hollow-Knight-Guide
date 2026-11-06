@@ -12,8 +12,8 @@ import {
 import { Screen } from "../../components/hollow/screen";
 import { SearchFilter } from "../../components/hollow/search-filter";
 import { Body, Title } from "../../components/hollow/section-text";
-import { useGame } from "../../games/game-context";
 import { getBossFallbackArtwork } from "../../data/entry-fallback-artwork";
+import { useGame } from "../../games/game-context";
 import { useTabInset } from "../../hooks/use-tab-inset";
 import { useJournal } from "../../journal/journal-context";
 import { useSettings } from "../../settings/SettingsContext.jsx";
@@ -30,7 +30,9 @@ export default function BossesScreen() {
   const { defeated } = useJournal();
   const { config } = useGame();
   const { bosses, bossImages, locationImages } = config;
-  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
+  const [query, setQuery] = useState(
+    typeof routeQuery === "string" ? routeQuery : ""
+  );
   useEffect(() => {
     setQuery(typeof routeQuery === "string" ? routeQuery : "");
   }, [routeQuery]);
@@ -67,17 +69,21 @@ export default function BossesScreen() {
         contentContainerStyle={{ paddingTop: 16, paddingBottom: inset + 16 }}
         ListHeaderComponent={
           <>
-            <Button label="Back" variant="outline" onPress={() => router.back()} style={{ marginHorizontal: 16, marginBottom: 8, alignSelf: "flex-start" }} />
+            <Button
+              label="Back"
+              variant="outline"
+              onPress={() => router.back()}
+              style={{
+                marginHorizontal: 16,
+                marginBottom: 8,
+                alignSelf: "flex-start",
+              }}
+            />
             <Title>Bosses</Title>
             <Body>
               {config.id === "silksong"
                 ? "Every boss in Hollow Knight: Silksong, grouped by act in the order they usually appear, with health, rewards and where to find them. Boss data adapted from the Hollow Knight Wiki (hollowknight.wiki), licensed CC BY-SA."
-                : `Bosses in Hollow Knight play a crucial role in shaping the game&apos;s challenge,
-              progression, and storytelling, acting as major skill checks that test a player&apos;s
-              mastery of movement, timing, and combat. Each boss introduces unique attack patterns
-              and mechanics, which can feel overwhelming for new players. This guide breaks down
-              every boss and where they can be found so you can improve faster, build confidence,
-              and enjoy the game without feeling stuck.`}
+                : "Every boss in Hollow Knight, grouped by the order they usually appear, with health, rewards and where to find them. Boss data adapted from the Hollow Knight Wiki (hollowknight.wiki), licensed CC BY-SA."}
             </Body>
             <Body>
               Listed in recommended encounter order. Optional bosses and
@@ -103,8 +109,12 @@ export default function BossesScreen() {
               />
             ) : null}
             {item.act ? <Stat label="Act" value={String(item.act)} /> : null}
-            {item.kind ? <Stat label="Encounter type" value={item.kind} /> : null}
-            {item.requires ? <Stat label="How to unlock" value={item.requires} /> : null}
+            {item.kind ? (
+              <Stat label="Encounter type" value={item.kind} />
+            ) : null}
+            {item.requires ? (
+              <Stat label="How to unlock" value={item.requires} />
+            ) : null}
             <Stat label="Reward" value={item.reward} />
             <AppText style={[styles.locationLabel, { color: colors.muted }]}>
               Location

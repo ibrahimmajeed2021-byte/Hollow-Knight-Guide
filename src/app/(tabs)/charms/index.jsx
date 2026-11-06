@@ -1,25 +1,25 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { FlatList } from "react-native";
+import { AppText } from "../../../components/hollow/app-text";
 import { Button } from "../../../components/hollow/button";
-import { EntryCard, Stat } from "../../../components/hollow/entry-card";
 import { CollectionEntry } from "../../../components/hollow/collection-entry";
+import { EntryCard, Stat } from "../../../components/hollow/entry-card";
 import {
   CharmExtras,
   CharmSummary,
 } from "../../../components/hollow/progress-extras";
-import { AppText } from "../../../components/hollow/app-text";
-import { WikiLocationSection } from "../../../components/hollow/wiki-location-section";
-import { SearchFilter } from "../../../components/hollow/search-filter";
-import { useTabInset } from "../../../hooks/use-tab-inset";
 import { Screen } from "../../../components/hollow/screen";
+import { SearchFilter } from "../../../components/hollow/search-filter";
 import { Body, Title } from "../../../components/hollow/section-text";
-import { useGame } from "../../../games/game-context";
+import { WikiLocationSection } from "../../../components/hollow/wiki-location-section";
 import { getCharmFallbackArtwork } from "../../../data/entry-fallback-artwork";
-import { useJournal } from "../../../journal/journal-context";
+import { sortMixedSilksongItems } from "../../../data/progression-order";
 import { silksongCollectibleGroups } from "../../../data/silksong-collectibles";
 import { silksongExtraCollectibleGroups } from "../../../data/silksong-extra-collectibles";
-import { sortMixedSilksongItems } from "../../../data/progression-order";
+import { useGame } from "../../../games/game-context";
+import { useTabInset } from "../../../hooks/use-tab-inset";
+import { useJournal } from "../../../journal/journal-context";
 const FILTERS = [
   { value: "all", label: "All" },
   { value: "todo", label: "Not collected" },
@@ -52,7 +52,9 @@ function HollowCharmsScreen() {
   const charmImages = config.itemImages;
   const inset = useTabInset();
   const { query: routeQuery } = useLocalSearchParams();
-  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
+  const [query, setQuery] = useState(
+    typeof routeQuery === "string" ? routeQuery : ""
+  );
   useEffect(() => {
     setQuery(typeof routeQuery === "string" ? routeQuery : "");
   }, [routeQuery]);
@@ -65,7 +67,7 @@ function HollowCharmsScreen() {
       (c) =>
         (!q || c.name.toLowerCase().includes(q)) &&
         (kind === "all" || c.kind === kind) &&
-        (filter === "all" || (filter === "done") === !!collected[c.name]),
+        (filter === "all" || (filter === "done") === !!collected[c.name])
     );
   }, [charms, query, filter, kind, collected]);
   return (
@@ -102,27 +104,46 @@ function HollowCharmsScreen() {
         contentContainerStyle={{ paddingTop: 16, paddingBottom: inset + 16 }}
         ListHeaderComponent={
           <>
-            <Button label="Back" variant="outline" onPress={() => router.back()} style={{ marginHorizontal: 16, marginBottom: 8, alignSelf: "flex-start" }} />
+            <Button
+              label="Back"
+              variant="outline"
+              onPress={() => router.back()}
+              style={{
+                marginHorizontal: 16,
+                marginBottom: 8,
+                alignSelf: "flex-start",
+              }}
+            />
             <Title>{config.itemsLabel}</Title>
-            <Body>Recommended discovery order, including optional charms you may find earlier or later.</Body>
+            <Body>
+              Recommended discovery order, including optional charms you may
+              find earlier or later.
+            </Body>
             {config.hasLoadouts && (
               <Button
-                label={config.id === "silksong" ? "Crest & tool loadout builder" : "Loadout builder"}
-                onPress={() => router.push(config.id === "silksong" ? "/charms/silksong-loadout" : "/charms/loadout")}
+                label={
+                  config.id === "silksong"
+                    ? "Crest & tool loadout builder"
+                    : "Loadout builder"
+                }
+                onPress={() =>
+                  router.push(
+                    config.id === "silksong"
+                      ? "/charms/silksong-loadout"
+                      : "/charms/loadout"
+                  )
+                }
                 style={{ marginHorizontal: 16, marginTop: 12 }}
               />
             )}
             <Body>
               {config.items.length === 0
-                ? `${config.title} ${config.itemsLabel.toLowerCase()} are coming soon.`
+                ? `${
+                    config.title
+                  } ${config.itemsLabel.toLowerCase()} are coming soon.`
                 : hasKinds
-                  ? `Crests change how Hornet fights and set how many tool and skill slots she has. Tools are red (active), blue (passive) or yellow (utility). Below is every crest and tool with how to get it.`
-                  : `Charms are a very important component in Hollow Knight. Equipping charms can alter
-              your gameplay and can help you when you are stuck. Charms allow players to have
-              freedom in the way they play. Charms can be found in various places across the game.
-              However, with the amount of charms there are in the game it can be hard to figure out
-              what each one does and which ones are the best to use. Below is an overview of every
-              charm in the game, what they do and how many notches they cost.`}
+                ? `Crests change how Hornet fights and set how many tool and skill slots she has. Tools are red (active), blue (passive) or yellow (utility). Below is every crest and tool with how to get it.`
+                : `Charms change how the Knight fights. They can make your playthrough easier, so use them to your advantage. Below is every charm with how to get it.`}
             </Body>
           </>
         }
@@ -152,7 +173,6 @@ function HollowCharmsScreen() {
   );
 }
 
-
 // These category tabs bring the Silksong collectibles into Items, while
 // Wishes have their own Quests tab. They still use their existing c:<name>
 // journal keys, so progress is shared with the Progress screen.
@@ -170,8 +190,10 @@ const SILKSONG_CATEGORIES = [
 
 const matchesCategory = (row, category) => {
   if (category === "all") return true;
-  if (category === "tools") return row.type === "equipment" && row.item.kind?.endsWith("Tool");
-  if (category === "crests") return row.type === "equipment" && row.item.kind === "Crest";
+  if (category === "tools")
+    return row.type === "equipment" && row.item.kind?.endsWith("Tool");
+  if (category === "crests")
+    return row.type === "equipment" && row.item.kind === "Crest";
   return row.type === "equipment"
     ? row.item.kind === category
     : row.item.group === category;
@@ -182,7 +204,9 @@ function SilksongItemsScreen() {
   const { collected } = useJournal();
   const { category: routeCategory, query: routeQuery } = useLocalSearchParams();
   const inset = useTabInset();
-  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
+  const [query, setQuery] = useState(
+    typeof routeQuery === "string" ? routeQuery : ""
+  );
   useEffect(() => {
     setQuery(typeof routeQuery === "string" ? routeQuery : "");
   }, [routeQuery]);
@@ -192,27 +216,34 @@ function SilksongItemsScreen() {
   // Deep links from Progress open the corresponding category automatically.
   useEffect(() => {
     const requested = typeof routeCategory === "string" ? routeCategory : "all";
-    setCategory(SILKSONG_CATEGORIES.some((option) => option.value === requested) ? requested : "all");
+    setCategory(
+      SILKSONG_CATEGORIES.some((option) => option.value === requested)
+        ? requested
+        : "all"
+    );
   }, [routeCategory]);
 
   const rows = useMemo(
-    () => sortMixedSilksongItems([
-      ...config.items.map((item) => ({
-        type: "equipment",
-        key: `e:${item.name}`,
-        journalKey: item.name,
-        item,
-      })),
-      ...(config.collectibles ?? [])
-        .filter((item) => item.group !== "wishes" && item.group !== "objectives")
-        .map((item) => ({
-          type: "collectible",
-          key: `c:${item.name}`,
-          journalKey: `c:${item.name}`,
+    () =>
+      sortMixedSilksongItems([
+        ...config.items.map((item) => ({
+          type: "equipment",
+          key: `e:${item.name}`,
+          journalKey: item.name,
           item,
         })),
-    ]),
-    [config.items, config.collectibles],
+        ...(config.collectibles ?? [])
+          .filter(
+            (item) => item.group !== "wishes" && item.group !== "objectives"
+          )
+          .map((item) => ({
+            type: "collectible",
+            key: `c:${item.name}`,
+            journalKey: `c:${item.name}`,
+            item,
+          })),
+      ]),
+    [config.items, config.collectibles]
   );
 
   const data = useMemo(() => {
@@ -224,7 +255,8 @@ function SilksongItemsScreen() {
           row.item.name.toLowerCase().includes(q) ||
           (row.item.location ?? "").toLowerCase().includes(q) ||
           (row.item.description ?? "").toLowerCase().includes(q)) &&
-        (filter === "all" || (filter === "done") === !!collected[row.journalKey]),
+        (filter === "all" ||
+          (filter === "done") === !!collected[row.journalKey])
     );
   }, [rows, query, category, filter, collected]);
 
@@ -256,17 +288,19 @@ function SilksongItemsScreen() {
           <>
             <Title>Items</Title>
             <Body>
-              Tools, crests, Mask Shards, Spool Fragments, Memory Lockets,
-              Silk Hearts, materials and abilities. Swipe the category filters
-              to find what you need. Entries follow a recommended playthrough,
-              not a mandatory route.
+              Tools, crests, Mask Shards, Spool Fragments, Memory Lockets, Silk
+              Hearts, materials and abilities. Swipe the category filters to
+              find what you need. Entries follow a recommended playthrough, not
+              a mandatory route.
             </Body>
             <Button
               label="Crest & tool loadout builder"
               onPress={() => router.push("/charms/silksong-loadout")}
               style={{ marginHorizontal: 16, marginTop: 12 }}
             />
-            <Body>Showing {data.length} of {rows.length} items.</Body>
+            <Body>
+              Showing {data.length} of {rows.length} items.
+            </Body>
           </>
         }
         ListEmptyComponent={<Body>No items match your filters.</Body>}
@@ -300,7 +334,9 @@ function SilksongItemsScreen() {
 
 export default function CharmsScreen() {
   const { config } = useGame();
-  return config.id === "silksong"
-    ? <SilksongItemsScreen />
-    : <HollowCharmsScreen />;
+  return config.id === "silksong" ? (
+    <SilksongItemsScreen />
+  ) : (
+    <HollowCharmsScreen />
+  );
 }
