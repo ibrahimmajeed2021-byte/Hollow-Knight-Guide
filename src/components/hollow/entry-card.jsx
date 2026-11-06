@@ -11,6 +11,11 @@ function EntryCardBase({ image, name, summary, description, children }) {
   const { colors, settings } = useSettings();
   const triggerHaptic = useHaptics();
   const [expanded, setExpanded] = useState(settings.startExpanded);
+  const [failedImageKey, setFailedImageKey] = useState(null);
+  const imageKey = typeof image === "number"
+    ? String(image)
+    : image?.uri ?? JSON.stringify(image ?? null);
+  const showArtwork = !!image && failedImageKey !== imageKey;
 
   const toggle = () => {
     if (!settings.reduceMotion) LayoutAnimation.easeInEaseOut();
@@ -33,18 +38,28 @@ function EntryCardBase({ image, name, summary, description, children }) {
         accessibilityState={{ expanded }}
         style={styles.top}
       >
-        {image ? (
+        {showArtwork ? (
           <Image
             source={image}
             style={styles.image}
             contentFit="contain"
             cachePolicy="memory-disk"
             recyclingKey={name}
+            onError={() => setFailedImageKey(imageKey)}
             accessible={false}
           />
-        ) : null}
+        ) : (
+          <View
+            style={[styles.imageFallback, { borderColor: colors.border, backgroundColor: colors.background }]}
+            accessibilityLabel={image ? name + " artwork is unavailable" : name + " has no artwork"}
+          >
+            <AppText style={[styles.fallbackLetter, { color: colors.accent }]}>
+              {name?.trim()?.charAt(0)?.toUpperCase() || "?"}
+            </AppText>
+          </View>
+        )}
         <View style={styles.titleBlock}>
-          <AppText style={styles.name}>{name}</AppText>
+          <AppText style={styles.name} numberOfLines={3}>{name}</AppText>
           {summary}
         </View>
         <AppText style={[styles.chevron, { color: colors.muted }]}>
@@ -55,7 +70,7 @@ function EntryCardBase({ image, name, summary, description, children }) {
         <Animated.View
           entering={settings.reduceMotion ? undefined : FadeIn.duration(250)}
         >
-          <AppText style={styles.description}>{description}</AppText>
+          {description ? <AppText style={styles.description}>{description}</AppText> : null}
           {children}
           <Pressable
             onPress={toggle}
@@ -89,18 +104,20 @@ export function Stat({ label, value }) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 16,
     marginHorizontal: 16,
-    marginTop: 14,
+    marginTop: 12,
     borderWidth: 1,
   },
   top: { flexDirection: "row", alignItems: "center", gap: 12 },
   image: { width: 72, height: 72 },
+  imageFallback: { width: 72, height: 72, borderRadius: 13, borderWidth: 1, justifyContent: "center", alignItems: "center" },
+  fallbackLetter: { fontSize: 29, fontWeight: "800" },
   titleBlock: { flex: 1 },
-  name: { fontFamily: HKFont, fontSize: 20 },
+  name: { fontFamily: HKFont, fontSize: 19, lineHeight: 26 },
   chevron: { fontSize: 14 },
-  description: { marginTop: 10, fontSize: 15, lineHeight: 22 },
+  description: { marginTop: 14, fontSize: 15, lineHeight: 23 },
   closeDetails: {
     alignSelf: "flex-start",
     marginTop: 14,

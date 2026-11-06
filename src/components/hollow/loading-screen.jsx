@@ -17,7 +17,8 @@ import {
   stopSound,
 } from "../../sound/game-sounds";
 
-const HOLD_MS = 3000;
+const HOLD_MS = 1050;
+const REDUCED_MOTION_HOLD_MS = 280;
 
 export function LoadingScreen() {
   const { settings } = useSettings();
@@ -35,10 +36,19 @@ export function LoadingScreen() {
   const reduce = settings.reduceMotion;
 
   useEffect(() => {
-    SplashScreen.hideAsync();
-    const timer = setTimeout(() => setVisible(false), HOLD_MS);
-    return () => clearTimeout(timer);
+    SplashScreen.hideAsync().catch(() => {});
   }, []);
+
+  // Keep the splash short and don't dismiss it before the saved game has loaded.
+  // A reduced-motion preference avoids unnecessary waiting and animations.
+  useEffect(() => {
+    if (!loaded) return;
+    const timer = setTimeout(
+      () => setVisible(false),
+      reduce ? REDUCED_MOTION_HOLD_MS : HOLD_MS,
+    );
+    return () => clearTimeout(timer);
+  }, [loaded, reduce]);
 
   // Apply volume changes immediately, including muting the sound when disabled.
   useEffect(() => {
@@ -85,7 +95,7 @@ export function LoadingScreen() {
 
   return (
     <Animated.View
-      exiting={reduce ? undefined : FadeOut.duration(300)}
+      exiting={reduce ? undefined : FadeOut.duration(180)}
       pointerEvents="auto"
       style={[
         styles.overlay,
@@ -104,7 +114,7 @@ export function LoadingScreen() {
         </>
       ) : null}
       <Animated.View
-        entering={reduce ? undefined : FadeIn.duration(500)}
+        entering={reduce ? undefined : FadeIn.duration(260)}
         style={styles.heroes}
       >
         {heroes.map((g) => (
@@ -118,7 +128,7 @@ export function LoadingScreen() {
         ))}
       </Animated.View>
       <Animated.View
-        entering={reduce ? undefined : FadeIn.delay(250).duration(600)}
+        entering={reduce ? undefined : FadeIn.delay(100).duration(300)}
       >
         <Text style={styles.title}>{words.join(" ")}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
