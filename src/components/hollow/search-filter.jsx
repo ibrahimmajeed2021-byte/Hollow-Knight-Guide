@@ -2,6 +2,7 @@ import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native
 
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
+import { layout, radius, space, type } from "../../ui/design-system";
 
 export function SearchFilter({
   value,
@@ -12,7 +13,7 @@ export function SearchFilter({
   onFilter,
   hideSearch,
 }) {
-  const { colors, fontScale } = useSettings();
+  const { colors, fontScale, settings } = useSettings();
   return (
     <View
       style={[
@@ -59,13 +60,16 @@ export function SearchFilter({
               onPress={() => onFilter(f.value)}
               accessibilityRole="radio"
               accessibilityState={{ selected: on }}
-              style={[
+              accessibilityLabel={f.label}
+              style={({ pressed }) => [
                 styles.chip,
                 { borderColor: colors.border },
                 on && {
                   backgroundColor: colors.button,
                   borderColor: colors.button,
                 },
+                pressed && styles.pressed,
+                settings.highContrast && { borderWidth: 2 },
               ]}
             >
               <AppText
@@ -86,21 +90,23 @@ export function SearchFilter({
 
 const styles = StyleSheet.create({
   wrap: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 8,
-    gap: 8,
+    paddingHorizontal: layout.gutter,
+    paddingTop: space.sm,
+    paddingBottom: space.sm,
+    gap: space.sm,
     borderBottomWidth: 1,
   },
-  inputWrap: { borderWidth: 1, borderRadius: 12, paddingHorizontal: 14 },
-  input: { paddingVertical: 10 },
-  chips: { flexDirection: "row", gap: 8, paddingRight: 16 },
+  inputWrap: { borderWidth: 1, borderRadius: radius.control, paddingHorizontal: 14 },
+  input: { minHeight: layout.touchTarget, paddingVertical: space.sm },
+  chips: { flexDirection: "row", gap: space.sm, paddingRight: layout.gutter },
   chip: {
     borderWidth: 1,
-    borderRadius: 18,
-    minHeight: 36,
-    paddingVertical: 7,
-    paddingHorizontal: 12,
+    borderRadius: radius.pill,
+    minHeight: layout.touchTarget,
+    paddingVertical: space.sm,
+    paddingHorizontal: space.md,
+    justifyContent: "center",
   },
-  chipText: { fontSize: 14 },
+  pressed: { opacity: 0.78 },
+  chipText: { ...type.label },
 });
