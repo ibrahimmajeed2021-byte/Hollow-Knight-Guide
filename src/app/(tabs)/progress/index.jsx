@@ -5,6 +5,8 @@ import { AppText } from "../../../components/hollow/app-text";
 import { Button } from "../../../components/hollow/button";
 import { ProgressBar } from "../../../components/hollow/progress-bar";
 import { Screen } from "../../../components/hollow/screen";
+import { SurfaceCard } from "../../../components/hollow/surface-card";
+import { space, type } from "../../../ui/design-system";
 import { Body, Title } from "../../../components/hollow/section-text";
 import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
@@ -17,12 +19,11 @@ function percent(done, total) {
 function ProgressRow({ label, done, total, onPress, big }) {
   const { colors } = useSettings();
   const pct = percent(done, total);
-  const content = (
-    <View
-      style={[
-        styles.card,
-        { backgroundColor: colors.card, borderColor: colors.border },
-      ]}
+  return (
+    <SurfaceCard
+      style={styles.card}
+      onPress={onPress}
+      label={onPress ? `${label}, ${done} of ${total} completed, ${pct}%` : undefined}
     >
       <View style={styles.rowTop}>
         <AppText style={big ? styles.bigLabel : styles.label}>{label}</AppText>
@@ -32,17 +33,7 @@ function ProgressRow({ label, done, total, onPress, big }) {
       <AppText style={[styles.count, { color: colors.muted }]}>
         {done} / {total} completed · {Math.max(0, total - done)} remaining
       </AppText>
-    </View>
-  );
-  if (!onPress) return content;
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={`${label}, ${done} of ${total} completed, ${pct}%`}
-    >
-      {content}
-    </Pressable>
+    </SurfaceCard>
   );
 }
 
@@ -170,19 +161,19 @@ export default function ProgressScreen() {
 
 const styles = StyleSheet.create({
   list: { padding: 16, gap: 12 },
-  card: { borderWidth: 1, borderRadius: 12, padding: 14, gap: 8 },
+  card: { gap: space.sm },
   rowTop: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     gap: 8,
   },
-  label: { fontSize: 18, fontWeight: "bold", flex: 1 },
+  label: { ...type.subheading, flex: 1 },
   pct: { fontSize: 18, fontWeight: "bold" },
   bigLabel: { fontSize: 22, fontWeight: "bold", flex: 1 },
   bigPct: { fontSize: 28, fontWeight: "bold" },
   count: { fontSize: 14 },
   note: { fontSize: 13, lineHeight: 19, paddingHorizontal: 2 },
-  sectionTitle: { fontSize: 22, marginTop: 12 },
+  sectionTitle: { ...type.heading, marginTop: space.md },
   gap: { marginTop: 8 },
 });
