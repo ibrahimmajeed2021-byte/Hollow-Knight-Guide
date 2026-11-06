@@ -188,6 +188,7 @@ export const defaultSettings = {
   cardDensity: "comfortable",
   showArtwork: true,
   wallpaperStrength: 50,
+  ambientMotion: false,
   homeSections: {
     overview: true,
     search: true,
