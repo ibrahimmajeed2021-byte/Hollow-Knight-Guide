@@ -14,18 +14,19 @@ import { useSettings } from "../../settings/SettingsContext.jsx";
 
 function DashboardCard({ children, onPress, label, style }) {
   const { colors } = useSettings();
+  const baseStyle = [
+    styles.card,
+    { backgroundColor: colors.card, borderColor: colors.border },
+    style,
+  ];
+  // Non-clickable cards are Views so their nested buttons stay interactive.
+  if (!onPress) return <View style={baseStyle}>{children}</View>;
   return (
     <Pressable
       onPress={onPress}
-      disabled={!onPress}
-      accessibilityRole={onPress ? "button" : undefined}
-      accessibilityLabel={onPress ? label : undefined}
-      style={({ pressed }) => [
-        styles.card,
-        { backgroundColor: colors.card, borderColor: colors.border },
-        pressed && onPress && styles.pressed,
-        style,
-      ]}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      style={({ pressed }) => [baseStyle, pressed && styles.pressed]}
     >
       {children}
     </Pressable>
