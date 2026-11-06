@@ -4,6 +4,7 @@ import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
+import { createIconApi } from "./icon-api.mjs";
 
 const root = new URL("..", import.meta.url).pathname;
 const tmp = mkdtempSync(join(tmpdir(), "hk-api-"));
@@ -46,13 +47,17 @@ const getCollectibleGuide = await load(
   "getCollectibleGuide",
 );
 
+// Publish every bundled portrait, charm and fallback icon as a stable static
+// URL at our Surge origin. The API, not the app, selects the online icon.
+const iconApi = createIconApi(root);
+
 // Publish acquisition directions and attribution alongside the existing item
 // descriptions. The app can download these updates without a native rebuild.
 const withWikiLocations = (items, gameId) =>
   items.map((item) => {
     const guide = getWikiLocationGuide(item, gameId);
     return {
-      ...item,
+      ...iconApi.equipment(item, gameId),
       ...(guide?.location ? { location: guide.location } : {}),
       ...(guide?.wikiUrl ? { wikiUrl: guide.wikiUrl } : {}),
       ...(guide?.imageUrl
@@ -71,7 +76,7 @@ const withCollectibleLocations = (entries) =>
   entries.map((item) => {
     const guide = getCollectibleGuide(item);
     return {
-      ...item,
+      ...iconApi.collectible(item, "silksong", guide),
       wikiUrl: guide.wikiUrl,
       ...(guide.location ? { location: guide.location } : {}),
       ...(guide.artworkUrl
@@ -90,15 +95,17 @@ const withCollectibleLocations = (entries) =>
     };
   });
 
-write("hollow/bosses.json", [...bosses, ...hollowExtraBosses]);
+write("hollow/bosses.json", [...bosses, ...hollowExtraBosses].map((entry) => iconApi.boss(entry, "hollow")));
 write("hollow/items.json", withWikiLocations([...charms, ...hollowExtraCharms], "hollow"));
-write("hollow/collectibles.json", hollowCollectibles);
-write("silksong/bosses.json", [...silksongBosses, ...silksongExtraBosses]);
+write("hollow/collectibles.json", hollowCollectibles.map((entry) => iconApi.collectible(entry, "hollow")));
+write("silksong/bosses.json", [...silksongBosses, ...silksongExtraBosses].map((entry) => iconApi.boss(entry, "silksong")));
 write("silksong/items.json", withWikiLocations(silksongItems, "silksong"));
 write("silksong/collectibles.json", withCollectibleLocations([...silksongCollectibles, ...silksongExtraCollectibles]));
 write("tips.json", tips);
 write("index.json", {
   updatedAt: new Date().toISOString(),
+  schemaVersion: 2,
+  imageFields: ["iconUrl", "iconFallbackUrl", "locations[].imageUrl", "locationMapUrl"],
   endpoints: [
     "hollow/bosses.json",
     "hollow/items.json",
@@ -110,4 +117,4 @@ write("index.json", {
   ],
 });
 
-console.log(`API written to ${out}`);
+console.log(`API written to ${out} with ${iconApi.stagedCount()} staged icons`);
