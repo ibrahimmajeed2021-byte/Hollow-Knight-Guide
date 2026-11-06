@@ -3,6 +3,7 @@ import { EntryCard, Stat } from "./entry-card";
 import { CharmExtras, CharmSummary } from "./progress-extras";
 import { WikiLocationSection } from "./wiki-location-section";
 import { getCollectibleGuide } from "../../data/silksong-collectible-guides";
+import { getCollectibleFallbackArtwork } from "../../data/entry-fallback-artwork";
 import { getCollectibleArtwork } from "../../data/collectible-icons";
 import { silksongCollectibleGroups } from "../../data/silksong-collectibles";
 import { silksongExtraCollectibleGroups } from "../../data/silksong-extra-collectibles";
@@ -22,6 +23,7 @@ export function CollectionEntry({ item }) {
     <EntryCard
       name={item.name}
       image={getCollectibleArtwork(item, "silksong", guide?.artworkUrl)}
+      fallbackImage={getCollectibleFallbackArtwork(item, "silksong")}
       description={item.description ?? ""}
       summary={
         <>
