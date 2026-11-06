@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { ApiArtworkImage } from "../../../components/hollow/api-artwork-image";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useRef, useState } from "react";
@@ -23,6 +23,7 @@ import { Screen } from "../../../components/hollow/screen";
 import { Body, Title } from "../../../components/hollow/section-text";
 import { charms } from "../../../data/charms";
 import { charmImages } from "../../../data/images";
+import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
 import { useLoadouts } from "../../../loadouts/loadouts-context";
 import { useHaptics, useSettings } from "../../../settings/SettingsContext.jsx";
@@ -44,6 +45,8 @@ const cost = (name) =>
 
 export default function LoadoutScreen() {
   const { colors } = useSettings();
+  const { config } = useGame();
+  const iconUrlFor = (name) => config.items.find((item) => item.name === name)?.iconUrl;
   const triggerHaptic = useHaptics();
   const { collected } = useJournal();
   const { loadouts, saveLoadout, deleteLoadout } = useLoadouts();
@@ -283,8 +286,9 @@ export default function LoadoutScreen() {
                       isOn && { borderColor: colors.accent, borderWidth: 3 },
                     ]}
                   >
-                    <Image
-                      source={charmImages[item.image]}
+                    <ApiArtworkImage
+                      iconUrl={iconUrlFor(item.name)}
+                      fallbackImage={charmImages[item.image]}
                       style={styles.tileImage}
                       contentFit="contain"
                       cachePolicy="memory-disk"
@@ -387,8 +391,9 @@ export default function LoadoutScreen() {
               const charm = charms.find((c) => c.name === n);
               return (
                 <View key={n} style={styles.shareItem}>
-                  <Image
-                    source={charmImages[charm?.image]}
+                  <ApiArtworkImage
+                    iconUrl={iconUrlFor(n)}
+                    fallbackImage={charmImages[charm?.image]}
                     style={styles.shareImg}
                     contentFit="contain"
                   />
