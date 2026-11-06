@@ -1,11 +1,10 @@
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
 import { FlatList } from "react-native";
-import { AppText } from "../../../components/hollow/app-text";
 import { Button } from "../../../components/hollow/button";
 import { CollectionEntry } from "../../../components/hollow/collection-entry";
-import { EntryCard, Stat } from "../../../components/hollow/entry-card";
 import { EmptyState } from "../../../components/hollow/empty-state";
+import { EntryCard, Stat } from "../../../components/hollow/entry-card";
 import {
   CharmExtras,
   CharmSummary,
@@ -98,7 +97,10 @@ function HollowCharmsScreen() {
         data={data}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
-          <EmptyState title="No matching charms" description="Try another name or adjust the filters." />
+          <EmptyState
+            title="No matching charms"
+            description="Try another name or adjust the filters."
+          />
         }
         keyExtractor={(c) => c.name}
         initialNumToRender={8}
@@ -155,8 +157,14 @@ function HollowCharmsScreen() {
           <EntryCard
             spoilerKind="item"
             spoilerEntry={item}
-            image={item.iconUrl ? { uri: item.iconUrl } : charmImages[item.image]}
-            fallbackImage={getCharmFallbackArtwork(item, charmImages) ?? charmImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
+            image={
+              item.iconUrl ? { uri: item.iconUrl } : charmImages[item.image]
+            }
+            fallbackImage={
+              getCharmFallbackArtwork(item, charmImages) ??
+              charmImages[item.image] ??
+              (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)
+            }
             name={item.name}
             description={item.description}
             summary={
@@ -311,7 +319,12 @@ function SilksongItemsScreen() {
             </Body>
           </>
         }
-        ListEmptyComponent={<EmptyState title="No matching items" description="Try another category or clear the search." />}
+        ListEmptyComponent={
+          <EmptyState
+            title="No matching items"
+            description="Try another category or clear the search."
+          />
+        }
         renderItem={({ item: row }) => {
           if (row.type === "collectible") {
             return <CollectionEntry item={row.item} />;
@@ -321,8 +334,17 @@ function SilksongItemsScreen() {
             <EntryCard
               spoilerKind="item"
               spoilerEntry={item}
-              image={item.iconUrl ? { uri: item.iconUrl } : config.itemImages[item.image]}
-              fallbackImage={config.itemImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
+              image={
+                item.iconUrl
+                  ? { uri: item.iconUrl }
+                  : config.itemImages[item.image]
+              }
+              fallbackImage={
+                config.itemImages[item.image] ??
+                (item.iconFallbackUrl
+                  ? { uri: item.iconFallbackUrl }
+                  : undefined)
+              }
               name={item.name}
               description={item.description}
               summary={

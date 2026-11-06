@@ -4,8 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { FlatList, Linking, Pressable, StyleSheet, View } from "react-native";
 import { AppText } from "../../components/hollow/app-text";
 import { Button } from "../../components/hollow/button";
-import { EntryCard, Stat } from "../../components/hollow/entry-card";
 import { EmptyState } from "../../components/hollow/empty-state";
+import { EntryCard, Stat } from "../../components/hollow/entry-card";
 import {
   BossExtras,
   BossSummary,
@@ -62,7 +62,10 @@ export default function BossesScreen() {
         data={data}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
-          <EmptyState title="No bosses found" description="Try another name or switch the defeated filter." />
+          <EmptyState
+            title="No bosses found"
+            description="Try another name or switch the defeated filter."
+          />
         }
         keyExtractor={(b) => b.name}
         initialNumToRender={6}
@@ -98,15 +101,24 @@ export default function BossesScreen() {
           <EntryCard
             spoilerKind="boss"
             spoilerEntry={item}
-            image={item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]}
-            fallbackImage={getBossFallbackArtwork(item, bossImages) ?? bossImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
+            image={
+              item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]
+            }
+            fallbackImage={
+              getBossFallbackArtwork(item, bossImages) ??
+              bossImages[item.image] ??
+              (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)
+            }
             name={item.name}
             description={item.description}
             summary={<BossSummary name={item.name} health={item.health} />}
           >
-            {config.largeBossImage && (item.iconUrl || bossImages[item.image]) ? (
+            {config.largeBossImage &&
+            (item.iconUrl || bossImages[item.image]) ? (
               <Image
-                source={item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]}
+                source={
+                  item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]
+                }
                 style={styles.bossImage}
                 contentFit="contain"
                 cachePolicy="memory-disk"
@@ -128,7 +140,11 @@ export default function BossesScreen() {
               <View key={loc.name} style={styles.location}>
                 {loc.imageUrl || loc.image ? (
                   <Image
-                    source={loc.imageUrl ? { uri: loc.imageUrl } : locationImages[loc.image]}
+                    source={
+                      loc.imageUrl
+                        ? { uri: loc.imageUrl }
+                        : locationImages[loc.image]
+                    }
                     style={styles.locationImage}
                     contentFit="contain"
                     cachePolicy="memory-disk"
