@@ -4,6 +4,7 @@ import { useTabInset } from "../../hooks/use-tab-inset";
 import { useSettings } from "../../settings/SettingsContext";
 import { AppHeader } from "./app-header";
 import { ThemeBackdrop } from "../../themes/theme-backdrop";
+import { layout } from "../../ui/design-system";
 
 export function Screen({ children, scroll = true, contentStyle }) {
   const { colors } = useSettings();
@@ -14,10 +15,11 @@ export function Screen({ children, scroll = true, contentStyle }) {
       <AppHeader />
       {scroll ? (
         <ScrollView
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
           contentContainerStyle={[
             styles.content,
-            { paddingBottom: inset + 24 },
+            { paddingBottom: inset + layout.screenBottom },
             contentStyle,
           ]}
         >
@@ -30,5 +32,5 @@ export function Screen({ children, scroll = true, contentStyle }) {
 
 const styles = StyleSheet.create({
   root: { flex: 1 },
-  content: { paddingTop: 18, paddingBottom: 32 },
+  content: { paddingTop: layout.screenTop, paddingBottom: layout.screenBottom },
 });
