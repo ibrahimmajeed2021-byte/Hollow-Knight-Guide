@@ -88,7 +88,7 @@ export default function BossesScreen() {
         renderItem={({ item }) => (
           <EntryCard
             image={item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]}
-            fallbackImage={getBossFallbackArtwork(item, bossImages) ?? bossImages[item.image]}
+            fallbackImage={getBossFallbackArtwork(item, bossImages) ?? bossImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
             name={item.name}
             description={item.description}
             summary={<BossSummary name={item.name} health={item.health} />}
@@ -111,7 +111,7 @@ export default function BossesScreen() {
             </AppText>
             {item.locations.map((loc) => (
               <View key={loc.name} style={styles.location}>
-                {loc.image ? (
+                {loc.imageUrl || loc.image ? (
                   <Image
                     source={loc.imageUrl ? { uri: loc.imageUrl } : locationImages[loc.image]}
                     style={styles.locationImage}
