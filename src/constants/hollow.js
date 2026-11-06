@@ -1,5 +1,22 @@
 export const HKFont = "TrajanPro";
 
+// Readable light and dark variants for premium location-inspired themes.
+// Background artwork is handled by ThemeBackdrop; these colours apply to
+// cards, headers, navigation, buttons and text throughout the app.
+const premiumPalette = (bg, header, card, border, text, muted, accent, tabBar) => ({
+  background: bg,
+  header,
+  headerText: "#ffffff",
+  tabBar,
+  card,
+  border,
+  text,
+  muted,
+  accent,
+  button: header,
+  buttonText: "#ffffff",
+});
+
 export const palettes = {
   default: {
     background: "#f2e5eb",
@@ -66,6 +83,30 @@ export const palettes = {
     button: "#1f5a2b",
     buttonText: "#ffffff",
   },
+  // Hallownest
+  cityOfTears: premiumPalette("#e8f0f8", "#315775", "#f9fcff", "#b8cddc", "#142839", "#4b687c", "#2c648c", "#d2dfe9"),
+  cityOfTearsDark: premiumPalette("#091624", "#1d3e59", "#102537", "#375975", "#ebf5ff", "#acc6d8", "#9bcbec", "#152c40"),
+  voidheart: premiumPalette("#eee7f5", "#4c3a71", "#fcf8ff", "#c4b4d8", "#271b38", "#675279", "#634997", "#d8cce7"),
+  voidheartDark: premiumPalette("#0b0913", "#36254e", "#181226", "#57417a", "#f5efff", "#c6b4dd", "#c4a9ff", "#1b142b"),
+  godhome: premiumPalette("#f5efdf", "#72542b", "#fffbf1", "#d8c596", "#30281a", "#756248", "#866325", "#e4d3af"),
+  godhomeDark: premiumPalette("#15110a", "#49351c", "#292011", "#766039", "#fff2d3", "#d7c29a", "#f0c575", "#272013"),
+  greenpath: premiumPalette("#eaf3e5", "#386445", "#f9fdf7", "#b8d3b9", "#1c3726", "#527057", "#396c48", "#ccdfca"),
+  greenpathDark: premiumPalette("#0d1811", "#244c31", "#162a1c", "#36694a", "#e3f5e6", "#afcfb5", "#8bd89d", "#1b3223"),
+  crystalPeak: premiumPalette("#f0e9f8", "#694880", "#fdfaff", "#d2bce3", "#302039", "#715779", "#814e9c", "#e3d4eb"),
+  crystalPeakDark: premiumPalette("#170e1e", "#513060", "#2a1932", "#825890", "#f9ebff", "#d4b9df", "#e3b5fa", "#30203a"),
+  whitePalace: premiumPalette("#f1f4f8", "#617086", "#ffffff", "#c0ccd9", "#263241", "#657080", "#526983", "#dde4ee"),
+  whitePalaceDark: premiumPalette("#151923", "#3c475b", "#232a39", "#63718a", "#f3f7ff", "#c8d1e0", "#c7dcff", "#262e3d"),
+  // Pharloom
+  citadelOfSong: premiumPalette("#f5eee1", "#7a5936", "#fffbf2", "#d9c59f", "#362618", "#79674c", "#8c642d", "#e5d7ba"),
+  citadelOfSongDark: premiumPalette("#18130e", "#573b21", "#292015", "#84643c", "#ffeed1", "#e0c6a2", "#f0c884", "#2d2319"),
+  mossGrotto: premiumPalette("#e8f5e9", "#32674c", "#f8fdf9", "#bed8c6", "#1c3b29", "#4c765c", "#367c5a", "#d2e4d6"),
+  mossGrottoDark: premiumPalette("#0b1d15", "#245541", "#102e23", "#37745a", "#e1fae9", "#afd8bf", "#8be7b5", "#1b3d2e"),
+  deepDocks: premiumPalette("#f8ebe0", "#94442d", "#fff9f3", "#e4bda7", "#46241b", "#865c4c", "#a65132", "#edd6c4"),
+  deepDocksDark: premiumPalette("#200f0c", "#783422", "#321a14", "#955139", "#fff1e6", "#e6bbac", "#ffab79", "#3d2118"),
+  bilewater: premiumPalette("#eaf0dc", "#5b6e37", "#fbfdf1", "#c2d29b", "#29371d", "#6a7954", "#597840", "#d8e5bd"),
+  bilewaterDark: premiumPalette("#141e0f", "#3e582d", "#26351b", "#637b4a", "#f1f9e6", "#c2d8af", "#bee88d", "#2e4020"),
+  songclave: premiumPalette("#eff0fa", "#53648a", "#fcfcff", "#c4d0e7", "#262f4b", "#606b89", "#576fa2", "#d9deed"),
+  songclaveDark: premiumPalette("#121727", "#324761", "#202b3e", "#4d6686", "#edf3ff", "#bfcfe8", "#b2c8ff", "#1e2b40"),
   dark: {
     background: "#14141f",
     header: "#2b2d42",
