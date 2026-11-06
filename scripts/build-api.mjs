@@ -103,10 +103,28 @@ write("silksong/items.json", withWikiLocations(silksongItems, "silksong"));
 write("silksong/collectibles.json", withCollectibleLocations([...silksongCollectibles, ...silksongExtraCollectibles]));
 write("tips.json", tips);
 
+// Optional, explicitly licensed streaming sources. Never upload the existing
+// copyrighted game soundtracks to the public site without redistribution rights.
+// Set GUIDE_LICENSED_AUDIO_MANIFEST to a JSON file you own with:
+// { "loading": {"hollow": "https://..."}, "tracks": {"Track title": "https://..."} }
+const sourcePath = process.env.GUIDE_LICENSED_AUDIO_MANIFEST;
+const audioSourceData = sourcePath
+  ? JSON.parse(readFileSync(join(root, sourcePath), "utf8"))
+  : {};
+const licensedAudioUrls = (group) =>
+  Object.fromEntries(
+    Object.entries(group && typeof group === "object" ? group : {})
+      .filter(([, url]) => typeof url === "string" && /^https:\/\//.test(url)),
+  );
+
 // Lightweight API media manifest controls large app artwork without making
 // it part of the JavaScript bundle. Local copies remain for Premium offline.
 write("media.json", {
   schemaVersion: 1,
+  audio: {
+    loading: licensedAudioUrls(audioSourceData.loading),
+    tracks: licensedAudioUrls(audioSourceData.tracks),
+  },
   games: {
     hollow: {
       heroImageUrl: iconApi.asset("assets/hollow/Knight.png"),
