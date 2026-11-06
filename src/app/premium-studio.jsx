@@ -9,6 +9,7 @@ import { Body, Title } from "../components/hollow/section-text";
 import { premiumAccents, defaultSettings } from "../constants/hollow";
 import { usePurchases } from "../purchases/PurchasesContext";
 import { useSettings } from "../settings/SettingsContext.jsx";
+import { layout, radius, space, type } from "../ui/design-system";
 
 function Option({ children, active, onPress, colors }) {
   return (
@@ -186,11 +187,11 @@ export default function PremiumStudioScreen() {
 const styles = StyleSheet.create({
   back: { alignSelf: "flex-start", marginHorizontal: 16, marginTop: 8 },
   topButton: { marginHorizontal: 16, marginTop: 16 },
-  panel: { marginHorizontal: 16, marginTop: 16, padding: 16, borderWidth: 1, borderRadius: 16, gap: 12 },
-  heading: { fontSize: 19, fontWeight: "800" },
+  panel: { marginHorizontal: layout.gutter, marginTop: space.lg, padding: layout.cardPadding, borderWidth: 1, borderRadius: radius.card, gap: space.md },
+  heading: { ...type.heading },
   help: { fontSize: 13, lineHeight: 19 },
   accentGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
-  accentChoice: { borderWidth: 1, padding: 10, borderRadius: 12, width: "47%", flexGrow: 1, minWidth: 120, gap: 6, alignItems: "center" },
+  accentChoice: { borderWidth: 1, padding: space.md, borderRadius: radius.control, width: "47%", flexGrow: 1, minWidth: 120, gap: space.sm, alignItems: "center", minHeight: 98 },
   swatch: { width: 32, height: 32, borderRadius: 16 },
   accentName: { fontSize: 14, fontWeight: "700", textAlign: "center" },
   selected: { fontSize: 12, fontWeight: "700" },
@@ -198,7 +199,7 @@ const styles = StyleSheet.create({
   previewHeading: { fontSize: 18, fontWeight: "800" },
   previewButton: { padding: 12, borderRadius: 10, alignSelf: "flex-start" },
   options: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  option: { borderWidth: 1, borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12 },
+  option: { borderWidth: 1, borderRadius: radius.control, minHeight: layout.touchTarget, justifyContent: "center", paddingHorizontal: space.lg, paddingVertical: space.sm },
   optionText: { fontSize: 14, fontWeight: "700" },
   toggleRow: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 56 },
   flex: { flex: 1, gap: 3 },
