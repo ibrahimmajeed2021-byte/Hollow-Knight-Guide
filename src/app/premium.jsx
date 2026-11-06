@@ -6,6 +6,7 @@ import { Screen } from "../components/hollow/screen";
 import { Title } from "../components/hollow/section-text";
 import { usePurchases } from "../purchases/PurchasesContext";
 import { useSettings } from "../settings/SettingsContext";
+import { layout, radius, space, type } from "../ui/design-system";
 
 function packageName(item) {
   const id = (item.identifier + " " + item.product.identifier).toLowerCase();
@@ -205,20 +206,20 @@ export default function PremiumScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { paddingHorizontal: 16, gap: 16 },
-  card: { borderWidth: 1, borderRadius: 16, padding: 16, gap: 12 },
-  heading: { fontSize: 20, fontWeight: "bold" },
-  primary: { paddingVertical: 16, paddingHorizontal: 16, borderRadius: 12, alignItems: "center", minHeight: 52, justifyContent: "center" },
+  content: { paddingHorizontal: layout.gutter, gap: space.lg },
+  card: { borderWidth: 1, borderRadius: radius.card, padding: layout.cardPadding, gap: space.md },
+  heading: { ...type.heading },
+  primary: { paddingVertical: space.lg, paddingHorizontal: space.lg, borderRadius: radius.control, alignItems: "center", minHeight: 52, justifyContent: "center" },
   primaryText: { fontSize: 16, fontWeight: "bold" },
   benefit: { borderTopWidth: 1, paddingTop: 14, gap: 5 },
   benefitTitle: { fontSize: 16, fontWeight: "800" },
   benefitDescription: { fontSize: 14, lineHeight: 21 },
   freeNote: { fontSize: 13, lineHeight: 20, marginTop: 2 },
-  purchaseRow: { borderWidth: 1, borderRadius: 12, minHeight: 68, padding: 14, alignItems: "center", flexDirection: "row", gap: 12 },
+  purchaseRow: { borderWidth: 1, borderRadius: radius.control, minHeight: 72, padding: layout.cardPadding, alignItems: "center", flexDirection: "row", gap: space.md },
   packageText: { flex: 1, gap: 4 },
   testRow: { flexDirection: "row", alignItems: "center", gap: 16 },
   productTitle: { fontSize: 17, fontWeight: "bold" },
-  secondary: { borderWidth: 1, borderRadius: 12, minHeight: 48, alignItems: "center", justifyContent: "center", paddingHorizontal: 12 },
+  secondary: { borderWidth: 1, borderRadius: radius.control, minHeight: layout.touchTarget, alignItems: "center", justifyContent: "center", paddingHorizontal: space.md },
   note: { fontSize: 13, lineHeight: 19 },
   back: { alignSelf: "center", paddingVertical: 8 },
 });
