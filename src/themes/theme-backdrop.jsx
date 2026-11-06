@@ -20,7 +20,7 @@ export function ThemeBackdrop() {
   const intensity = Math.max(0, Math.min(100, Number(settings.wallpaperStrength ?? 50))) / 50;
 
   useEffect(() => {
-    if (settings.ambientMotion !== true || settings.reduceMotion || settings.highContrast) {
+    if (theme.id === "default" || settings.ambientMotion !== true || settings.reduceMotion || settings.highContrast) {
       pulse.setValue(1);
       return;
     }
@@ -32,7 +32,7 @@ export function ThemeBackdrop() {
     );
     animation.start();
     return () => animation.stop();
-  }, [pulse, settings.ambientMotion, settings.reduceMotion, settings.highContrast]);
+  }, [pulse, theme.id, settings.ambientMotion, settings.reduceMotion, settings.highContrast]);
 
   if (theme.id === "default" || settings.highContrast) return null;
 
