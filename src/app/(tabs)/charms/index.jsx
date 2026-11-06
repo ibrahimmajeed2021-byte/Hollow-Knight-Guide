@@ -17,6 +17,7 @@ import { Body, Title } from "../../../components/hollow/section-text";
 import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
 import { silksongCollectibleGroups } from "../../../data/silksong-collectibles";
+import { sortMixedSilksongItems } from "../../../data/progression-order";
 const FILTERS = [
   { value: "all", label: "All" },
   { value: "todo", label: "Not collected" },
@@ -101,6 +102,7 @@ function HollowCharmsScreen() {
           <>
             <Button label="Back" variant="outline" onPress={() => router.back()} style={{ marginHorizontal: 16, marginBottom: 8, alignSelf: "flex-start" }} />
             <Title>{config.itemsLabel}</Title>
+            <Body>Recommended discovery order, including optional charms you may find earlier or later.</Body>
             {config.hasLoadouts && (
               <Button
                 label={config.id === "silksong" ? "Crest & tool loadout builder" : "Loadout builder"}
@@ -191,7 +193,7 @@ function SilksongItemsScreen() {
   }, [routeCategory]);
 
   const rows = useMemo(
-    () => [
+    () => sortMixedSilksongItems([
       ...config.items.map((item) => ({
         type: "equipment",
         key: `e:${item.name}`,
@@ -206,7 +208,7 @@ function SilksongItemsScreen() {
           journalKey: `c:${item.name}`,
           item,
         })),
-    ],
+    ]),
     [config.items, config.collectibles],
   );
 
@@ -253,7 +255,8 @@ function SilksongItemsScreen() {
             <Body>
               Tools, crests, Mask Shards, Spool Fragments, Memory Lockets,
               Silk Hearts, materials and abilities. Swipe the category filters
-              to find what you need.
+              to find what you need. Entries follow a recommended playthrough,
+              not a mandatory route.
             </Body>
             <Button
               label="Crest & tool loadout builder"

@@ -11,6 +11,7 @@ import { useGame } from "../../games/game-context";
 import { useJournal } from "../../journal/journal-context";
 import { useLoadouts } from "../../loadouts/loadouts-context";
 import { useSettings } from "../../settings/SettingsContext.jsx";
+import { sortMixedSilksongItems } from "../../data/progression-order";
 
 function DashboardCard({ children, onPress, label, style }) {
   const { colors } = useSettings();
@@ -110,9 +111,20 @@ export default function HomeScreen() {
   const percent = total ? Math.round((complete / total) * 100) : 0;
 
   const nextBoss = bosses.find((entry) => !defeated[entry.name]);
-  const nextEquipment = equipment.find((entry) => !collected[entry.name]);
-  const nextPickup = pickups.find((entry) => !collected["c:" + entry.name]);
-  const nextItem = nextEquipment ?? nextPickup;
+  // Use the same chronology as the combined Items screen, not all tools
+  // before all fragments. Hollow Knight charms are already sorted by config.
+  const nextItemRow = isSilksong
+    ? sortMixedSilksongItems([
+        ...equipment.map((item) => ({ type: "equipment", item })),
+        ...pickups.map((item) => ({ type: "collectible", item })),
+      ]).find((row) =>
+        !collected[row.type === "equipment" ? row.item.name : "c:" + row.item.name],
+      )
+    : null;
+  const nextEquipment = isSilksong
+    ? (nextItemRow?.type === "equipment" ? nextItemRow.item : null)
+    : equipment.find((entry) => !collected[entry.name]);
+  const nextItem = isSilksong ? nextItemRow?.item : nextEquipment;
   const nextQuest = quests.find((entry) => !collected["c:" + entry.name]);
   const loadout = loadouts[0];
 

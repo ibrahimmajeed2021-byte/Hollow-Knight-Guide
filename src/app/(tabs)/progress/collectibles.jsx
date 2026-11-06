@@ -65,7 +65,7 @@ export default function CollectiblesScreen() {
   const header = (
     <>
       <Title>Collectibles</Title>
-      <Body>{current.blurb}</Body>
+      <Body>{current.blurb} Entries are ordered by when they're normally reachable, rather than collectible number.</Body>
       <Button
         label="Back to progress"
         variant="outline"

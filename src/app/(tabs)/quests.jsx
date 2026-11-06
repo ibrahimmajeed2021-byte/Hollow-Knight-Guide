@@ -102,6 +102,8 @@ export default function QuestsScreen() {
             <Body>
               All {quests.length} Silksong quests and wishes. {completed} completed.
               Expand a quest for its location, requirements, and rewards.
+              Quests follow a recommended Act 1 → 2 → 3 progression; optional
+              wishes can be completed in different orders.
             </Body>
           </>
         }
