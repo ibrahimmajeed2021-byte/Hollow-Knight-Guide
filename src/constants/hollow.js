@@ -151,6 +151,17 @@ export const highContrast = {
   },
 };
 
+// Premium accents are fixed, contrast-aware presets rather than unrestricted
+// hex input so text and button controls remain readable.
+export const premiumAccents = {
+  theme: { name: "Theme colours", light: null, dark: null },
+  ocean: { name: "Ocean blue", light: "#235d87", dark: "#91c8ff", button: "#235d87" },
+  ember: { name: "Ember orange", light: "#97512b", dark: "#f0ac7f", button: "#97512b" },
+  rose: { name: "Rose", light: "#96506e", dark: "#f0a6c7", button: "#96506e" },
+  jade: { name: "Jade green", light: "#2f7051", dark: "#89dab3", button: "#2f7051" },
+  violet: { name: "Dream violet", light: "#66448e", dark: "#c8a9f5", button: "#66448e" },
+};
+
 export const fontScales = { small: 0.88, default: 1, large: 1.2, xlarge: 1.4 };
 
 export const hapticStyles = ["default", "light", "medium", "heavy"];
@@ -170,4 +181,17 @@ export const defaultSettings = {
   rememberGame: false,
   startExpanded: false,
   highContrast: false,
+  // All new Premium options are opt-in and do not change the original UI.
+  guidedMode: false,
+  spoilerWindow: "balanced",
+  accentPreset: "theme",
+  cardDensity: "comfortable",
+  showArtwork: true,
+  wallpaperStrength: 50,
+  homeSections: {
+    overview: true,
+    search: true,
+    continue: true,
+    toolkit: true,
+  },
 };
