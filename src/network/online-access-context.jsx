@@ -2,9 +2,9 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import { AppState, Platform } from "react-native";
 import { usePurchases } from "../purchases/PurchasesContext";
 import { shouldBlockGuide } from "./access-policy.mjs";
+import { reachabilityIntervalMs } from "./polling-policy.mjs";
 
 const ONLINE_CHECK_URL = "https://hollow-knight-guide-ibrahim.surge.sh/api/index.json";
-const CHECK_INTERVAL_MS = 15000;
 const REQUEST_TIMEOUT_MS = 6500;
 
 const OnlineAccessContext = createContext({
@@ -27,10 +27,14 @@ export function OnlineAccessProvider({ children }) {
   const inFlight = useRef(false);
   const mounted = useRef(true);
 
-  const retry = useCallback(async () => {
+  const retry = useCallback(async (options) => {
+    // Automatic checks should not toggle the global loading flag every
+    // 15 seconds: that rerenders the offline gate and its subscribers.
+    // Explicit retries still show their existing progress indicator.
+    const silent = options?.silent === true;
     if (inFlight.current) return;
     inFlight.current = true;
-    setChecking(true);
+    if (!silent) setChecking(true);
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
     try {
@@ -44,7 +48,7 @@ export function OnlineAccessProvider({ children }) {
     } finally {
       clearTimeout(timeout);
       inFlight.current = false;
-      if (mounted.current) setChecking(false);
+      if (mounted.current && !silent) setChecking(false);
     }
   }, []);
 
@@ -52,20 +56,27 @@ export function OnlineAccessProvider({ children }) {
     mounted.current = true;
     // Start immediately; recheck when returning to the foreground.
     retry();
-    const interval = setInterval(() => {
-      if (AppState.currentState === "active" || Platform.OS === "web") retry();
-    }, CHECK_INTERVAL_MS);
     const listener = AppState.addEventListener("change", (state) => {
-      if (state === "active") retry();
+      if (state === "active") retry({ silent: true });
     });
     return () => {
       mounted.current = false;
-      clearInterval(interval);
       listener.remove();
     };
   }, [retry]);
 
   const verifiedPremium = entitlementCacheReady && isPremium;
+
+  // Poll only while foregrounded. Free retains 15-second enforcement,
+  // whereas verified Premium uses a 90-second low-power interval.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (AppState.currentState === "active" || Platform.OS === "web") {
+        retry({ silent: true });
+      }
+    }, reachabilityIntervalMs(verifiedPremium));
+    return () => clearInterval(interval);
+  }, [retry, verifiedPremium]);
   // The cache is read before deciding whether to lock a Premium subscriber.
   // A free user cannot browse cached guide data during a connection check.
   const blocked = shouldBlockGuide({
