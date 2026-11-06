@@ -1,4 +1,5 @@
 import { useFonts } from "expo-font";
+import { Image } from "expo-image";
 import {
   DarkTheme,
   DefaultTheme,
@@ -8,7 +9,7 @@ import {
 } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef } from "react";
-import { View } from "react-native";
+import { Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { GameSelect } from "../components/hollow/game-select";
@@ -77,6 +78,18 @@ function GameData() {
 }
 
 export default function RootLayout() {
+  // Expo Image's default iOS memory/disk cache has no explicit size limits.
+  // Cap retained decoded artwork on memory-constrained devices; visible images
+  // still render and disk caching avoids needless repeat downloads.
+  useEffect(() => {
+    if (Platform.OS === "ios") {
+      Image.configureCache({
+        maxMemoryCost: 64 * 1024 * 1024,
+        maxDiskSize: 200 * 1024 * 1024,
+      });
+    }
+  }, []);
+
   const [fontsLoaded] = useFonts({
     [HKFont]: require("../../assets/hollow/fonts/TrajanProBold.ttf"),
   });
