@@ -25,21 +25,21 @@ function homeArtwork(item, kind, config) {
   if (!item) return {};
   if (kind === "boss") {
     return {
-      image: config.bossImages[item.image],
-      fallbackImage: getBossFallbackArtwork(item, config.bossImages),
+      image: item.iconUrl ? { uri: item.iconUrl } : config.bossImages[item.image],
+      fallbackImage: getBossFallbackArtwork(item, config.bossImages) ?? config.bossImages[item.image],
     };
   }
   if (kind === "equipment") {
     return {
-      image: config.itemImages[item.image],
-      fallbackImage: getCharmFallbackArtwork(item, config.itemImages),
+      image: item.iconUrl ? { uri: item.iconUrl } : config.itemImages[item.image],
+      fallbackImage: config.itemImages[item.image] ?? getCharmFallbackArtwork(item, config.itemImages),
     };
   }
   const wikiArtwork = config.id === "silksong"
     ? getCollectibleGuide(item)?.artworkUrl
     : undefined;
   return {
-    image: getCollectibleArtwork(item, config.id, wikiArtwork),
+    image: item.iconUrl ? { uri: item.iconUrl } : getCollectibleArtwork(item, config.id, wikiArtwork),
     fallbackImage: getCollectibleFallbackArtwork(item, config.id),
   };
 }
