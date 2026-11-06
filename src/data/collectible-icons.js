@@ -46,6 +46,9 @@ const hollowNamed = {
   "Delicate Flower": "Delicate Flower.png",
   "Godtuner": "Godtuner.png",
   "Charm Notch": "Charm Notch.png",
+  "Monomon the Teacher": "HJ Monomon.png",
+  "Lurien the Watcher": "HJ Lurien.png",
+  "Herrah the Beast": "HJ Herrah.png",
 };
 
 const silksongGroups = {
@@ -63,9 +66,15 @@ const silksongNamed = {
   "Bellhome Key": "Bellhome Key.png",
   "Diving Bell Key": "Diving Bell Key.png",
   "Craw Summons": "Craw Summons.png",
+  "Key of Indolent": "Key of Indolent.png",
+  "Key of Heretic": "Key of Heretic.png",
+  "Key of Apostate": "Key of Apostate.png",
   "Guardian's Memento": "Guardian's Memento.png",
   "Hero's Memento": "Hero's Memento.png",
   "Grey Memento": "Grey Memento.png",
+  "Sprintmaster Memento": "Sprintmaster Memento.png",
+  "Hunter's Memento": "Hunter's Memento.png",
+  "Surface Memento": "Surface Memento.png",
   "Craw Memento": "Craw Memento.png",
   "Crawbell": "Crawbell.png",
   "Materium": "Crawbell.png", // Bellhome furnishings category image
