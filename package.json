@@ -56,7 +56,8 @@
     "test:themes": "node scripts/test-themes.mjs",
     "test:premium-companion": "node scripts/test-premium-companion.mjs",
     "test:ui-stage1": "node scripts/test-ui-stage1.mjs",
-    "test:ui-stage2": "node scripts/test-ui-stage2.mjs"
+    "test:ui-stage2": "node scripts/test-ui-stage2.mjs",
+    "test:qa-stage3": "node scripts/test-qa-stage3.mjs"
   },
   "private": true,
   "devDependencies": {
