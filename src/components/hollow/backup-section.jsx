@@ -16,7 +16,7 @@ const APP_ID = "hollow-knight-guide";
 const isObject = (value) =>
   value !== null && typeof value === "object" && !Array.isArray(value);
 
-export function BackupSection() {
+export function BackupSection({ embedded = false }) {
   const { colors, settings, update } = useSettings();
   const { defeated, collected, notes, restoreProgress } = useJournal();
   const { loadouts, replaceLoadouts } = useLoadouts();
@@ -130,7 +130,8 @@ export function BackupSection() {
     <View
       style={[
         styles.section,
-        { backgroundColor: colors.card, borderColor: colors.border },
+        embedded && styles.embedded,
+        { backgroundColor: embedded ? "transparent" : colors.card, borderColor: colors.border },
       ]}
     >
       <AppText style={styles.title}>Backup</AppText>
@@ -160,6 +161,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     gap: 10,
   },
+  embedded: { marginHorizontal: 0, marginTop: 6, paddingHorizontal: 0, borderWidth: 0 },
   title: { fontWeight: "bold", fontSize: 18 },
   hint: { fontSize: 13 },
   row: { flexDirection: "row", gap: 10 },
