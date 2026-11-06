@@ -70,7 +70,7 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
     <View
       style={[
         styles.card,
-        { backgroundColor: colors.card, borderColor: colors.border },
+        { backgroundColor: colors.card, borderColor: colors.border, borderWidth: settings.highContrast ? 2 : 1 },
         settings.cardDensity === "compact" && styles.compactCard,
       ]}
     >
