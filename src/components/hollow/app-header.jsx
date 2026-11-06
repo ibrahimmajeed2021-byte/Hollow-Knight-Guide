@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   pressedAction: { opacity: 0.7 },
   actionIcon: { fontSize: 23, fontWeight: "500" },
-  closeIcon: { fontSize: 30, lineHeight: 38, fontWeight: "700", textAlign: "center" },
+  closeIcon: { fontSize: 26, lineHeight: 30, fontWeight: "700", textAlign: "center" },
   titleWrap: { flex: 1, minWidth: 0, alignItems: "center", paddingHorizontal: 8, gap: 1 },
   title: { ...type.subheading, letterSpacing: 0.2, textAlign: "center" },
   subtitle: { fontSize: 9, fontWeight: "700", letterSpacing: 2, opacity: 0.72 },
