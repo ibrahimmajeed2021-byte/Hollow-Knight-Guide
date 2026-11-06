@@ -50,7 +50,8 @@
     "lint": "expo lint",
     "build:api": "node scripts/build-api.mjs",
     "test:progression": "node scripts/test-progression-order.mjs",
-    "test:guide": "node scripts/test-guide-completeness.mjs"
+    "test:guide": "node scripts/test-guide-completeness.mjs",
+    "test:api-images": "npm run build:api && node scripts/test-api-images.mjs"
   },
   "private": true,
   "devDependencies": {
