@@ -69,6 +69,8 @@ export function AppHeader() {
 const styles = StyleSheet.create({
   container: {
     minHeight: 58,
+    zIndex: 10,
+    elevation: 10,
     paddingHorizontal: space.sm,
     paddingBottom: space.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
