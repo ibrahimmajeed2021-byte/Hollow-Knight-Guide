@@ -10,6 +10,7 @@ import { useGame } from "../games/game-context";
 import { useGuidedMode } from "../premium/guided-context";
 import { usePurchases } from "../purchases/PurchasesContext";
 import { useSettings } from "../settings/SettingsContext.jsx";
+import { layout, radius, space, type } from "../ui/design-system";
 
 const SENSITIVITY = [
   { id: "cautious", name: "Cautious", summary: "Reveal roughly 3 upcoming entries per category" },
@@ -171,19 +172,19 @@ export default function GuidedModeScreen() {
 const styles = StyleSheet.create({
   back: { marginHorizontal: 16, marginTop: 8, alignSelf: "flex-start" },
   mainButton: { marginHorizontal: 16, marginVertical: 12 },
-  panel: { marginHorizontal: 16, marginTop: 16, padding: 16, borderWidth: 1, borderRadius: 16, gap: 12 },
+  panel: { marginHorizontal: layout.gutter, marginTop: space.lg, padding: layout.cardPadding, borderWidth: 1, borderRadius: radius.card, gap: space.md },
   switchRow: { flexDirection: "row", gap: 12, alignItems: "center" },
   flex: { flex: 1 },
-  heading: { fontWeight: "800", fontSize: 18 },
+  heading: { ...type.subheading },
   body: { fontSize: 14, lineHeight: 21 },
-  option: { flexDirection: "row", alignItems: "center", gap: 12, padding: 12, borderWidth: 1, borderRadius: 12 },
+  option: { flexDirection: "row", alignItems: "center", gap: space.md, padding: space.md, borderWidth: 1, borderRadius: radius.control, minHeight: layout.touchTarget },
   optionName: { fontSize: 15, fontWeight: "800" },
   group: { marginTop: 12, gap: 8 },
   groupTitle: { fontSize: 17, fontWeight: "800" },
   discovery: { borderWidth: 1, padding: 12, borderRadius: 12, gap: 8 },
   discoveryName: { fontSize: 16, fontWeight: "700" },
   actions: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  action: { borderWidth: 1, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 10 },
+  action: { borderWidth: 1, paddingHorizontal: space.md, paddingVertical: space.sm, borderRadius: radius.control, minHeight: layout.touchTarget, justifyContent: "center" },
   resetReveals: { marginHorizontal: 16, marginTop: 16 },
   footer: { marginHorizontal: 20, marginVertical: 12, lineHeight: 20, fontSize: 13 },
 });
