@@ -116,14 +116,14 @@ function SectionHeading({ title, subtitle }) {
   );
 }
 
-function SummaryTile({ initial, label, done, total, image }) {
+function SummaryTile({ initial, label, done, total, image, fallbackImage }) {
   const { colors } = useSettings();
   return (
     <View
       style={[styles.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}
       accessibilityLabel={label + ": " + done + " of " + total + " completed"}
     >
-      <ArtworkThumbnail initial={initial} image={image} size={38} />
+      <ArtworkThumbnail initial={initial} image={image} fallbackImage={fallbackImage} size={38} />
       <AppText style={styles.tileCount}>{done}/{total}</AppText>
       <AppText style={[styles.tileLabel, { color: colors.muted }]}>{label}</AppText>
     </View>
@@ -195,6 +195,16 @@ export default function HomeScreen() {
   const nextItem = isSilksong ? nextItemRow?.item : nextEquipment;
   const nextPickup = pickups.find((entry) => !collected["c:" + entry.name]);
   const nextQuest = quests.find((entry) => !collected["c:" + entry.name]);
+  const featuredBoss = bosses.find((entry) =>
+    entry.image === (isSilksong ? "BellBeast" : "FalseKnight")) ?? bosses[0];
+  const featuredEquipment = equipment.find((entry) =>
+    entry.image === (isSilksong ? "Compass" : "WaywardCompass")) ?? equipment[0];
+  const featuredCollectible = pickups.find((entry) =>
+    entry.group === (isSilksong ? "fleas" : "grubs")) ?? pickups[0];
+  const bossTileArtwork = homeArtwork(featuredBoss, "boss", config);
+  const itemTileArtwork = homeArtwork(featuredEquipment, "equipment", config);
+  const questTileArtwork = homeArtwork(quests[0], "collectible", config);
+  const collectibleTileArtwork = homeArtwork(featuredCollectible, "collectible", config);
   const nextBossArtwork = homeArtwork(nextBoss, "boss", config);
   const nextItemArtwork = homeArtwork(
     nextItem, isSilksong && nextItemRow?.type === "collectible" ? "collectible" : "equipment", config,
@@ -283,14 +293,16 @@ export default function HomeScreen() {
         <View style={styles.summaryRow}>
           <SummaryTile
             initial="B"
-            image={config.bossImages[isSilksong ? "BellBeast" : "FalseKnight"]}
+            image={bossTileArtwork.image}
+            fallbackImage={bossTileArtwork.fallbackImage}
             label="Bosses"
             done={bossDone}
             total={bosses.length}
           />
           <SummaryTile
             initial={isSilksong ? "I" : "C"}
-            image={config.itemImages[isSilksong ? "Compass" : "WaywardCompass"]}
+            image={itemTileArtwork.image}
+            fallbackImage={itemTileArtwork.fallbackImage}
             label={isSilksong ? "Items" : "Charms"}
             done={isSilksong ? itemDone : equipmentDone}
             total={isSilksong ? itemTotal : equipment.length}
@@ -298,7 +310,8 @@ export default function HomeScreen() {
           {isSilksong ? (
             <SummaryTile
               initial="Q"
-              image={getCollectibleFallbackArtwork({ group: "wishes" }, "silksong")}
+              image={questTileArtwork.image}
+              fallbackImage={questTileArtwork.fallbackImage ?? getCollectibleFallbackArtwork({ group: "wishes" }, "silksong")}
               label="Quests"
               done={questDone}
               total={quests.length}
@@ -311,7 +324,8 @@ export default function HomeScreen() {
             >
               <ArtworkThumbnail
                 initial="G"
-                image={getCollectibleFallbackArtwork({ group: "grubs" }, "hollow")}
+                image={collectibleTileArtwork.image}
+                fallbackImage={collectibleTileArtwork.fallbackImage}
                 size={38}
               />
               <AppText style={styles.tileCount}>{pickupDone}/{pickups.length}</AppText>
