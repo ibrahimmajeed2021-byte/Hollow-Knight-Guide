@@ -53,7 +53,8 @@
     "test:guide": "node scripts/test-guide-completeness.mjs",
     "test:api-images": "npm run build:api && node scripts/test-api-images.mjs",
     "test:offline": "node scripts/test-offline-access.mjs",
-    "test:themes": "node scripts/test-themes.mjs"
+    "test:themes": "node scripts/test-themes.mjs",
+    "test:premium-companion": "node scripts/test-premium-companion.mjs"
   },
   "private": true,
   "devDependencies": {
