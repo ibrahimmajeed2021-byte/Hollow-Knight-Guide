@@ -1,10 +1,22 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppState, Platform } from "react-native";
 import Purchases, { LOG_LEVEL } from "react-native-purchases";
 import RevenueCatUI from "react-native-purchases-ui";
 
 // Both subscriptions and the lifetime purchase grant the same entitlement.
 export const PREMIUM_ENTITLEMENT = "hollow_knight_guide_pro";
+const OFFLINE_PREMIUM_KEY = "hollow-knight-guide:premium-last-verified";
+
+// Store the most recent successful verification. A subscription cannot be
+// extended past its known expiry without contacting the store again; lifetime
+// purchases have no expiration date. RevenueCat remains the authority online.
+function cachedEntitlementActive(value) {
+  if (!value?.active) return false;
+  if (value.expiresAt == null) return true;
+  const expiry = Date.parse(value.expiresAt);
+  return Number.isFinite(expiry) && expiry > Date.now();
+}
 
 // The public Test Store key is only valid in Debug builds.
 // Release builds must use a real store key (appl_ / goog_) or disable purchases.
@@ -22,17 +34,51 @@ function describeError(error) {
 }
 
 function hasPremium(info) {
-  return Boolean(info?.entitlements?.active?.[PREMIUM_ENTITLEMENT]);
+  const entitlement = info?.entitlements?.active?.[PREMIUM_ENTITLEMENT];
+  if (!entitlement) return false;
+  if (entitlement.expirationDate) {
+    const expiry = Date.parse(entitlement.expirationDate);
+    return Number.isFinite(expiry) && expiry > Date.now();
+  }
+  return true;
 }
 
 export function PurchasesProvider({ children }) {
   const [customerInfo, setCustomerInfo] = useState(null);
+  const [lastVerifiedPremium, setLastVerifiedPremium] = useState(null);
+  const [entitlementCacheReady, setEntitlementCacheReady] = useState(false);
   const [offerings, setOfferings] = useState(null);
   const [ready, setReady] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
   // Development-only preview: never changes the real RevenueCat entitlement.
   const [previewFree, setPreviewFree] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    AsyncStorage.getItem(OFFLINE_PREMIUM_KEY)
+      .then((raw) => {
+        if (!mounted || !raw) return;
+        try {
+          const saved = JSON.parse(raw);
+          if (cachedEntitlementActive(saved)) setLastVerifiedPremium(saved);
+        } catch { /* Ignore damaged cache; never grant unverified access. */ }
+      })
+      .catch(() => {})
+      .finally(() => { if (mounted) setEntitlementCacheReady(true); });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    if (customerInfo == null) return;
+    const entitlement = customerInfo.entitlements?.active?.[PREMIUM_ENTITLEMENT];
+    const verified = hasPremium(customerInfo);
+    const saved = verified
+      ? { active: true, expiresAt: entitlement?.expirationDate ?? null }
+      : { active: false, expiresAt: null };
+    setLastVerifiedPremium(verified ? saved : null);
+    AsyncStorage.setItem(OFFLINE_PREMIUM_KEY, JSON.stringify(saved)).catch(() => {});
+  }, [customerInfo]);
 
   const refreshCustomerInfo = useCallback(async () => {
     if (!sdkConfigured) return null;
@@ -204,15 +250,19 @@ export function PurchasesProvider({ children }) {
     }
   }, [busy]);
 
+  const actualPremium = hasPremium(customerInfo) ||
+    (customerInfo == null && cachedEntitlementActive(lastVerifiedPremium));
+
   const value = useMemo(() => ({
     ready,
+    entitlementCacheReady,
     busy,
     error,
     clearError: () => setError(null),
     customerInfo,
     offerings,
-    actualIsPremium: hasPremium(customerInfo),
-    isPremium: hasPremium(customerInfo) && !(__DEV__ && previewFree),
+    actualIsPremium: actualPremium,
+    isPremium: actualPremium && !(__DEV__ && previewFree),
     previewFree: __DEV__ ? previewFree : false,
     setPreviewFree: (enabled) => { if (__DEV__) setPreviewFree(Boolean(enabled)); },
     refreshCustomerInfo,
@@ -222,7 +272,7 @@ export function PurchasesProvider({ children }) {
     presentPaywall,
     presentCustomerCenter,
   }), [
-    ready, busy, error, customerInfo, offerings, previewFree, refreshCustomerInfo,
+    ready, entitlementCacheReady, actualPremium, busy, error, customerInfo, offerings, previewFree, refreshCustomerInfo,
     refreshOfferings, purchasePackage, restorePurchases,
     presentPaywall, presentCustomerCenter,
   ]);
