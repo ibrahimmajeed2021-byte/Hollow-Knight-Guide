@@ -15,6 +15,7 @@ import { useTabInset } from "../../../hooks/use-tab-inset";
 import { Screen } from "../../../components/hollow/screen";
 import { Body, Title } from "../../../components/hollow/section-text";
 import { useGame } from "../../../games/game-context";
+import { getCharmFallbackArtwork } from "../../../data/entry-fallback-artwork";
 import { useJournal } from "../../../journal/journal-context";
 import { silksongCollectibleGroups } from "../../../data/silksong-collectibles";
 import { silksongExtraCollectibleGroups } from "../../../data/silksong-extra-collectibles";
@@ -128,6 +129,7 @@ function HollowCharmsScreen() {
         renderItem={({ item }) => (
           <EntryCard
             image={charmImages[item.image]}
+            fallbackImage={getCharmFallbackArtwork(item, charmImages)}
             name={item.name}
             description={item.description}
             summary={
