@@ -33,7 +33,7 @@ export function LoadingScreen() {
   // Which game's loading sound the launch screen uses; re-rolled on every launch.
   const [launchPick] = useState(pickRandomGameId);
   const activeTheme = resolveTheme(settings.themeStyle);
-  const customTheme = !launch && activeTheme.id !== "default";
+  const customTheme = !launch && activeTheme.id !== "default" && !settings.highContrast;
   const hostedTheme = customTheme && onlineStatus === "online"
     ? mediaManifest?.themes?.[activeTheme.id] : null;
   const splashBackground = customTheme
