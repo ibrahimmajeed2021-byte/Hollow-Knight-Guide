@@ -12,6 +12,74 @@ import { useJournal } from "../../journal/journal-context";
 import { useLoadouts } from "../../loadouts/loadouts-context";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { sortMixedSilksongItems } from "../../data/progression-order";
+import { getCollectibleGuide } from "../../data/silksong-collectible-guides";
+import { getCollectibleArtwork } from "../../data/collectible-icons";
+import {
+  getBossFallbackArtwork,
+  getCharmFallbackArtwork,
+  getCollectibleFallbackArtwork,
+} from "../../data/entry-fallback-artwork";
+
+// Use the same artwork and offline fallback sources as the detail screens.
+function homeArtwork(item, kind, config) {
+  if (!item) return {};
+  if (kind === "boss") {
+    return {
+      image: config.bossImages[item.image],
+      fallbackImage: getBossFallbackArtwork(item, config.bossImages),
+    };
+  }
+  if (kind === "equipment") {
+    return {
+      image: config.itemImages[item.image],
+      fallbackImage: getCharmFallbackArtwork(item, config.itemImages),
+    };
+  }
+  const wikiArtwork = config.id === "silksong"
+    ? getCollectibleGuide(item)?.artworkUrl
+    : undefined;
+  return {
+    image: getCollectibleArtwork(item, config.id, wikiArtwork),
+    fallbackImage: getCollectibleFallbackArtwork(item, config.id),
+  };
+}
+
+// If a wiki image does not load, show its bundled artwork rather than a letter.
+function ArtworkThumbnail({ image, fallbackImage, initial, size = 44 }) {
+  const { colors } = useSettings();
+  const [failedImageKey, setFailedImageKey] = useState(null);
+  const [failedFallbackKey, setFailedFallbackKey] = useState(null);
+  const imageKey = typeof image === "number" ? String(image) : image?.uri ?? null;
+  const fallbackKey = typeof fallbackImage === "number"
+    ? String(fallbackImage) : fallbackImage?.uri ?? null;
+  const usePrimary = !!image && failedImageKey !== imageKey;
+  const useFallback = !usePrimary && !!fallbackImage && failedFallbackKey !== fallbackKey;
+  const source = usePrimary ? image : useFallback ? fallbackImage : null;
+  return (
+    <View
+      style={[
+        styles.itemMarker,
+        { width: size, height: size, backgroundColor: colors.background, borderColor: colors.border },
+      ]}
+    >
+      {source ? (
+        <Image
+          source={source}
+          style={styles.markerImage}
+          contentFit="contain"
+          cachePolicy="memory-disk"
+          accessible={false}
+          onError={() => {
+            if (usePrimary) setFailedImageKey(imageKey);
+            else setFailedFallbackKey(fallbackKey);
+          }}
+        />
+      ) : (
+        <AppText style={[styles.markerText, { color: colors.accent }]}>{initial}</AppText>
+      )}
+    </View>
+  );
+}
 
 function DashboardCard({ children, onPress, label, style }) {
   const { colors } = useSettings();
@@ -48,27 +116,25 @@ function SectionHeading({ title, subtitle }) {
   );
 }
 
-function SummaryTile({ initial, label, done, total }) {
+function SummaryTile({ initial, label, done, total, image }) {
   const { colors } = useSettings();
   return (
     <View
       style={[styles.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}
       accessibilityLabel={label + ": " + done + " of " + total + " completed"}
     >
-      <AppText style={[styles.tileInitial, { color: colors.accent }]}>{initial}</AppText>
+      <ArtworkThumbnail initial={initial} image={image} size={38} />
       <AppText style={styles.tileCount}>{done}/{total}</AppText>
       <AppText style={[styles.tileLabel, { color: colors.muted }]}>{label}</AppText>
     </View>
   );
 }
 
-function NextRow({ initial, title, name, detail, onPress, complete }) {
+function NextRow({ initial, image, fallbackImage, title, name, detail, onPress, complete }) {
   const { colors } = useSettings();
   return (
     <DashboardCard onPress={onPress} label={title + ": " + name} style={styles.nextCard}>
-      <View style={[styles.itemMarker, { backgroundColor: colors.background, borderColor: colors.border }]}>
-        <AppText style={[styles.markerText, { color: colors.accent }]}>{initial}</AppText>
-      </View>
+      <ArtworkThumbnail initial={initial} image={image} fallbackImage={fallbackImage} />
       <View style={styles.flex}>
         <AppText style={[styles.overline, { color: colors.muted }]}>{title}</AppText>
         <AppText style={styles.nextName} numberOfLines={2}>{name}</AppText>
@@ -129,6 +195,12 @@ export default function HomeScreen() {
   const nextItem = isSilksong ? nextItemRow?.item : nextEquipment;
   const nextPickup = pickups.find((entry) => !collected["c:" + entry.name]);
   const nextQuest = quests.find((entry) => !collected["c:" + entry.name]);
+  const nextBossArtwork = homeArtwork(nextBoss, "boss", config);
+  const nextItemArtwork = homeArtwork(
+    nextItem, isSilksong && nextItemRow?.type === "collectible" ? "collectible" : "equipment", config,
+  );
+  const nextPickupArtwork = homeArtwork(nextPickup, "collectible", config);
+  const nextQuestArtwork = homeArtwork(nextQuest, "collectible", config);
   const loadout = loadouts[0];
 
   const lookup = useMemo(() => [
@@ -138,6 +210,7 @@ export default function HomeScreen() {
       category: "Boss",
       location: (entry.locations ?? []).map((loc) => loc.name).join(" "),
       path: "/bosses",
+      ...homeArtwork(entry, "boss", config),
     })),
     ...equipment.map((entry) => ({
       id: "item:" + entry.name,
@@ -145,6 +218,7 @@ export default function HomeScreen() {
       category: isSilksong ? "Tool or Crest" : "Charm",
       location: entry.location ?? "",
       path: "/charms",
+      ...homeArtwork(entry, "equipment", config),
     })),
     ...pickups.map((entry) => ({
       id: "pickup:" + entry.name,
@@ -152,6 +226,7 @@ export default function HomeScreen() {
       category: "Item",
       location: entry.location ?? "",
       path: isSilksong ? "/charms" : "/progress/collectibles",
+      ...homeArtwork(entry, "collectible", config),
     })),
     ...quests.map((entry) => ({
       id: "quest:" + entry.name,
@@ -159,8 +234,9 @@ export default function HomeScreen() {
       category: "Quest",
       location: entry.location ?? "",
       path: "/quests",
+      ...homeArtwork(entry, "collectible", config),
     })),
-  ], [bosses, equipment, pickups, quests, isSilksong]);
+  ], [bosses, equipment, pickups, quests, isSilksong, config]);
 
   const searchResults = useMemo(() => {
     const term = query.trim().toLowerCase();
@@ -205,17 +281,39 @@ export default function HomeScreen() {
 
       <View style={styles.content}>
         <View style={styles.summaryRow}>
-          <SummaryTile initial="B" label="Bosses" done={bossDone} total={bosses.length} />
-          <SummaryTile initial={isSilksong ? "I" : "C"} label={isSilksong ? "Items" : "Charms"} done={isSilksong ? itemDone : equipmentDone} total={isSilksong ? itemTotal : equipment.length} />
+          <SummaryTile
+            initial="B"
+            image={config.bossImages[isSilksong ? "BellBeast" : "FalseKnight"]}
+            label="Bosses"
+            done={bossDone}
+            total={bosses.length}
+          />
+          <SummaryTile
+            initial={isSilksong ? "I" : "C"}
+            image={config.itemImages[isSilksong ? "Compass" : "WaywardCompass"]}
+            label={isSilksong ? "Items" : "Charms"}
+            done={isSilksong ? itemDone : equipmentDone}
+            total={isSilksong ? itemTotal : equipment.length}
+          />
           {isSilksong ? (
-            <SummaryTile initial="Q" label="Quests" done={questDone} total={quests.length} />
+            <SummaryTile
+              initial="Q"
+              image={getCollectibleFallbackArtwork({ group: "wishes" }, "silksong")}
+              label="Quests"
+              done={questDone}
+              total={quests.length}
+            />
           ) : (
             <DashboardCard
               onPress={() => router.push("/progress/collectibles")}
               label="Open Hollow Knight collectibles and challenge checklist"
               style={styles.summaryAction}
             >
-              <AppText style={[styles.tileInitial, { color: colors.accent }]}>G</AppText>
+              <ArtworkThumbnail
+                initial="G"
+                image={getCollectibleFallbackArtwork({ group: "grubs" }, "hollow")}
+                size={38}
+              />
               <AppText style={styles.tileCount}>{pickupDone}/{pickups.length}</AppText>
               <AppText style={[styles.tileLabel, { color: colors.muted }]}>Collectibles</AppText>
             </DashboardCard>
@@ -256,6 +354,12 @@ export default function HomeScreen() {
                   pressed && styles.pressed,
                 ]}
               >
+                <ArtworkThumbnail
+                  initial={result.name.charAt(0).toUpperCase()}
+                  image={result.image}
+                  fallbackImage={result.fallbackImage}
+                  size={40}
+                />
                 <View style={styles.flex}>
                   <AppText style={styles.resultTitle}>{result.name}</AppText>
                   <AppText style={[styles.resultMeta, { color: colors.muted }]}>{result.category}</AppText>
@@ -274,6 +378,8 @@ export default function HomeScreen() {
         <View style={styles.nextList}>
           <NextRow
             initial="B"
+            image={nextBossArtwork.image}
+            fallbackImage={nextBossArtwork.fallbackImage}
             title="NEXT BOSS"
             name={nextBoss?.name ?? "All bosses defeated"}
             detail="Open boss guide and location"
@@ -282,6 +388,8 @@ export default function HomeScreen() {
           />
           <NextRow
             initial={isSilksong ? "I" : "C"}
+            image={nextItemArtwork.image}
+            fallbackImage={nextItemArtwork.fallbackImage}
             title={isSilksong ? "NEXT ITEM" : "NEXT CHARM"}
             name={nextItem?.name ?? (isSilksong ? "All items collected" : "All charms collected")}
             detail={nextEquipment ? "Open equipment guide" : "View location and acquisition details"}
@@ -291,6 +399,8 @@ export default function HomeScreen() {
           {!isSilksong ? (
             <NextRow
               initial="G"
+              image={nextPickupArtwork.image}
+              fallbackImage={nextPickupArtwork.fallbackImage}
               title="NEXT COLLECTIBLE"
               name={nextPickup?.name ?? "All collectibles completed"}
               detail={nextPickup?.location ?? "See your Hallownest checklist"}
@@ -301,6 +411,8 @@ export default function HomeScreen() {
           {isSilksong ? (
             <NextRow
               initial="Q"
+              image={nextQuestArtwork.image}
+              fallbackImage={nextQuestArtwork.fallbackImage}
               title="NEXT QUEST"
               name={nextQuest?.name ?? "All quests completed"}
               detail="See requirements and rewards"
@@ -367,7 +479,7 @@ const styles = StyleSheet.create({
   clearSearch: { width: 30, height: 38, alignItems: "center", justifyContent: "center" },
   clearIcon: { fontSize: 24 },
   results: { borderWidth: 1, borderRadius: 16, overflow: "hidden" },
-  resultRow: { flexDirection: "row", alignItems: "center", minHeight: 56, paddingHorizontal: 14, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
+  resultRow: { flexDirection: "row", alignItems: "center", gap: 10, minHeight: 56, paddingHorizontal: 14, paddingVertical: 8, borderBottomWidth: StyleSheet.hairlineWidth },
   resultTitle: { fontSize: 15, fontWeight: "700" },
   resultMeta: { fontSize: 12, marginTop: 2 },
   emptySearch: { padding: 18, fontSize: 14 },
@@ -377,6 +489,7 @@ const styles = StyleSheet.create({
   nextCard: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 94 },
   itemMarker: { width: 44, height: 44, borderWidth: 1, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   markerText: { fontSize: 21, fontWeight: "900" },
+  markerImage: { width: "100%", height: "100%" },
   flex: { flex: 1 },
   overline: { fontSize: 10, fontWeight: "800", letterSpacing: 1.4 },
   nextName: { fontSize: 16, fontWeight: "700", marginTop: 3 },
