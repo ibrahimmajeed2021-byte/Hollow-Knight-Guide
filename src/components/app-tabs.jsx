@@ -44,15 +44,15 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
-      {config.id === "silksong" && (
-        <NativeTabs.Trigger name="quests">
-          <NativeTabs.Trigger.Label>Quests</NativeTabs.Trigger.Label>
-          <NativeTabs.Trigger.Icon
-            sf={{ default: "list.bullet.clipboard", selected: "checklist" }}
-            md="assignment"
-          />
-        </NativeTabs.Trigger>
-      )}
+      {/* Keep the native tab list stable when switching guides. Dynamically
+          adding/removing triggers can break native navigation on iOS. */}
+      <NativeTabs.Trigger name="quests" hidden={config.id !== "silksong"}>
+        <NativeTabs.Trigger.Label>Quests</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon
+          sf={{ default: "list.bullet.clipboard", selected: "checklist" }}
+          md="assignment"
+        />
+      </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="music">
         <NativeTabs.Trigger.Label>Music</NativeTabs.Trigger.Label>
