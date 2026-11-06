@@ -4,6 +4,7 @@ import { LayoutAnimation, Pressable, StyleSheet, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 import { HKFont } from "../../constants/hollow";
+import { layout, motion, radius, space, type } from "../../ui/design-system";
 import { useGuidedMode } from "../../premium/guided-context";
 import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
@@ -27,7 +28,7 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
   const displayedImage = showArtwork ? image : showFallbackArtwork ? fallbackImage : null;
 
   const toggle = () => {
-    if (!settings.reduceMotion) LayoutAnimation.easeInEaseOut();
+    if (!settings.reduceMotion) LayoutAnimation.configureNext({ ...LayoutAnimation.Presets.easeInEaseOut, duration: motion.standard });
     triggerHaptic();
     setExpanded((value) => !value);
   };
@@ -55,7 +56,7 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
           onPress={() => guided.revealEntry(spoilerKind, spoilerEntry)}
           accessibilityRole="button"
           accessibilityLabel={"Reveal hidden " + spoilerKind + " details and spoilers"}
-          style={[styles.revealButton, { borderColor: colors.border }]}
+          style={({ pressed }) => [styles.revealButton, { borderColor: colors.border }, pressed && styles.pressed]}
         >
           <AppText style={[styles.revealText, { color: colors.accent }]}>
             Reveal entry (spoiler)
@@ -79,7 +80,7 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
         accessibilityLabel={name}
         accessibilityHint={expanded ? "Collapse details" : "Expand details"}
         accessibilityState={{ expanded }}
-        style={[styles.top, settings.cardDensity === "compact" && styles.compactTop]}
+        style={({ pressed }) => [styles.top, settings.cardDensity === "compact" && styles.compactTop, pressed && styles.pressed]}
       >
         {displayedImage ? (
           <Image
@@ -114,18 +115,19 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
       </Pressable>
       {expanded && (
         <Animated.View
-          entering={settings.reduceMotion ? undefined : FadeIn.duration(250)}
+          entering={settings.reduceMotion ? undefined : FadeIn.duration(motion.standard)}
         >
+          <View style={[styles.detailsDivider, { backgroundColor: colors.border }]} />
           {description ? <AppText style={styles.description}>{description}</AppText> : null}
           {children}
           <Pressable
             onPress={toggle}
             accessibilityRole="button"
             accessibilityLabel={`Back from ${name} details`}
-            style={[styles.closeDetails, { borderColor: colors.border }]}
+            style={({ pressed }) => [styles.closeDetails, { borderColor: colors.border }, pressed && styles.pressed]}
           >
             <AppText style={[styles.closeDetailsText, { color: colors.accent }]}>
-              Back to list
+              Close details
             </AppText>
           </Pressable>
         </Animated.View>
@@ -150,35 +152,39 @@ export function Stat({ label, value }) {
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: 18,
-    padding: 16,
-    marginHorizontal: 16,
-    marginTop: 12,
+    borderRadius: radius.card,
+    padding: layout.cardPadding,
+    marginHorizontal: layout.gutter,
+    marginTop: layout.cardGap,
     borderWidth: 1,
   },
-  top: { flexDirection: "row", alignItems: "center", gap: 12 },
+  top: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: layout.touchTarget },
   image: { width: 72, height: 72 },
   imageFallback: { width: 72, height: 72, borderRadius: 13, borderWidth: 1, justifyContent: "center", alignItems: "center" },
   fallbackLetter: { fontSize: 29, fontWeight: "800" },
   titleBlock: { flex: 1 },
-  name: { fontFamily: HKFont, fontSize: 19, lineHeight: 26 },
-  chevron: { fontSize: 14 },
-  description: { marginTop: 14, fontSize: 15, lineHeight: 23 },
+  name: { fontFamily: HKFont, fontSize: 19, lineHeight: 27 },
+  chevron: { fontSize: 14, minWidth: 16, textAlign: "center" },
+  detailsDivider: { height: StyleSheet.hairlineWidth, marginTop: space.md, marginBottom: space.sm },
+  description: { marginTop: space.sm, fontSize: 15, lineHeight: 23 },
   closeDetails: {
     alignSelf: "flex-start",
-    marginTop: 14,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    marginTop: space.lg,
+    minHeight: layout.touchTarget,
+    paddingVertical: space.sm,
+    paddingHorizontal: space.md,
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: radius.control,
+    justifyContent: "center",
   },
-  closeDetailsText: { fontSize: 14, fontWeight: "bold" },
-  compactCard: { padding: 10, marginTop: 7 },
+  closeDetailsText: { ...type.label },
+  pressed: { opacity: 0.78 },
+  compactCard: { padding: layout.compactCardPadding, marginTop: space.sm },
   compactImage: { width: 48, height: 48 },
   compactTop: { gap: 8 },
   hiddenTitle: { fontSize: 17, fontWeight: "800" },
-  hiddenHelp: { fontSize: 13, lineHeight: 20, marginTop: 6 },
-  revealButton: { marginTop: 12, borderWidth: 1, borderRadius: 10, padding: 10, alignSelf: "flex-start" },
+  hiddenHelp: { fontSize: 14, lineHeight: 21, marginTop: space.sm },
+  revealButton: { marginTop: space.md, borderWidth: 1, borderRadius: radius.control, minHeight: layout.touchTarget, paddingHorizontal: space.md, paddingVertical: space.sm, alignSelf: "flex-start", justifyContent: "center" },
   revealText: { fontSize: 14, fontWeight: "700" },
   stat: { marginTop: 4, fontSize: 15 },
   statLabel: { fontWeight: "bold", fontSize: 15 },
