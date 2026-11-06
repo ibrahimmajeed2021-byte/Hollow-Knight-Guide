@@ -1,6 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Directory, File, Paths } from 'expo-file-system';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { ActivityIndicator, View } from 'react-native';
+import { useSettings } from '../settings/SettingsContext.jsx';
 import { normaliseJournal } from './journal-utils.mjs';
 
 const BASE_KEY = 'hollow-knight-guide:journal';
@@ -20,6 +22,7 @@ export function photoUri(photo) {
 
 export function JournalProvider({ children, suffix = '' }) {
   const STORAGE_KEY = BASE_KEY + suffix;
+  const { colors } = useSettings();
   const [state, setState] = useState(emptyState);
   const [ready, setReady] = useState(false);
   const saveQueue = useRef(Promise.resolve());
@@ -159,7 +162,17 @@ export function JournalProvider({ children, suffix = '' }) {
     [state, addPhoto, updatePhoto, removePhoto, toggleDefeated, toggleCollected, resetProgress, restoreProgress, setNote],
   );
 
-  if (!ready) return null;
+  if (!ready) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
+        <ActivityIndicator
+          color={colors.accent}
+          size="large"
+          accessibilityLabel="Loading your saved guide progress"
+        />
+      </View>
+    );
+  }
   return <JournalContext.Provider value={value}>{children}</JournalContext.Provider>;
 }
 
