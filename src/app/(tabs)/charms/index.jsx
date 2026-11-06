@@ -129,7 +129,7 @@ function HollowCharmsScreen() {
         renderItem={({ item }) => (
           <EntryCard
             image={item.iconUrl ? { uri: item.iconUrl } : charmImages[item.image]}
-            fallbackImage={charmImages[item.image] ?? getCharmFallbackArtwork(item, charmImages)}
+            fallbackImage={getCharmFallbackArtwork(item, charmImages) ?? charmImages[item.image]}
             name={item.name}
             description={item.description}
             summary={
