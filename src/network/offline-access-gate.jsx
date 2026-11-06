@@ -9,7 +9,7 @@ import { usePurchases } from "../purchases/PurchasesContext";
 // Absolute overlay sits above the game picker, splash transition and tabs.
 // Premium is exempt and can keep using the bundled/cached guide offline.
 export function OfflineAccessGate() {
-  const { blocked, status, checking, retry } = useOnlineAccess();
+  const { blocked, status, checking, verifyingAccess, retry } = useOnlineAccess();
   const { colors } = useSettings();
   const { ready, busy, previewFree, restorePurchases } = usePurchases();
   const [restoreMessage, setRestoreMessage] = useState("");
@@ -20,7 +20,7 @@ export function OfflineAccessGate() {
   }, [blocked]);
 
   if (!blocked) return null;
-  const pending = status === "checking";
+  const pending = status === "checking" || verifyingAccess;
 
   return (
     <View
@@ -30,11 +30,11 @@ export function OfflineAccessGate() {
       <View style={[styles.card, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <AppText style={styles.symbol}>{pending ? "⌛" : "📶"}</AppText>
         <AppText accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
-          {pending ? "Checking your connection" : "Internet connection required"}
+          {pending ? (verifyingAccess ? "Checking your access" : "Checking your connection") : "Internet connection required"}
         </AppText>
         <AppText style={[styles.description, { color: colors.text }]}>
           {pending
-            ? "Connecting to Hollow Knight Guide…"
+            ? (verifyingAccess ? "Checking saved Premium access and your connection…" : "Connecting to Hollow Knight Guide…")
             : "The free guide needs an active internet connection to continue. Turn on Wi-Fi or mobile data, then try again."}
         </AppText>
         {!pending ? (
