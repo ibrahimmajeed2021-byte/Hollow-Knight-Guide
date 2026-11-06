@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Directory, File, Paths } from 'expo-file-system';
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useSettings } from '../settings/SettingsContext.jsx';
 import { normaliseJournal } from './journal-utils.mjs';
 
@@ -162,9 +162,23 @@ export function JournalProvider({ children, suffix = '' }) {
     [state, addPhoto, updatePhoto, removePhoto, toggleDefeated, toggleCollected, resetProgress, restoreProgress, setNote],
   );
 
+  // Keep the root Expo Router Stack mounted while a different game's
+  // saved journal is loading. Replacing it with just a spinner unmounted the
+  // navigator during game selection, potentially losing the pending route.
+  // Block touches until hydration completes, but keep the provider mounted.
+  let loadingOverlay = null;
   if (!ready) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.background }}>
+    loadingOverlay = (
+      <View
+        style={[StyleSheet.absoluteFillObject, {
+          backgroundColor: colors.background,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 5000,
+          elevation: 5000,
+        }]}
+        accessibilityViewIsModal
+      >
         <ActivityIndicator
           color={colors.accent}
           size="large"
@@ -173,7 +187,14 @@ export function JournalProvider({ children, suffix = '' }) {
       </View>
     );
   }
-  return <JournalContext.Provider value={value}>{children}</JournalContext.Provider>;
+  return (
+    <JournalContext.Provider value={value}>
+      <View style={{ flex: 1 }}>
+        {children}
+        {loadingOverlay}
+      </View>
+    </JournalContext.Provider>
+  );
 }
 
 export function useJournal() {
