@@ -5,6 +5,7 @@ import { Linking, Pressable, StyleSheet, View } from "react-native";
 import { getWikiLocationGuide } from "../../data/wiki-location-guides";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
+import { layout, radius, space, type } from "../../ui/design-system";
 
 const openSource = (url) => {
   if (url) Linking.openURL(url).catch(() => {});
@@ -113,12 +114,10 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   heading: {
-    fontSize: 18,
-    fontWeight: "700",
+    ...type.subheading,
   },
   location: {
-    fontSize: 16,
-    lineHeight: 24,
+    ...type.body,
   },
   mapLabel: {
     fontSize: 14,
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
   map: {
     width: "100%",
     height: 190,
-    borderRadius: 12,
+    borderRadius: radius.control,
   },
   artwork: {
     width: "100%",
@@ -140,10 +139,10 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   link: {
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    minHeight: 44,
-    borderRadius: 10,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.md,
+    minHeight: layout.touchTarget,
+    borderRadius: radius.control,
     borderWidth: 1,
     justifyContent: "center",
   },
@@ -154,7 +153,7 @@ const styles = StyleSheet.create({
   imageFallback: { borderWidth: 1, borderRadius: 12, padding: 16, gap: 8, alignItems: "flex-start" },
   imageFallbackTitle: { fontSize: 15, fontWeight: "700" },
   imageFallbackHelp: { fontSize: 13, lineHeight: 20 },
-  retryButton: { borderWidth: 1, borderRadius: 9, minHeight: 42, paddingHorizontal: 14, paddingVertical: 9, justifyContent: "center" },
+  retryButton: { borderWidth: 1, borderRadius: radius.control, minHeight: layout.touchTarget, paddingHorizontal: space.lg, paddingVertical: space.sm, justifyContent: "center" },
   retryText: { fontSize: 14, fontWeight: "700" },
   credit: {
     fontSize: 12,
