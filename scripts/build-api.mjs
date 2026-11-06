@@ -102,6 +102,22 @@ write("silksong/bosses.json", [...silksongBosses, ...silksongExtraBosses].map((e
 write("silksong/items.json", withWikiLocations(silksongItems, "silksong"));
 write("silksong/collectibles.json", withCollectibleLocations([...silksongCollectibles, ...silksongExtraCollectibles]));
 write("tips.json", tips);
+
+// Lightweight API media manifest controls large app artwork without making
+// it part of the JavaScript bundle. Local copies remain for Premium offline.
+write("media.json", {
+  schemaVersion: 1,
+  games: {
+    hollow: {
+      heroImageUrl: iconApi.asset("assets/hollow/Knight.png"),
+      backgroundImageUrl: iconApi.asset("assets/hollow/CityOfTears.png"),
+    },
+    silksong: {
+      heroImageUrl: iconApi.asset("assets/hollow/silksong/Hornet.png"),
+      backgroundImageUrl: iconApi.asset("assets/hollow/silksong/MossGrotto.png"),
+    },
+  },
+});
 write("index.json", {
   updatedAt: new Date().toISOString(),
   schemaVersion: 2,
@@ -113,6 +129,7 @@ write("index.json", {
     "silksong/bosses.json",
     "silksong/items.json",
     "silksong/collectibles.json",
+    "media.json",
     "tips.json",
   ],
 });
