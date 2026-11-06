@@ -12,6 +12,8 @@ import { useGame } from "../../games/game-context";
 import { useJournal } from "../../journal/journal-context";
 import { useLoadouts } from "../../loadouts/loadouts-context";
 import { useSettings } from "../../settings/SettingsContext.jsx";
+import { useGuidedMode } from "../../premium/guided-context";
+import { usePurchases } from "../../purchases/PurchasesContext";
 import { resolveTheme } from "../../themes/theme-catalog";
 import { useOnlineAccess } from "../../network/online-access-context";
 import { sortMixedSilksongItems } from "../../data/progression-order";
@@ -49,7 +51,7 @@ function homeArtwork(item, kind, config) {
 
 // If a wiki image does not load, show its bundled artwork rather than a letter.
 function ArtworkThumbnail({ image, fallbackImage, initial, size = 44 }) {
-  const { colors } = useSettings();
+  const { colors, settings } = useSettings();
   const [failedImageKey, setFailedImageKey] = useState(null);
   const [failedFallbackKey, setFailedFallbackKey] = useState(null);
   const imageKey = typeof image === "number" ? String(image) : image?.uri ?? null;
@@ -57,7 +59,7 @@ function ArtworkThumbnail({ image, fallbackImage, initial, size = 44 }) {
     ? String(fallbackImage) : fallbackImage?.uri ?? null;
   const usePrimary = !!image && failedImageKey !== imageKey;
   const useFallback = !usePrimary && !!fallbackImage && failedFallbackKey !== fallbackKey;
-  const source = usePrimary ? image : useFallback ? fallbackImage : null;
+  const source = settings.showArtwork === false ? null : usePrimary ? image : useFallback ? fallbackImage : null;
   return (
     <View
       style={[
@@ -157,6 +159,9 @@ const navigateTo = (path, query) => {
 
 export default function HomeScreen() {
   const { colors, fontScale, settings } = useSettings();
+  const guided = useGuidedMode();
+  const { isPremium } = usePurchases();
+  const showSection = (id) => settings.homeSections?.[id] !== false;
   const { status: networkStatus } = useOnlineAccess();
   const { defeated, collected } = useJournal();
   const { loadouts } = useLoadouts();
@@ -208,6 +213,11 @@ export default function HomeScreen() {
   const nextItem = isSilksong ? nextItemRow?.item : nextEquipment;
   const nextPickup = pickups.find((entry) => !collected["c:" + entry.name]);
   const nextQuest = quests.find((entry) => !collected["c:" + entry.name]);
+  const nextBossSafe = !nextBoss || guided.isVisible("boss", nextBoss);
+  const nextItemKind = isSilksong && nextItemRow?.type === "collectible" ? "collectible" : "item";
+  const nextItemSafe = !nextItem || guided.isVisible(nextItemKind, nextItem);
+  const nextPickupSafe = !nextPickup || guided.isVisible("collectible", nextPickup);
+  const nextQuestSafe = !nextQuest || guided.isVisible("collectible", nextQuest);
   const featuredBoss = bosses.find((entry) =>
     entry.image === (isSilksong ? "BellBeast" : "FalseKnight")) ?? bosses[0];
   const featuredEquipment = equipment.find((entry) =>
@@ -227,7 +237,7 @@ export default function HomeScreen() {
   const loadout = loadouts[0];
 
   const lookup = useMemo(() => [
-    ...bosses.map((entry) => ({
+    ...bosses.filter((entry) => guided.isVisible("boss", entry)).map((entry) => ({
       id: "boss:" + entry.name,
       name: entry.name,
       category: "Boss",
@@ -235,7 +245,7 @@ export default function HomeScreen() {
       path: "/bosses",
       ...homeArtwork(entry, "boss", config),
     })),
-    ...equipment.map((entry) => ({
+    ...equipment.filter((entry) => guided.isVisible("item", entry)).map((entry) => ({
       id: "item:" + entry.name,
       name: entry.name,
       category: isSilksong ? "Tool or Crest" : "Charm",
@@ -243,7 +253,7 @@ export default function HomeScreen() {
       path: "/charms",
       ...homeArtwork(entry, "equipment", config),
     })),
-    ...pickups.map((entry) => ({
+    ...pickups.filter((entry) => guided.isVisible("collectible", entry)).map((entry) => ({
       id: "pickup:" + entry.name,
       name: entry.name,
       category: "Item",
@@ -251,7 +261,7 @@ export default function HomeScreen() {
       path: isSilksong ? "/charms" : "/progress/collectibles",
       ...homeArtwork(entry, "collectible", config),
     })),
-    ...quests.map((entry) => ({
+    ...quests.filter((entry) => guided.isVisible("collectible", entry)).map((entry) => ({
       id: "quest:" + entry.name,
       name: entry.name,
       category: "Quest",
@@ -259,7 +269,7 @@ export default function HomeScreen() {
       path: "/quests",
       ...homeArtwork(entry, "collectible", config),
     })),
-  ], [bosses, equipment, pickups, quests, isSilksong, config]);
+  ], [bosses, equipment, pickups, quests, isSilksong, config, guided]);
 
   const searchResults = useMemo(() => {
     const term = query.trim().toLowerCase();
