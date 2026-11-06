@@ -129,7 +129,7 @@ function HollowCharmsScreen() {
         renderItem={({ item }) => (
           <EntryCard
             image={item.iconUrl ? { uri: item.iconUrl } : charmImages[item.image]}
-            fallbackImage={getCharmFallbackArtwork(item, charmImages) ?? charmImages[item.image]}
+            fallbackImage={getCharmFallbackArtwork(item, charmImages) ?? charmImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
             name={item.name}
             description={item.description}
             summary={
@@ -278,7 +278,7 @@ function SilksongItemsScreen() {
           return (
             <EntryCard
               image={item.iconUrl ? { uri: item.iconUrl } : config.itemImages[item.image]}
-              fallbackImage={config.itemImages[item.image]}
+              fallbackImage={config.itemImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
               name={item.name}
               description={item.description}
               summary={
