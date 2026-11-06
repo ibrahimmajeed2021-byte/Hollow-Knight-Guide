@@ -81,7 +81,7 @@ export function OnlineAccessProvider({ children }) {
     verifyingAccess: !entitlementCacheReady,
     blocked,
     retry,
-  }), [status, checking, verifiedPremium, blocked, retry]);
+  }), [status, checking, entitlementCacheReady, verifiedPremium, blocked, retry]);
   return (
     <OnlineAccessContext.Provider value={value}>
       {children}
