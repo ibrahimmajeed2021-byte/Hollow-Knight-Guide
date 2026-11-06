@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { ApiArtworkImage } from "../../../components/hollow/api-artwork-image";
 import { router } from "expo-router";
 import * as Sharing from "expo-sharing";
 import { useMemo, useRef, useState } from "react";
@@ -21,6 +21,7 @@ import { Screen } from "../../../components/hollow/screen";
 import { Body, Title } from "../../../components/hollow/section-text";
 import { silksongItems } from "../../../data/silksong-items";
 import { silksongItemImages } from "../../../data/silksong-images";
+import { useGame } from "../../../games/game-context";
 import { useLoadouts } from "../../../loadouts/loadouts-context";
 import { useHaptics, useSettings } from "../../../settings/SettingsContext.jsx";
 
@@ -68,6 +69,8 @@ function normalizeSlots(value, crest) {
 
 export default function SilksongLoadoutScreen() {
   const { colors } = useSettings();
+  const { config } = useGame();
+  const iconUrlFor = (name) => config.items.find((item) => item.name === name)?.iconUrl;
   const triggerHaptic = useHaptics();
   const { loadouts, saveLoadout, deleteLoadout } = useLoadouts();
   const [crest, setCrest] = useState("Hunter Crest");
@@ -212,6 +215,7 @@ export default function SilksongLoadoutScreen() {
     const toolName = slots[color.id][index];
     const tool = tools.find((item) => item.name === toolName);
     const image = tool ? silksongItemImages[tool.image] : null;
+    const iconUrl = tool ? iconUrlFor(tool.name) : null;
     return (
       <View
         key={`${color.id}-${index}`}
@@ -222,7 +226,7 @@ export default function SilksongLoadoutScreen() {
       >
         {shareMode ? (
           <>
-            {image ? <Image source={image} style={styles.slotImage} contentFit="contain" /> : null}
+            {image ? <ApiArtworkImage iconUrl={iconUrl} fallbackImage={image} style={styles.slotImage} contentFit="contain" /> : null}
             <AppText style={styles.slotName}>{toolName || "Empty slot"}</AppText>
           </>
         ) : (
@@ -236,7 +240,7 @@ export default function SilksongLoadoutScreen() {
               accessibilityRole="button"
               accessibilityLabel={toolName ? `Change ${toolName} in ${color.label} slot ${index + 1}` : `Choose tool for ${color.label} slot ${index + 1}`}
             >
-              {image ? <Image source={image} style={styles.slotImage} contentFit="contain" /> : <AppText style={styles.emptySlot}>＋</AppText>}
+              {image ? <ApiArtworkImage iconUrl={iconUrl} fallbackImage={image} style={styles.slotImage} contentFit="contain" /> : <AppText style={styles.emptySlot}>＋</AppText>}
               <AppText style={[styles.slotName, { color: colors.text }]} numberOfLines={2}>{toolName || "Choose tool"}</AppText>
             </Pressable>
             {toolName ? (
@@ -263,6 +267,7 @@ export default function SilksongLoadoutScreen() {
             const selected = crest === item.name;
             const imageKey = item.name.replaceAll(" ", "");
             const image = silksongItemImages[imageKey];
+            const iconUrl = iconUrlFor(item.name);
             return (
               <Pressable
                 key={item.name}
@@ -275,7 +280,7 @@ export default function SilksongLoadoutScreen() {
                 accessibilityRole="button"
                 accessibilityState={{ selected }}
               >
-                {image ? <Image source={image} style={styles.crestImage} contentFit="contain" /> : <View style={styles.crestPlaceholder}><AppText style={styles.crestInitial}>{item.name[0]}</AppText></View>}
+                {image ? <ApiArtworkImage iconUrl={iconUrl} fallbackImage={image} style={styles.crestImage} contentFit="contain" /> : <View style={styles.crestPlaceholder}><AppText style={styles.crestInitial}>{item.name[0]}</AppText></View>}
                 <AppText style={[styles.crestName, { color: colors.text }]}>{item.name}</AppText>
                 <AppText style={[styles.slotSummary, { color: colors.muted }]}>
                   R {item.slots.red} · B {item.slots.blue} · Y {item.slots.yellow}
@@ -357,7 +362,7 @@ export default function SilksongLoadoutScreen() {
                 onPress={() => assignTool(tool)}
                 style={[styles.toolRow, { backgroundColor: colors.card, borderColor: colors.border }]}
               >
-                <Image source={silksongItemImages[tool.image]} style={styles.toolImage} contentFit="contain" />
+                <ApiArtworkImage iconUrl={iconUrlFor(tool.name)} fallbackImage={silksongItemImages[tool.image]} style={styles.toolImage} contentFit="contain" />
                 <View style={styles.flex}>
                   <AppText style={styles.toolName}>{tool.name}</AppText>
                   <AppText style={{ color: colors.muted, fontSize: 12 }}>{tool.description}</AppText>
@@ -374,7 +379,7 @@ export default function SilksongLoadoutScreen() {
           <AppText style={styles.shareTitle}>{name.trim() || "My Silksong Loadout"}</AppText>
           <AppText style={styles.shareSub}>Silksong Crest & Tool Loadout</AppText>
           <View style={styles.shareCrest}>
-            {crestData && silksongItemImages[crestData.image] ? <Image source={silksongItemImages[crestData.image]} style={styles.shareCrestImage} contentFit="contain" /> : null}
+            {crestData && silksongItemImages[crestData.image] ? <ApiArtworkImage iconUrl={iconUrlFor(crestData.name)} fallbackImage={silksongItemImages[crestData.image]} style={styles.shareCrestImage} contentFit="contain" /> : null}
             <AppText style={styles.shareCrestName}>{crest}</AppText>
           </View>
           <View style={styles.shareGrid}>
@@ -383,7 +388,7 @@ export default function SilksongLoadoutScreen() {
                 const tool = tools.find((item) => item.name === toolName);
                 return tool ? (
                   <View key={tool.name} style={styles.shareItem}>
-                    <Image source={silksongItemImages[tool.image]} style={styles.shareImg} contentFit="contain" />
+                    <ApiArtworkImage iconUrl={iconUrlFor(tool.name)} fallbackImage={silksongItemImages[tool.image]} style={styles.shareImg} contentFit="contain" />
                     <AppText style={styles.shareName}>{tool.name}</AppText>
                     <AppText style={[styles.shareCost, { color: color.color }]}>{color.label.replace(" Tools", "")}</AppText>
                   </View>
