@@ -93,6 +93,8 @@ export default function BossesScreen() {
         }
         renderItem={({ item }) => (
           <EntryCard
+            spoilerKind="boss"
+            spoilerEntry={item}
             image={item.iconUrl ? { uri: item.iconUrl } : bossImages[item.image]}
             fallbackImage={getBossFallbackArtwork(item, bossImages) ?? bossImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
             name={item.name}
