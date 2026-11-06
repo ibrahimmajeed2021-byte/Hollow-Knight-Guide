@@ -23,8 +23,8 @@ const hollowGroups = {
   spells: "Grubsong.png", // Replaced below by local spell-related icon
   nailarts: "Fury of the Fallen.png", // Nail-damage charm illustration
   keys: "Elegant Key.png",
-  dreamers: "Dreamers Circle.png",
-  trials: "Fools Circle.png",
+  dreamers: "Godtuner.png",
+  trials: "Godtuner.png",
   godhome: "Godtuner.png",
   milestones: "Fury of the Fallen.png",
 };
@@ -52,7 +52,7 @@ const hollowNamed = {
 };
 
 const silksongGroups = {
-  fleas: "Flea Caravan Circle.png",
+  fleas: "Achievement SS Flea Finder.png",
   objectives: "Gate Quest Icon.png",
   keyitems: "Bellhome Key.png",
   mementos: "Guardian's Memento.png",
