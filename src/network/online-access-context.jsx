@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AppState, Platform } from "react-native";
 import { usePurchases } from "../purchases/PurchasesContext";
+import { shouldBlockGuide } from "./access-policy.mjs";
 
 const ONLINE_CHECK_URL = "https://hollow-knight-guide-ibrahim.surge.sh/api/index.json";
 const CHECK_INTERVAL_MS = 15000;
@@ -66,7 +67,11 @@ export function OnlineAccessProvider({ children }) {
   const verifiedPremium = entitlementCacheReady && isPremium;
   // The cache is read before deciding whether to lock a Premium subscriber.
   // A free user cannot browse cached guide data during a connection check.
-  const blocked = entitlementCacheReady && !verifiedPremium && status !== "online";
+  const blocked = shouldBlockGuide({
+    onlineStatus: status,
+    premium: verifiedPremium,
+    entitlementCacheReady,
+  });
 
   const value = useMemo(() => ({
     status,
