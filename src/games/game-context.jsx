@@ -8,7 +8,12 @@ import {
   useState,
 } from "react";
 
-import { fetchRemote, readCached } from "../api/remote-data";
+import {
+  fetchRemote,
+  readCached,
+  fetchMediaManifest,
+  readCachedMediaManifest,
+} from "../api/remote-data";
 import { games } from "./config";
 import { sortByProgression } from "../data/progression-order";
 
@@ -34,6 +39,7 @@ export function GameProvider({ children }) {
   const [loaded, setLoaded] = useState(false);
   const [remote, setRemote] = useState({});
   const [sources, setSources] = useState({});
+  const [mediaManifest, setMediaManifest] = useState(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -67,6 +73,17 @@ export function GameProvider({ children }) {
   }, []);
 
   useEffect(() => {
+    let cancelled = false;
+    readCachedMediaManifest().then((cached) => {
+      if (cached && !cancelled) setMediaManifest(cached);
+    });
+    fetchMediaManifest().then((fresh) => {
+      if (fresh && !cancelled) setMediaManifest(fresh);
+    });
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
     Promise.all([
       AsyncStorage.getItem(SETTINGS_KEY),
       AsyncStorage.getItem(STORAGE_KEY),
@@ -97,8 +114,11 @@ export function GameProvider({ children }) {
     const bosses = remote[`${id}/bosses.json`];
     const items = remote[`${id}/items.json`];
     const collectibles = remote[`${id}/collectibles.json`];
+    const remoteMedia = mediaManifest?.games?.[id];
     const config = {
       ...base,
+      heroImageUrl: remoteMedia?.heroImageUrl ?? null,
+      backgroundImageUrl: remoteMedia?.backgroundImageUrl ?? null,
       bosses: sortByProgression(id, "bosses", mergeList(base.bosses, bosses)),
       items: sortByProgression(id, "items", mergeList(base.items, items)),
       collectibles: sortByProgression(
@@ -114,7 +134,7 @@ export function GameProvider({ children }) {
       at: found.reduce((latest, s) => Math.max(latest, s.at ?? 0), 0) || null,
     };
     return { gameId, loaded, config, dataStatus, selectGame, clearGame };
-  }, [gameId, loaded, remote, sources, selectGame, clearGame]);
+  }, [gameId, loaded, remote, sources, mediaManifest, selectGame, clearGame]);
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
 
