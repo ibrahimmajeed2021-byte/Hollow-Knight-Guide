@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
-import { router } from "expo-router";
-import { useMemo, useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
+import { useEffect, useMemo, useState } from "react";
 import { FlatList, StyleSheet, View } from "react-native";
 import { AppText } from "../../components/hollow/app-text";
 import { Button } from "../../components/hollow/button";
@@ -24,11 +24,15 @@ const FILTERS = [
 
 export default function BossesScreen() {
   const { colors } = useSettings();
+  const { query: routeQuery } = useLocalSearchParams();
   const inset = useTabInset();
   const { defeated } = useJournal();
   const { config } = useGame();
   const { bosses, bossImages, locationImages } = config;
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
+  useEffect(() => {
+    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+  }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const data = useMemo(() => {
     const q = query.trim().toLowerCase();
