@@ -74,356 +74,367 @@ export const hollowCollectibles = [
   {
     "name": "Grub #1",
     "group": "grubs",
-    "location": "Forgotten Crossroads — Near a Husk Guard, not far from early pathways.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 20000
+    "location": "Forgotten Crossroads — Near the Husk Guard; defeat it.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 20001,
+    "requires": "Defeat Husk Guard"
   },
   {
     "name": "Grub #2",
     "group": "grubs",
-    "location": "Forgotten Crossroads — By the acid pool leading toward Fog Canyon.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 20001
+    "location": "Forgotten Crossroads — See the second Forgotten Crossroads Grub pin on the wiki map.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 20002
   },
   {
     "name": "Grub #3",
     "group": "grubs",
-    "location": "Forgotten Crossroads — Break a wall close to two Aspid Hunters.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 20002
+    "location": "Forgotten Crossroads — Behind a breakable wall.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 20003,
+    "requires": "Breakable wall"
   },
   {
     "name": "Grub #4",
     "group": "grubs",
-    "location": "Forgotten Crossroads — Use a Nail-bounce to reach an elevated jar.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 20003
+    "location": "Forgotten Crossroads — Requires bouncing on an enemy or spike obstacle with the Nail.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 20004,
+    "requires": "Nail-bounce"
   },
   {
     "name": "Grub #5",
     "group": "grubs",
-    "location": "Forgotten Crossroads — Cross the wide gap after gaining the dash.",
-    "requires": "Mothwing Cloak",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 20004
+    "location": "Forgotten Crossroads — Cross the inaccessible gap with the dash or a Nail-bounce.",
+    "requires": "Mothwing Cloak or Nail-bounce",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 20005,
+    "reward": "Grubfather reward after five total Grubs: Mask Shard"
   },
   {
     "name": "Grub #6",
     "group": "grubs",
-    "location": "Greenpath — Drop the moss block above Cornifer's route.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 30005
+    "location": "Greenpath — Remove a moss block to release the Grub.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 30006,
+    "requires": "Dislodge moss block"
   },
   {
     "name": "Grub #7",
     "group": "grubs",
-    "location": "Greenpath — Drop a moss block to cross the acid pool.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 30006
+    "location": "Greenpath — See the Greenpath Grub map for this location.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 30007
   },
   {
     "name": "Grub #8",
     "group": "grubs",
-    "location": "Greenpath — Upper room above the Stag Station guarded by a Moss Knight.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 30007
+    "location": "Greenpath — Guarded by a Moss Knight.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 30008,
+    "requires": "Defeat Moss Knight"
   },
   {
     "name": "Grub #9",
     "group": "grubs",
-    "location": "Greenpath — Across an acid lake, using Durandoos to bounce if necessary.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 30008
+    "location": "Greenpath — See the fourth Greenpath Grub pin on the wiki map.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 30009
   },
   {
     "name": "Grub #10",
     "group": "grubs",
-    "location": "Fungal Wastes — At the end of a Fungling-filled passage.",
-    "reward": "Grubsong (from Grubfather after 10)",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 40009
+    "location": "Fungal Wastes — First Fungal Wastes Grub, reachable after dashing.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 40010,
+    "requires": "Mothwing Cloak",
+    "reward": "Grubfather reward after ten total Grubs: Grubsong"
   },
   {
     "name": "Grub #11",
     "group": "grubs",
-    "location": "Fungal Wastes — High ledge reached by bouncing on purple mushrooms.",
-    "requires": "Mantis Claw recommended",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 40010
+    "location": "Fungal Wastes — Second Fungal Wastes Grub, reachable via wall-jumping.",
+    "requires": "Mantis Claw",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 40011
   },
   {
     "name": "Grub #12",
     "group": "grubs",
-    "location": "City of Tears — Below the Soul Sanctum entrance near a Winged Sentry.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60011
+    "location": "City of Tears — First City of Tears Grub; check the map marker.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 60012
   },
   {
     "name": "Grub #13",
     "group": "grubs",
-    "location": "City of Tears — A house west of King's Station guarded by a Great Husk Sentry.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60012
+    "location": "City of Tears — Guarded by a Great Husk Sentry.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 60013,
+    "requires": "Defeat Great Husk Sentry"
   },
   {
     "name": "Grub #14",
     "group": "grubs",
-    "location": "City of Tears — Break the fragile floor under the Soul Sanctum after Soul Master.",
+    "location": "City of Tears — Behind a floor that must be broken using a ground spell.",
     "requires": "Desolate Dive",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60013
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 60014
   },
   {
     "name": "Grub #15",
     "group": "grubs",
-    "location": "City of Tears — The passage between King's Station and Kingdom's Edge.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60014
+    "location": "City of Tears — Fourth City of Tears Grub; check the map marker.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 60015
   },
   {
     "name": "Grub #16",
     "group": "grubs",
-    "location": "City of Tears — Eastern Watcher's Spire, guarded by City sentries.",
-    "requires": "Monarch Wings recommended",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60015
+    "location": "City of Tears — Last City of Tears Grub; elevated route.",
+    "requires": "Mantis Claw and Monarch Wings (or Nail-bounce)",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 60016
   },
   {
     "name": "Grub #17",
     "group": "grubs",
-    "location": "City of Tears — Tower of Love, after reaching the Collector.",
-    "requires": "Love Key and defeating the Collector",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60016
+    "location": "Crystal Peak — First Crystal Peak Grub; advanced traversal.",
+    "requires": "Mantis Claw and Crystal Heart",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 70017
   },
   {
     "name": "Grub #18",
     "group": "grubs",
-    "location": "City of Tears — Tower of Love, after reaching the Collector.",
-    "requires": "Love Key and defeating the Collector",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60017
+    "location": "Crystal Peak — Second Crystal Peak Grub; dash and climb.",
+    "requires": "Mothwing Cloak and Mantis Claw",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 70018
   },
   {
     "name": "Grub #19",
     "group": "grubs",
-    "location": "City of Tears — Tower of Love, after reaching the Collector.",
-    "requires": "Love Key and defeating the Collector",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 60018
+    "location": "Crystal Peak — Third Crystal Peak Grub; long traversal gap.",
+    "requires": "Mantis Claw, Crystal Heart or Monarch Wings",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 70019
   },
   {
     "name": "Grub #20",
     "group": "grubs",
-    "location": "Crystal Peak — Behind the Grub Mimic near the upper Dirtmouth passage.",
-    "requires": "Crystal Heart",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 70019
+    "location": "Crystal Peak — Fourth Crystal Peak Grub; high ledge.",
+    "requires": "Mothwing Cloak, Monarch Wings (or Nail-bounce)",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 70020
   },
   {
     "name": "Grub #21",
     "group": "grubs",
-    "location": "Crystal Peak — Beyond a sequence of mechanical crushers.",
+    "location": "Crystal Peak — Fifth Crystal Peak Grub; climbing route.",
     "requires": "Mothwing Cloak and Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 70020
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 70021
   },
   {
     "name": "Grub #22",
     "group": "grubs",
-    "location": "Crystal Peak — Before the Crystal Heart acquisition room.",
-    "requires": "Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 70021
+    "location": "Crystal Peak — Sixth Crystal Peak Grub; dash required.",
+    "requires": "Mothwing Cloak",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 70022
   },
   {
     "name": "Grub #23",
     "group": "grubs",
-    "location": "Crystal Peak — On the route toward Hallownest's Crown.",
-    "requires": "Monarch Wings recommended",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 70022
+    "location": "Crystal Peak — Seventh Crystal Peak Grub; Desolate Dive route.",
+    "requires": "Mothwing Cloak, Mantis Claw and Desolate Dive",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 70023
   },
   {
     "name": "Grub #24",
     "group": "grubs",
-    "location": "Crystal Peak — Beyond spike pits and conveyor belts.",
-    "requires": "Mothwing Cloak and Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 70023
+    "location": "Resting Grounds — Single Grub in Resting Grounds.",
+    "requires": "Desolate Dive",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 80024
   },
   {
     "name": "Grub #25",
     "group": "grubs",
-    "location": "Crystal Peak — Access from the upper passage of the chamber.",
-    "requires": "Mothwing Cloak and Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 70024
+    "location": "Royal Waterways — First Waterways Grub; see the area marker.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 90025
   },
   {
     "name": "Grub #26",
     "group": "grubs",
-    "location": "Crystal Peak — Crystallised Mound, east of Descending Dark.",
-    "requires": "Desolate Dive and Crystal Heart",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 70025
+    "location": "Royal Waterways — Enter from Kingdom's Edge for this Grub.",
+    "requires": "Crystal Heart and Monarch Wings (or Nail-bounce)",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 90026
   },
   {
     "name": "Grub #27",
     "group": "grubs",
-    "location": "Resting Grounds — Past an Entombed Husk and Belfly.",
-    "requires": "Desolate Dive",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 80026
+    "location": "Royal Waterways — Third Waterways Grub, behind an acid pool.",
+    "requires": "Isma's Tear",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 90027
   },
   {
     "name": "Grub #28",
     "group": "grubs",
-    "location": "Royal Waterways — Behind a breakable wall.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 90027
+    "location": "Howling Cliffs — Single Grub in Howling Cliffs.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 50028,
+    "requires": "Mantis Claw"
   },
   {
     "name": "Grub #29",
     "group": "grubs",
-    "location": "Royal Waterways — Enter from the Kingdom's Edge connection.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 90028
+    "location": "Kingdom's Edge — First Kingdom's Edge Grub.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 130029,
+    "requires": "Desolate Dive"
   },
   {
     "name": "Grub #30",
     "group": "grubs",
-    "location": "Royal Waterways — A low acid passage below Isma's area.",
-    "requires": "Isma's Tear",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 90029
+    "location": "Kingdom's Edge — Second Kingdom's Edge Grub.",
+    "requires": "Mantis Claw",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 130030
   },
   {
     "name": "Grub #31",
     "group": "grubs",
-    "location": "Howling Cliffs — Near the Greenpath connection.",
-    "requires": "Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 50030
+    "location": "Fog Canyon — Single Grub in Fog Canyon.",
+    "requires": "Crystal Heart",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 100031,
+    "reward": "Grubfather reward after 31 total Grubs: Pale Ore"
   },
   {
     "name": "Grub #32",
     "group": "grubs",
-    "location": "Kingdom's Edge — Under Nailmaster Oro's hut near a Great Hopper.",
-    "requires": "Desolate Dive",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 130031
+    "location": "Queen's Gardens — First Queen's Gardens Grub.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 140032
   },
   {
     "name": "Grub #33",
     "group": "grubs",
-    "location": "Kingdom's Edge — Hidden beyond a breakable wall near spikes.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 130032
+    "location": "Queen's Gardens — Second Queen's Gardens Grub; complex traversal.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 140033,
+    "requires": "Mantis Claw, Crystal Heart and Monarch Wings (or Nail-bounce)"
   },
   {
     "name": "Grub #34",
     "group": "grubs",
-    "location": "Fog Canyon — Across Teacher's Archives using Crystal Heart.",
-    "requires": "Crystal Heart",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 100033
+    "location": "Queen's Gardens — Third Queen's Gardens Grub.",
+    "requires": "Mantis Claw",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 140034
   },
   {
     "name": "Grub #35",
     "group": "grubs",
-    "location": "Queen's Gardens — In foliage below the Stag Station.",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 140034
+    "location": "Deepnest — First Deepnest Grub, behind a breakable wall.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 110035,
+    "requires": "Mantis Claw and breakable wall"
   },
   {
     "name": "Grub #36",
     "group": "grubs",
-    "location": "Queen's Gardens — Thorn platforming route above Greenpath connection.",
-    "requires": "Mantis Claw and Crystal Heart",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 140035
+    "location": "Deepnest — Second Deepnest Grub.",
+    "requires": "Mantis Claw and Crystal Heart (or Nail-bounce)",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 110036
   },
   {
     "name": "Grub #37",
     "group": "grubs",
-    "location": "Queen's Gardens — Hidden passage away from the White Lady's route.",
-    "requires": "Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 140036
+    "location": "Deepnest — Third Deepnest Grub, behind a breakable wall.",
+    "requires": "Monarch Wings or Crystal Heart",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 110037
   },
   {
     "name": "Grub #38",
     "group": "grubs",
-    "location": "Deepnest — Behind a wall with three Grub Mimics; the third jar contains the real Grub.",
-    "requires": "Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 110037
+    "location": "Deepnest — Fourth Deepnest Grub.",
+    "requires": "Mothwing Cloak and Mantis Claw",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 110038
   },
   {
     "name": "Grub #39",
     "group": "grubs",
-    "location": "Deepnest — High above a room lined with spikes.",
-    "requires": "Crystal Heart",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 110038
+    "location": "Deepnest — Fifth Deepnest Grub.",
+    "requires": "Mothwing Cloak and Mantis Claw",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 110039
   },
   {
     "name": "Grub #40",
     "group": "grubs",
-    "location": "Deepnest — Behind a breakable wall west of the Hot Spring.",
-    "requires": "Monarch Wings and Crystal Heart",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 110039
+    "location": "Ancient Basin — First Ancient Basin Grub.",
+    "requires": "Mothwing Cloak and Monarch Wings",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 120040
   },
   {
     "name": "Grub #41",
     "group": "grubs",
-    "location": "Deepnest — Beyond a Stalking Devout in a narrow passage.",
-    "requires": "Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 110040
+    "location": "Ancient Basin — Second Ancient Basin Grub.",
+    "requires": "Desolate Dive",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 120041
   },
   {
     "name": "Grub #42",
     "group": "grubs",
-    "location": "Deepnest — Beast's Den, beneath multiple breakable floors.",
-    "requires": "Mantis Claw",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 110041
+    "location": "The Hive — First Hive Grub.",
+    "requires": "Desolate Dive and Isma's Tear",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 150042
   },
   {
     "name": "Grub #43",
     "group": "grubs",
-    "location": "Ancient Basin — Before Broken Vessel's route, among Infected Balloons.",
-    "requires": "Monarch Wings recommended",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 120042
+    "location": "The Hive — Second Hive Grub.",
+    "requires": "Crystal Heart and Monarch Wings (or Nail-bounce)",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 150043
   },
   {
     "name": "Grub #44",
     "group": "grubs",
-    "location": "Ancient Basin — West of the tram, on the Pale Ore route.",
-    "requires": "Desolate Dive",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 120043
+    "location": "Tower of Love — First Grub held by the Collector.",
+    "requires": "Love Key",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 180044
   },
   {
     "name": "Grub #45",
     "group": "grubs",
-    "location": "The Hive — Enter from the Kingdom's Edge connection.",
-    "requires": "Isma's Tear",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 150044
+    "location": "Tower of Love — Second Grub held by the Collector.",
+    "requires": "Love Key",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 180045
   },
   {
     "name": "Grub #46",
     "group": "grubs",
-    "location": "The Hive — Hidden passage before the Hive Knight arena.",
-    "requires": "Monarch Wings and Crystal Heart",
-    "reward": "Grubberfly's Elegy (from Grubfather after all 46)",
-    "wikiUrl": "https://hollowknight.wiki/w/Grub",
-    "progressOrder": 150045
+    "location": "Tower of Love — Third Grub held by the Collector.",
+    "requires": "Love Key",
+    "wikiUrl": "https://hollowknight.wiki/w/Grub#Rewards_and_locations",
+    "progressOrder": 180046,
+    "reward": "Grubfather reward after all 46 total Grubs: Grubberfly's Elegy"
   },
   {
     "name": "Mask Shard #1",
