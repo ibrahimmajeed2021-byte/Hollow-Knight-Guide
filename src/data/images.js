@@ -1,3 +1,5 @@
+import { wikiImageSource } from "./collectible-icons";
+
 export const bossImages = {
   BrokenVessel: require('../../assets/hollow/bosses/BrokenVessel.png'),
   BroodingMawlek: require('../../assets/hollow/bosses/BroodingMawlek.png'),
@@ -27,6 +29,25 @@ export const bossImages = {
   VengeflyKing: require('../../assets/hollow/bosses/VengeflyKing.png'),
   WatcherKnight: require('../../assets/hollow/bosses/WatcherKnight.png'),
   Zote: require('../../assets/hollow/bosses/Zote.png'),
+  Xero: wikiImageSource("B Xero.png"),
+  Gorb: wikiImageSource("B Gorb.png"),
+  ElderHu: wikiImageSource("B Elder Hu.png"),
+  NoEyes: wikiImageSource("B No Eyes.png"),
+  Marmu: wikiImageSource("B Marmu.png"),
+  Galien: wikiImageSource("B Galien.png"),
+  Markoth: wikiImageSource("B Markoth.png"),
+  FailedChampion: wikiImageSource("Failed Champion Icon.png"),
+  SoulTyrant: wikiImageSource("Banner Soul Tyrant.png"),
+  LostKin: wikiImageSource("Banner Lost Kin.png"),
+  WhiteDefender: wikiImageSource("B White Defender.png"),
+  GreyPrinceZote: wikiImageSource("B Grey Prince Zote.png"),
+  NightmareKingGrimm: wikiImageSource("B Nightmare King.png"),
+  EnragedGuardian: wikiImageSource("Enraged Guardian Icon.png"),
+  HornetSentinel: wikiImageSource("Banner Hornet Sentinel.png"),
+  PureVessel: wikiImageSource("B Pure Vessel.png"),
+  AbsoluteRadiance: wikiImageSource("Absolute Radiance Icon.png"),
+  SistersOfBattle: wikiImageSource("Banner Sisters of Battle.png"),
+  WingedNosk: wikiImageSource("Banner Winged Nosk.png"),
 };
 export const locationImages = {
   BrokenVesselLocation: require('../../assets/hollow/locations/BrokenVesselLocation.png'),
@@ -104,4 +125,5 @@ export const charmImages = {
   CarefreeMelody: require('../../assets/hollow/charms/CarefreeMelody.png'),
   Kingsoul: require('../../assets/hollow/charms/Kingsoul.png'),
   VoidHeart: require('../../assets/hollow/charms/VoidHeart.png'),
+  FuryOfTheFallen: wikiImageSource("Fury of the Fallen.png"),
 };
