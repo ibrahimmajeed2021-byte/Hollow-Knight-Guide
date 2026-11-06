@@ -66,7 +66,7 @@ export function GuidedModeProvider({ children }) {
   const enabled = settings.guidedMode === true;
   const window = settings.spoilerWindow ?? "balanced";
   const isVisible = useCallback((kind, item) =>
-    !ready || visibleInGuidedMode({
+    (!ready ? !enabled : visibleInGuidedMode({
       enabled,
       window,
       kind,
@@ -75,7 +75,7 @@ export function GuidedModeProvider({ children }) {
       defeated,
       collected,
       revealed,
-    }),
+    })),
   [enabled, window, config, defeated, collected, revealed, ready]);
 
   const value = useMemo(() => ({
