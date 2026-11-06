@@ -22,6 +22,11 @@ const write = (path, data) => {
 };
 
 const bosses = await load("bosses.js", "bosses");
+const hollowExtraBosses = await load("hollow-extra-bosses.js", "hollowExtraBosses");
+const hollowExtraCharms = await load("hollow-extra-charms.js", "hollowExtraCharms");
+const hollowCollectibles = await load("hollow-collectibles.js", "hollowCollectibles");
+const silksongExtraBosses = await load("silksong-extra-bosses.js", "silksongExtraBosses");
+const silksongExtraCollectibles = await load("silksong-extra-collectibles.js", "silksongExtraCollectibles");
 const charms = await load("charms.js", "charms");
 const silksongBosses = await load("silksong-bosses.js", "silksongBosses");
 const silksongItems = await load("silksong-items.js", "silksongItems");
@@ -85,17 +90,19 @@ const withCollectibleLocations = (entries) =>
     };
   });
 
-write("hollow/bosses.json", bosses);
-write("hollow/items.json", withWikiLocations(charms, "hollow"));
-write("silksong/bosses.json", silksongBosses);
+write("hollow/bosses.json", [...bosses, ...hollowExtraBosses]);
+write("hollow/items.json", withWikiLocations([...charms, ...hollowExtraCharms], "hollow"));
+write("hollow/collectibles.json", hollowCollectibles);
+write("silksong/bosses.json", [...silksongBosses, ...silksongExtraBosses]);
 write("silksong/items.json", withWikiLocations(silksongItems, "silksong"));
-write("silksong/collectibles.json", withCollectibleLocations(silksongCollectibles));
+write("silksong/collectibles.json", withCollectibleLocations([...silksongCollectibles, ...silksongExtraCollectibles]));
 write("tips.json", tips);
 write("index.json", {
   updatedAt: new Date().toISOString(),
   endpoints: [
     "hollow/bosses.json",
     "hollow/items.json",
+    "hollow/collectibles.json",
     "silksong/bosses.json",
     "silksong/items.json",
     "silksong/collectibles.json",

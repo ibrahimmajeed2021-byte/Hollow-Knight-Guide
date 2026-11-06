@@ -6,10 +6,6 @@ import { Button } from "../../../components/hollow/button";
 import { ProgressBar } from "../../../components/hollow/progress-bar";
 import { Screen } from "../../../components/hollow/screen";
 import { Body, Title } from "../../../components/hollow/section-text";
-import {
-  silksongCollectibleGroups,
-  silksongCollectibles,
-} from "../../../data/silksong-collectibles";
 import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
 import { useSettings } from "../../../settings/SettingsContext.jsx";
@@ -57,11 +53,12 @@ export default function ProgressScreen() {
   const isSilksong = config.id === "silksong";
   const bosses = config.bosses;
   const items = config.items;
-  const collectibles = config.collectibles ?? silksongCollectibles;
+  const collectibles = config.collectibles ?? [];
+  const collectibleGroups = config.collectibleGroups ?? [];
   const bossDone = bosses.filter((boss) => defeated[boss.name]).length;
   const itemDone = items.filter((item) => collected[item.name]).length;
 
-  const collectibleProgress = silksongCollectibleGroups.map((group) => {
+  const collectibleProgress = collectibleGroups.map((group) => {
     const groupItems = collectibles.filter((item) => item.group === group.id);
     const done = groupItems.filter((item) => collected[`c:${item.name}`]).length;
     return { ...group, done, total: groupItems.length };
@@ -69,13 +66,13 @@ export default function ProgressScreen() {
   const collectibleDone = collectibleProgress.reduce((sum, group) => sum + group.done, 0);
   const collectibleTotal = collectibleProgress.reduce((sum, group) => sum + group.total, 0);
 
-  const totalDone = bossDone + itemDone + (isSilksong ? collectibleDone : 0);
-  const totalItems = bosses.length + items.length + (isSilksong ? collectibleTotal : 0);
+  const totalDone = bossDone + itemDone + collectibleDone;
+  const totalItems = bosses.length + items.length + collectibleTotal;
 
   const confirmReset = () =>
     Alert.alert(
       "Reset progress?",
-      `This clears all defeated bosses and collected ${config.itemsLabel.toLowerCase()}${isSilksong ? " and Silksong collectibles" : ""}. Your photo journal and saved loadouts will remain.`,
+      `This clears all defeated bosses and collected ${config.itemsLabel.toLowerCase()} and all tracked collectibles, abilities and challenges. Your photo journal and saved loadouts will remain.`,
       [
         { text: "Cancel", style: "cancel" },
         { text: "Reset", style: "destructive", onPress: resetProgress },
@@ -121,11 +118,11 @@ export default function ProgressScreen() {
           onPress={() => router.push("/charms")}
         />
 
-        {isSilksong && (
+        {collectibleProgress.length > 0 && (
           <>
             <Title style={styles.sectionTitle}>Collectibles</Title>
             <ProgressRow
-              label="All collectibles"
+              label={isSilksong ? "All collectibles & tasks" : "All collectibles & challenges"}
               done={collectibleDone}
               total={collectibleTotal}
               onPress={() => router.push("/progress/collectibles")}
@@ -137,12 +134,17 @@ export default function ProgressScreen() {
                 done={group.done}
                 total={group.total}
                 onPress={() =>
-                  group.id === "wishes"
-                    ? router.push("/quests")
-                    : router.push({
-                        pathname: "/charms",
-                        params: { category: group.id },
+                  !isSilksong
+                    ? router.push({
+                        pathname: "/progress/collectibles",
+                        params: { group: group.id },
                       })
+                    : (group.id === "wishes" || group.id === "objectives")
+                      ? router.push("/quests")
+                      : router.push({
+                          pathname: "/charms",
+                          params: { category: group.id },
+                        })
                 }
               />
             ))}

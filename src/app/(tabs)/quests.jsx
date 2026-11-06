@@ -10,6 +10,12 @@ import { useGame } from "../../games/game-context";
 import { useTabInset } from "../../hooks/use-tab-inset";
 import { useJournal } from "../../journal/journal-context";
 
+const QUEST_CATEGORY_FILTERS = [
+  { value: "all", label: "All quests" },
+  { value: "objectives", label: "Main story" },
+  { value: "wishes", label: "Wishes" },
+];
+
 const STATUS_FILTERS = [
   { value: "all", label: "All quests" },
   { value: "todo", label: "Not completed" },
@@ -26,24 +32,15 @@ export default function QuestsScreen() {
     setQuery(typeof routeQuery === "string" ? routeQuery : "");
   }, [routeQuery]);
   const [filter, setFilter] = useState("all");
-  const [kind, setKind] = useState("all");
+  const [questType, setQuestType] = useState("all");
   const isSilksong = config.id === "silksong";
 
   const quests = useMemo(
     () =>
       isSilksong
-        ? (config.collectibles ?? []).filter((entry) => entry.group === "wishes")
+        ? (config.collectibles ?? []).filter((entry) => entry.group === "wishes" || entry.group === "objectives")
         : [],
     [config.collectibles, isSilksong],
-  );
-  const kindFilters = useMemo(
-    () => [
-      { value: "all", label: "All types" },
-      ...[...new Set(quests.map((entry) => entry.kind).filter(Boolean))].map(
-        (value) => ({ value, label: value }),
-      ),
-    ],
-    [quests],
   );
   const completed = quests.filter((entry) => collected[`c:${entry.name}`]).length;
 
@@ -55,11 +52,11 @@ export default function QuestsScreen() {
           entry.name.toLowerCase().includes(text) ||
           (entry.location ?? "").toLowerCase().includes(text) ||
           (entry.description ?? "").toLowerCase().includes(text)) &&
-        (kind === "all" || entry.kind === kind) &&
+        (questType === "all" || entry.group === questType) &&
         (filter === "all" ||
           (filter === "done") === !!collected[`c:${entry.name}`]),
     );
-  }, [quests, query, kind, filter, collected]);
+  }, [quests, query, questType, filter, collected]);
 
   if (!isSilksong) {
     return (
@@ -80,14 +77,12 @@ export default function QuestsScreen() {
         filter={filter}
         onFilter={setFilter}
       />
-      {kindFilters.length > 2 ? (
-        <SearchFilter
-          hideSearch
-          filters={kindFilters}
-          filter={kind}
-          onFilter={setKind}
-        />
-      ) : null}
+      <SearchFilter
+        hideSearch
+        filters={QUEST_CATEGORY_FILTERS}
+        filter={questType}
+        onFilter={setQuestType}
+      />
       <FlatList
         data={data}
         keyExtractor={(entry) => entry.name}
@@ -100,7 +95,7 @@ export default function QuestsScreen() {
           <>
             <Title>Quests</Title>
             <Body>
-              All {quests.length} Silksong quests and wishes. {completed} completed.
+              All {quests.length} Silksong tasks ({quests.filter((entry) => entry.group === "objectives").length} main-story objectives and {quests.filter((entry) => entry.group === "wishes").length} wishes). {completed} completed.
               Expand a quest for its location, requirements, and rewards.
               Quests follow a recommended Act 1 → 2 → 3 progression; optional
               wishes can be completed in different orders.

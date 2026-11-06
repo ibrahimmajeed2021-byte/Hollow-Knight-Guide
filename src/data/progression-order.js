@@ -10,22 +10,60 @@
 // Named ordering is more accurate than geography for repeat fights, trials,
 // late story bosses and Godhome encounters.
 const HK_BOSSES = [
-  "Gruz Mother", "False Knight", "Brooding Mawlek",
-  "Vengefly King", "Hornet (Protector)", "Massive Moss Charger",
-  "Mantis Lords", "Soul Warrior", "Soul Master",
-  "Crystal Guardian", "Dung Defender", "Flukemarm",
-  "Broken Vessel", "Nosk", "Uumuu", "Watcher Knight",
-  "The Collector", "Traitor Lord", "Hive Knight",
-  "Oblobbles", "God Tamer", "Zote", "Grimm",
-  "Hollow Knight", "Radiance", "Oro & Mato",
-  "Paintmaster Sheo", "Great Nailsage Sly",
+  "Gruz Mother",
+  "False Knight",
+  "Brooding Mawlek",
+  "Vengefly King",
+  "Hornet (Protector)",
+  "Massive Moss Charger",
+  "Mantis Lords",
+  "Elder Hu",
+  "Soul Warrior",
+  "Soul Master",
+  "Soul Tyrant",
+  "Crystal Guardian",
+  "Enraged Guardian",
+  "Xero",
+  "Gorb",
+  "No Eyes",
+  "Dung Defender",
+  "White Defender",
+  "Flukemarm",
+  "Broken Vessel",
+  "Lost Kin",
+  "Galien",
+  "Nosk",
+  "Marmu",
+  "Markoth",
+  "Uumuu",
+  "Watcher Knight",
+  "The Collector",
+  "Traitor Lord",
+  "Hive Knight",
+  "Hornet Sentinel",
+  "Oblobbles",
+  "God Tamer",
+  "Zote",
+  "Grey Prince Zote",
+  "Grimm",
+  "Nightmare King Grimm",
+  "Failed Champion",
+  "Hollow Knight",
+  "Radiance",
+  "Oro & Mato",
+  "Paintmaster Sheo",
+  "Great Nailsage Sly",
+  "Pure Vessel",
+  "Sisters of Battle",
+  "Winged Nosk",
+  "Absolute Radiance"
 ];
 
 // Earliest practical acquisition on a conventional Hallownest route.
 // Shop rewards, collect-all rewards and quest/DLC upgrades are deliberately
 // moved later than the area in which the relevant vendor first appears.
 const HK_CHARMS = [
-  "Wayward Compass", "Gathering Swarm", "Stalwart Shell",
+  "Fury of the Fallen", "Wayward Compass", "Gathering Swarm", "Stalwart Shell",
   "Soul Catcher", "Shaman Stone", "Steady Body", "Longnail",
   "Lifeblood Heart", "Quick Focus", "Thorns of Agony",
   "Baldur Shell", "Joni's Blessing",
@@ -46,7 +84,8 @@ const HK_CHARMS = [
 // Includes optional bosses close to the chapter in which they can be reached.
 const SS_BOSSES = [
   "Moss Mother (Ruined Chapel)", "Bell Beast",
-  "Skull Tyrant (The Marrow & Bone Bottom)", "Lace (Deep Docks)",
+  "Skull Tyrant (The Marrow & Bone Bottom)",
+  "Skull Tyrant (Bone Bottom rematch)", "Lace (Deep Docks)",
   "Fourth Chorus", "Moorwing", "Sister Splinter", "Widow",
   "Moss Mother (Weavenest Atla)", "Savage Beastfly (Chapel of the Beast)",
   "Phantom", "Great Conchflies", "Last Judge",
@@ -102,6 +141,26 @@ const SS_AREAS = {
 // prevent them from being stranded after unrelated collectibles.
 const SS_SPECIAL = {
   "Hunter Crest": [1, -1],
+  "SEEK: The Great Citadel": [1, -2],
+  "SAVE: The Threadspun Town": [1, 10],
+  "OPEN: Grand Gate": [1, 18],
+  "ASCEND: Pharloom's Crown": [2, -2],
+  "LEARN: Architect's Melody": [2, 3],
+  "LEARN: Vaultkeeper's Melody": [2, 4],
+  "LEARN: Conductor's Melody": [2, 10],
+  "DEFEAT: Pale Monarch": [2, 18],
+  "DESTROY: Soul Snare": [2, 19],
+  "SEEK: After the Fall": [3, -2],
+  "SEEK: Awaiting the End": [3, -1],
+  "DEFEAT: Beast in the Bells": [3, 0],
+  "SEEK: The Dark Below": [3, 1],
+  "ASCEND: Return to Pharloom": [3, 2],
+  "SEEK: Spell Seeker": [3, 3],
+  "SEEK: The Old Hearts": [3, 8],
+  "CLAIM: Heart of Might": [3, 11],
+  "CLAIM: Heart of the Woods": [3, 10],
+  "CLAIM: Heart of the Wild": [3, 5],
+  "DESCEND: Last Dive": [3, 16],
   "Bind": [1, -1],
   "Silkspear": [1, 0],
   "Silk Heart": [1, 4],
@@ -227,6 +286,9 @@ function silkEntryRank(entry) {
 export function getProgressionRank(gameId, kind, entry) {
   if (!entry) return Number.MAX_SAFE_INTEGER;
   if (gameId === "hollow") {
+    if (kind === "collectibles") return Number.isFinite(entry.progressOrder)
+      ? entry.progressOrder
+      : 1000000;
     const order = kind === "bosses" ? hkBossIndex : hkCharmIndex;
     return (order.get(entry.name) ?? 10000) * 1000;
   }

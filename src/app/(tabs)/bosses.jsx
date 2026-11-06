@@ -1,7 +1,7 @@
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useMemo, useState } from "react";
-import { FlatList, StyleSheet, View } from "react-native";
+import { FlatList, Linking, Pressable, StyleSheet, View } from "react-native";
 import { AppText } from "../../components/hollow/app-text";
 import { Button } from "../../components/hollow/button";
 import { EntryCard, Stat } from "../../components/hollow/entry-card";
@@ -101,6 +101,8 @@ export default function BossesScreen() {
               />
             ) : null}
             {item.act ? <Stat label="Act" value={String(item.act)} /> : null}
+            {item.kind ? <Stat label="Encounter type" value={item.kind} /> : null}
+            {item.requires ? <Stat label="How to unlock" value={item.requires} /> : null}
             <Stat label="Reward" value={item.reward} />
             <AppText style={[styles.locationLabel, { color: colors.muted }]}>
               Location
@@ -119,6 +121,18 @@ export default function BossesScreen() {
                 <AppText style={styles.locationName}>{loc.name}</AppText>
               </View>
             ))}
+            {item.wikiUrl ? (
+              <Pressable
+                onPress={() => Linking.openURL(item.wikiUrl).catch(() => {})}
+                accessibilityRole="link"
+                accessibilityLabel={`View source for ${item.name}`}
+                style={styles.wikiLink}
+              >
+                <AppText style={[styles.wikiText, { color: colors.accent }]}>
+                  Open boss guide on Hollow Knight Wiki ↗
+                </AppText>
+              </Pressable>
+            ) : null}
             <BossExtras name={item.name} />
           </EntryCard>
         )}
@@ -129,6 +143,8 @@ export default function BossesScreen() {
 const styles = StyleSheet.create({
   empty: { textAlign: "center", marginTop: 24 },
   bossImage: { width: "100%", height: 200, marginTop: 8 },
+  wikiLink: { minHeight: 44, paddingVertical: 12, justifyContent: "center" },
+  wikiText: { fontSize: 15, fontWeight: "700" },
   locationLabel: { marginTop: 8, fontWeight: "bold", fontSize: 15 },
   location: { marginTop: 6, alignItems: "center", gap: 4 },
   locationImage: { width: "100%", height: 160 },

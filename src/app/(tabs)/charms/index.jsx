@@ -17,6 +17,7 @@ import { Body, Title } from "../../../components/hollow/section-text";
 import { useGame } from "../../../games/game-context";
 import { useJournal } from "../../../journal/journal-context";
 import { silksongCollectibleGroups } from "../../../data/silksong-collectibles";
+import { silksongExtraCollectibleGroups } from "../../../data/silksong-extra-collectibles";
 import { sortMixedSilksongItems } from "../../../data/progression-order";
 const FILTERS = [
   { value: "all", label: "All" },
@@ -160,8 +161,8 @@ const SILKSONG_CATEGORIES = [
   { value: "Red Tool", label: "Red tools" },
   { value: "Blue Tool", label: "Blue tools" },
   { value: "Yellow Tool", label: "Yellow tools" },
-  ...silksongCollectibleGroups
-    .filter((group) => group.id !== "wishes")
+  ...[...silksongCollectibleGroups, ...silksongExtraCollectibleGroups]
+    .filter((group) => group.id !== "wishes" && group.id !== "objectives")
     .map((group) => ({ value: group.id, label: group.title })),
 ];
 
@@ -201,7 +202,7 @@ function SilksongItemsScreen() {
         item,
       })),
       ...(config.collectibles ?? [])
-        .filter((item) => item.group !== "wishes")
+        .filter((item) => item.group !== "wishes" && item.group !== "objectives")
         .map((item) => ({
           type: "collectible",
           key: `c:${item.name}`,

@@ -96,9 +96,11 @@ export default function HomeScreen() {
   const bosses = config.bosses;
   const equipment = config.items;
   const isSilksong = config.id === "silksong";
-  const allCollectibles = isSilksong ? config.collectibles ?? [] : [];
-  const quests = allCollectibles.filter((entry) => entry.group === "wishes");
-  const pickups = allCollectibles.filter((entry) => entry.group !== "wishes");
+  const allCollectibles = config.collectibles ?? [];
+  const quests = isSilksong
+    ? allCollectibles.filter((entry) => entry.group === "wishes" || entry.group === "objectives")
+    : [];
+  const pickups = allCollectibles.filter((entry) => entry.group !== "wishes" && entry.group !== "objectives");
 
   const bossDone = bosses.filter((entry) => defeated[entry.name]).length;
   const equipmentDone = equipment.filter((entry) => collected[entry.name]).length;
@@ -125,6 +127,7 @@ export default function HomeScreen() {
     ? (nextItemRow?.type === "equipment" ? nextItemRow.item : null)
     : equipment.find((entry) => !collected[entry.name]);
   const nextItem = isSilksong ? nextItemRow?.item : nextEquipment;
+  const nextPickup = pickups.find((entry) => !collected["c:" + entry.name]);
   const nextQuest = quests.find((entry) => !collected["c:" + entry.name]);
   const loadout = loadouts[0];
 
@@ -148,7 +151,7 @@ export default function HomeScreen() {
       name: entry.name,
       category: "Item",
       location: entry.location ?? "",
-      path: "/charms",
+      path: isSilksong ? "/charms" : "/progress/collectibles",
     })),
     ...quests.map((entry) => ({
       id: "quest:" + entry.name,
@@ -203,14 +206,18 @@ export default function HomeScreen() {
       <View style={styles.content}>
         <View style={styles.summaryRow}>
           <SummaryTile initial="B" label="Bosses" done={bossDone} total={bosses.length} />
-          <SummaryTile initial={isSilksong ? "I" : "C"} label={isSilksong ? "Items" : "Charms"} done={itemDone} total={itemTotal} />
+          <SummaryTile initial={isSilksong ? "I" : "C"} label={isSilksong ? "Items" : "Charms"} done={isSilksong ? itemDone : equipmentDone} total={isSilksong ? itemTotal : equipment.length} />
           {isSilksong ? (
             <SummaryTile initial="Q" label="Quests" done={questDone} total={quests.length} />
           ) : (
-            <DashboardCard onPress={() => router.push("/progress")} label="View checklist" style={styles.summaryAction}>
-              <AppText style={[styles.tileInitial, { color: colors.accent }]}>✓</AppText>
-              <AppText style={styles.tileCount}>Track</AppText>
-              <AppText style={[styles.tileLabel, { color: colors.muted }]}>Progress</AppText>
+            <DashboardCard
+              onPress={() => router.push("/progress/collectibles")}
+              label="Open Hollow Knight collectibles and challenge checklist"
+              style={styles.summaryAction}
+            >
+              <AppText style={[styles.tileInitial, { color: colors.accent }]}>G</AppText>
+              <AppText style={styles.tileCount}>{pickupDone}/{pickups.length}</AppText>
+              <AppText style={[styles.tileLabel, { color: colors.muted }]}>Collectibles</AppText>
             </DashboardCard>
           )}
         </View>
@@ -281,6 +288,16 @@ export default function HomeScreen() {
             complete={!nextItem}
             onPress={() => navigateTo("/charms", nextItem?.name)}
           />
+          {!isSilksong ? (
+            <NextRow
+              initial="G"
+              title="NEXT COLLECTIBLE"
+              name={nextPickup?.name ?? "All collectibles completed"}
+              detail={nextPickup?.location ?? "See your Hallownest checklist"}
+              complete={!nextPickup}
+              onPress={() => navigateTo("/progress/collectibles", nextPickup?.name)}
+            />
+          ) : null}
           {isSilksong ? (
             <NextRow
               initial="Q"
