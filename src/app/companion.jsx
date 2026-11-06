@@ -4,6 +4,8 @@ import { Pressable, StyleSheet, View } from "react-native";
 import { AppText } from "../components/hollow/app-text";
 import { Button } from "../components/hollow/button";
 import { Screen } from "../components/hollow/screen";
+import { SurfaceCard } from "../components/hollow/surface-card";
+import { layout, radius, space, type } from "../ui/design-system";
 import { Title } from "../components/hollow/section-text";
 import { useGame } from "../games/game-context";
 import { useJournal } from "../journal/journal-context";
@@ -40,14 +42,10 @@ const FEATURES = [
 function FeatureRow({ feature, detail, isPremium, colors }) {
   const destination = isPremium ? feature.path : "/premium";
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={feature.title + (isPremium ? "" : ", Premium feature")}
+    <SurfaceCard
+      label={feature.title + (isPremium ? "" : ", Premium feature")}
       onPress={() => router.push(destination)}
-      style={({ pressed }) => [
-        styles.feature,
-        { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.82 : 1 },
-      ]}
+      style={styles.feature}
     >
       <View style={[styles.symbolWrap, { backgroundColor: colors.background, borderColor: colors.border }]}>
         <AppText style={[styles.symbol, { color: colors.accent }]}>{feature.symbol}</AppText>
@@ -60,7 +58,7 @@ function FeatureRow({ feature, detail, isPremium, colors }) {
         ) : null}
       </View>
       <AppText style={[styles.arrow, { color: colors.accent }]}>{isPremium ? "›" : "🔒"}</AppText>
-    </Pressable>
+    </SurfaceCard>
   );
 }
 
@@ -108,7 +106,7 @@ export default function CompanionScreen() {
       </View>
 
       {isPremium && goalRef ? (
-        <View style={[styles.goal, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <SurfaceCard style={styles.goal}>
           <AppText style={[styles.eyebrow, { color: colors.accent }]}>YOUR CURRENT GOAL</AppText>
           <AppText style={styles.goalName}>{goalRef.entry.name}</AppText>
           <AppText style={[styles.featureDescription, { color: colors.muted }]}>
@@ -122,7 +120,7 @@ export default function CompanionScreen() {
           <Pressable onPress={() => router.push("/planner")} accessibilityRole="button" style={styles.goalLink}>
             <AppText style={[styles.link, { color: colors.accent }]}>Continue planning ›</AppText>
           </Pressable>
-        </View>
+        </SurfaceCard>
       ) : null}
 
       <View style={styles.features}>
@@ -138,7 +136,7 @@ export default function CompanionScreen() {
         ))}
       </View>
 
-      <View style={[styles.benefits, { backgroundColor: colors.card, borderColor: colors.border }]}>
+      <SurfaceCard style={styles.benefits}>
         <AppText style={styles.heading}>{isPremium ? "Always part of Premium" : "What stays free"}</AppText>
         <AppText style={[styles.featureDescription, { color: colors.muted }]}>
           {isPremium
@@ -150,7 +148,7 @@ export default function CompanionScreen() {
           onPress={() => router.push("/premium")}
           variant={isPremium ? "outline" : "solid"}
         />
-      </View>
+      </SurfaceCard>
       <Pressable
         onPress={() => router.replace("/")}
         accessibilityRole="button"
@@ -169,11 +167,11 @@ const styles = StyleSheet.create({
   eyebrow: { fontSize: 11, fontWeight: "800", letterSpacing: 1.2 },
   title: { marginTop: 0, paddingHorizontal: 0, textAlign: "left", fontSize: 31 },
   subtitle: { fontSize: 15, lineHeight: 23 },
-  features: { paddingHorizontal: 16, marginTop: 22, gap: 10 },
-  heading: { fontSize: 19, fontWeight: "800", marginBottom: 2 },
+  features: { paddingHorizontal: layout.gutter, marginTop: space.xl, gap: space.md },
+  heading: { ...type.heading, marginBottom: 2 },
   feature: {
     flexDirection: "row", alignItems: "center", gap: 12,
-    borderWidth: 1, borderRadius: 16, padding: 14, minHeight: 100,
+    borderRadius: radius.card, padding: space.lg, minHeight: 100,
   },
   symbolWrap: { width: 46, height: 46, borderRadius: 14, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   symbol: { fontSize: 25, fontWeight: "700" },
@@ -182,12 +180,12 @@ const styles = StyleSheet.create({
   featureDescription: { fontSize: 14, lineHeight: 21 },
   featureStatus: { fontSize: 12, fontWeight: "700", marginTop: 2 },
   arrow: { fontSize: 20 },
-  goal: { marginHorizontal: 16, marginTop: 20, borderWidth: 1, borderRadius: 16, padding: 16, gap: 10 },
+  goal: { marginHorizontal: layout.gutter, marginTop: space.xl, gap: space.md },
   goalName: { fontSize: 21, fontWeight: "800" },
   progressTrack: { height: 6, borderRadius: 6, overflow: "hidden" },
   progressFill: { height: 6, borderRadius: 6 },
   goalLink: { alignSelf: "flex-start", paddingVertical: 6 },
   link: { fontSize: 15, fontWeight: "700" },
-  benefits: { marginHorizontal: 16, marginTop: 22, borderWidth: 1, borderRadius: 16, padding: 16, gap: 12 },
+  benefits: { marginHorizontal: layout.gutter, marginTop: space.xl, gap: space.md },
   returnLink: { alignItems: "center", padding: 18, marginTop: 4 },
 });
