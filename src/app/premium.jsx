@@ -64,7 +64,7 @@ export default function PremiumScreen() {
           <AppText style={{ color: colors.muted }}>
             {isPremium
               ? "Thanks for supporting Hollow Knight Guide. Your Premium features are unlocked."
-              : "The free guide needs internet. Premium adds offline access, special themes and extra game-selector tracks."}
+              : "All the essentials stay free. Premium unlocks a more personal, ad-free and offline experience."}
           </AppText>
           {isPremium && expiresAt ? (
             <AppText style={{ color: colors.muted }}>
@@ -74,15 +74,43 @@ export default function PremiumScreen() {
               {new Date(expiresAt).toLocaleDateString()}
             </AppText>
           ) : null}
-          <AppText>✓ Use Hollow Knight and Silksong guides offline</AppText>
-          <AppText>✓ 13 Premium themes across Hollow Knight and Silksong</AppText>
-          <AppText>✓ Citadel of Song, Voidheart, Godhome and more atmospheric backgrounds</AppText>
-          <AppText>✓ Spoiler-free Guided Mode with staged hints</AppText>
-          <AppText>✓ Smart progression planner and route checklists</AppText>
-          <AppText>✓ Custom accents, dashboards, card layouts and animated theme effects</AppText>
-          <AppText>✓ All additional game-selector music</AppText>
-          <AppText>✓ Same Premium access with monthly, yearly or lifetime purchase</AppText>
+          <View style={[styles.benefit, { borderTopColor: colors.border }]}>
+            <AppText style={styles.benefitTitle}>Explore without interruptions</AppText>
+            <AppText style={[styles.benefitDescription, { color: colors.muted }]}>
+              No ads, an offline field guide, and more game-selector music.
+            </AppText>
+          </View>
+          <View style={[styles.benefit, { borderTopColor: colors.border }]}>
+            <AppText style={styles.benefitTitle}>A guide that understands your progress</AppText>
+            <AppText style={[styles.benefitDescription, { color: colors.muted }]}>
+              Spoiler-free exploration, staged hints and a personalised progression planner.
+            </AppText>
+          </View>
+          <View style={[styles.benefit, { borderTopColor: colors.border }]}>
+            <AppText style={styles.benefitTitle}>Make it your own</AppText>
+            <AppText style={[styles.benefitDescription, { color: colors.muted }]}>
+              13 exclusive themes, custom accents and flexible layouts.
+            </AppText>
+          </View>
+          {!isPremium ? (
+            <AppText style={[styles.freeNote, { color: colors.muted }]}>
+              The complete boss, item and collectible guides, search, progress tracking and accessibility settings stay free.
+            </AppText>
+          ) : null}
         </View>
+
+        {isPremium ? (
+          <Pressable
+            onPress={() => router.push("/companion")}
+            accessibilityRole="button"
+            accessibilityLabel="Open your Premium Companion"
+            style={[styles.secondary, { borderColor: colors.border }]}
+          >
+            <AppText style={{ color: colors.accent, fontWeight: "800" }}>
+              Open your Premium Companion ›
+            </AppText>
+          </Pressable>
+        ) : null}
 
         {error ? (
           <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.card }]}>
@@ -131,7 +159,7 @@ export default function PremiumScreen() {
             )) : (
               <AppText style={{ color: colors.muted }}>
                 {ready
-                  ? "Plans aren't available right now. The full guide remains free to use."
+                  ? "Plans aren't available right now. The full guide remains free to use online."
                   : "Loading available plans…"}
               </AppText>
             )}
@@ -182,6 +210,10 @@ const styles = StyleSheet.create({
   heading: { fontSize: 20, fontWeight: "bold" },
   primary: { paddingVertical: 16, paddingHorizontal: 16, borderRadius: 12, alignItems: "center", minHeight: 52, justifyContent: "center" },
   primaryText: { fontSize: 16, fontWeight: "bold" },
+  benefit: { borderTopWidth: 1, paddingTop: 14, gap: 5 },
+  benefitTitle: { fontSize: 16, fontWeight: "800" },
+  benefitDescription: { fontSize: 14, lineHeight: 21 },
+  freeNote: { fontSize: 13, lineHeight: 20, marginTop: 2 },
   purchaseRow: { borderWidth: 1, borderRadius: 12, minHeight: 68, padding: 14, alignItems: "center", flexDirection: "row", gap: 12 },
   packageText: { flex: 1, gap: 4 },
   testRow: { flexDirection: "row", alignItems: "center", gap: 16 },
