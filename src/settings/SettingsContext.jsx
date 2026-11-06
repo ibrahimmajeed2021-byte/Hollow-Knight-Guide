@@ -18,6 +18,7 @@ import {
   fontScales,
   highContrast,
   palettes,
+  premiumAccents,
 } from "../constants/hollow";
 
 const STORAGE_KEY = "hollow-knight-guide:settings";
@@ -74,6 +75,12 @@ export function SettingsProvider({ children }) {
       : {
           ...settings,
           themeStyle: "default",
+          guidedMode: false,
+          accentPreset: "theme",
+          cardDensity: "comfortable",
+          showArtwork: true,
+          wallpaperStrength: 50,
+          homeSections: defaultSettings.homeSections,
           selectorMusicTrack:
             (settings.selectorMusicTrack ?? 0) < 2
               ? settings.selectorMusicTrack ?? 0
@@ -91,9 +98,18 @@ export function SettingsProvider({ children }) {
         : isDark
         ? `${style}Dark`
         : style;
-    const colors = visibleSettings.highContrast
+    const baseColors = visibleSettings.highContrast
       ? highContrast[isDark ? "dark" : "light"]
       : palettes[paletteKey] ?? palettes[isDark ? "dark" : "default"];
+    const accent = premiumAccents[visibleSettings.accentPreset] ?? premiumAccents.theme;
+    const colors = !visibleSettings.highContrast && isPremium && accent.button
+      ? {
+          ...baseColors,
+          accent: isDark ? accent.dark : accent.light,
+          button: accent.button,
+          buttonText: "#ffffff",
+        }
+      : baseColors;
     return {
       settings: visibleSettings,
       update,
