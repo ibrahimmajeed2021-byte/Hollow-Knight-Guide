@@ -15,6 +15,8 @@ import { GameSelect } from "../components/hollow/game-select";
 import { LoadingScreen } from "../components/hollow/loading-screen";
 import { HKFont } from "../constants/hollow";
 import { GameProvider, useGame } from "../games/game-context";
+import { OnlineAccessProvider } from "../network/online-access-context";
+import { OfflineAccessGate } from "../network/offline-access-gate";
 import { JournalProvider } from "../journal/journal-context";
 import { LoadoutsProvider } from "../loadouts/loadouts-context";
 import { AdsProvider } from "../ads/AdsContext";
@@ -47,6 +49,7 @@ function AppShell() {
         <Stack screenOptions={{ headerShown: false }} />
         <GameSelect />
         <LoadingScreen key={gameId ?? "launch"} />
+        <OfflineAccessGate />
       </View>
     </ThemeProvider>
   );
@@ -75,9 +78,11 @@ export default function RootLayout() {
       <PurchasesProvider>
         <AdsProvider>
           <SettingsProvider>
-            <GameProvider>
-              <GameData />
-            </GameProvider>
+            <OnlineAccessProvider>
+              <GameProvider>
+                <GameData />
+              </GameProvider>
+            </OnlineAccessProvider>
           </SettingsProvider>
         </AdsProvider>
       </PurchasesProvider>
