@@ -36,8 +36,10 @@ export function GameSelect() {
             accessibilityLabel={game.title}
             onPress={() => {
               triggerHaptic();
-              selectGame(game.id);
+              // Navigate while the existing Stack is still mounted.
+              // Selecting a game rekeys its journal and guide navigator.
               router.replace("/");
+              selectGame(game.id);
             }}
             style={[styles.card, customTheme && { backgroundColor: colors.card, borderColor: colors.border }]}
           >
