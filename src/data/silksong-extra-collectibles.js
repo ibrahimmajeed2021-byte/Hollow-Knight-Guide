@@ -11,6 +11,21 @@ export const silksongExtraCollectibleGroups = [
     "id": "objectives",
     "title": "Main Story Objectives",
     "blurb": "Track the main objectives in Acts 1, 2 and 3."
+  },
+  {
+    "id": "keyitems",
+    "title": "Keys & Key Items",
+    "blurb": "Find the four Simple Keys and unique story/area keys."
+  },
+  {
+    "id": "mementos",
+    "title": "Mementos",
+    "blurb": "Collect all seven Bellhome display mementos."
+  },
+  {
+    "id": "bellhome",
+    "title": "Bellhome Upgrades",
+    "blurb": "Install the Materium and Crawbell. Farsight is also tracked under Abilities."
   }
 ];
 
@@ -424,5 +439,159 @@ export const silksongExtraCollectibles = [
     "kind": "Main objective",
     "group": "objectives",
     "wikiUrl": "https://hollowknight.wiki/w/Acts"
+  },
+  {
+    "name": "Simple Key #1",
+    "group": "keyitems",
+    "act": 1,
+    "location": "Bone Bottom — buy the Simple Key from Pebb for 500 Rosaries. In Act 3, Grindle in Blasted Steps can sell it instead.",
+    "wikiUrl": "https://hollowknight.wiki/w/Simple_Key_(Silksong)"
+  },
+  {
+    "name": "Simple Key #2",
+    "group": "keyitems",
+    "act": 1,
+    "location": "Sinner's Road — defeat the Roachkeeper in the northeast for the key.",
+    "wikiUrl": "https://hollowknight.wiki/w/Simple_Key_(Silksong)"
+  },
+  {
+    "name": "Simple Key #3",
+    "group": "keyitems",
+    "act": 2,
+    "location": "Songclave — buy from Jubilana for 650 Rosaries after completing The Wandering Merchant wish.",
+    "wikiUrl": "https://hollowknight.wiki/w/Simple_Key_(Silksong)"
+  },
+  {
+    "name": "Simple Key #4",
+    "group": "keyitems",
+    "act": 2,
+    "location": "Sands of Karak — find the key on a corpse by the bench on the eastern tip.",
+    "wikiUrl": "https://hollowknight.wiki/w/Simple_Key_(Silksong)"
+  },
+  {
+    "name": "Key of Indolent",
+    "group": "keyitems",
+    "act": 2,
+    "location": "The Slab — retrieve from the western Slab area by its hanging chains.",
+    "wikiUrl": "https://hollowknight.wiki/w/Slab_Keys"
+  },
+  {
+    "name": "Key of Heretic",
+    "group": "keyitems",
+    "act": 2,
+    "location": "The Slab — collect after defeating enemies in the northwest Slab gauntlet.",
+    "wikiUrl": "https://hollowknight.wiki/w/Slab_Keys"
+  },
+  {
+    "name": "Key of Apostate",
+    "group": "keyitems",
+    "act": 2,
+    "location": "Putrified Ducts — find the key west of the Huntress.",
+    "wikiUrl": "https://hollowknight.wiki/w/Slab_Keys"
+  },
+  {
+    "name": "White Key",
+    "group": "keyitems",
+    "act": 2,
+    "location": "Songclave — find on a corpse in the eastern area before it is populated, or buy from Jubilana after The Wandering Merchant wish.",
+    "wikiUrl": "https://hollowknight.wiki/w/White_Key"
+  },
+  {
+    "name": "Surgeon's Key",
+    "group": "keyitems",
+    "act": 2,
+    "location": "Whiteward — find via a hidden route beyond the operating rooms; Clawline is needed.",
+    "wikiUrl": "https://hollowknight.wiki/w/Surgeon%27s_Key"
+  },
+  {
+    "name": "Bellhome Key",
+    "group": "keyitems",
+    "act": 1,
+    "location": "Bellhart — obtain from Pavo after helping restore Bellhart and completing Bellhart's Glory.",
+    "wikiUrl": "https://hollowknight.wiki/w/Bellhome_Key"
+  },
+  {
+    "name": "Architect's Key",
+    "group": "keyitems",
+    "act": 2,
+    "location": "Cogwork Core — purchase from the Twelfth Architect for 110 Rosaries after collecting at least 25 tools.",
+    "wikiUrl": "https://hollowknight.wiki/w/Architect%27s_Key"
+  },
+  {
+    "name": "Diving Bell Key",
+    "group": "keyitems",
+    "act": 3,
+    "location": "Deep Docks — receive from Ballow during the SEEK: The Dark Below main-story objective.",
+    "wikiUrl": "https://hollowknight.wiki/w/Diving_Bell_Key"
+  },
+  {
+    "name": "Craw Summons",
+    "group": "keyitems",
+    "act": 3,
+    "location": "Court of Craws — obtain the summons in Act 3 after discovering the court, by resting at an eligible bench.",
+    "wikiUrl": "https://hollowknight.wiki/w/Craw_Summons"
+  },
+  {
+    "name": "Sprintmaster Memento",
+    "group": "mementos",
+    "act": 3,
+    "location": "Far Fields — beat Sprintmaster Swift in all four races; the fourth becomes available after obtaining Everbloom.",
+    "wikiUrl": "https://hollowknight.wiki/w/Sprintmaster_Memento"
+  },
+  {
+    "name": "Guardian's Memento",
+    "group": "mementos",
+    "act": 2,
+    "location": "Fleatopia — beat Seth's scores in every Festival of the Flea game.",
+    "wikiUrl": "https://hollowknight.wiki/w/Guardian%27s_Memento"
+  },
+  {
+    "name": "Hero's Memento",
+    "group": "mementos",
+    "act": 3,
+    "location": "Blasted Steps — defeat Lost Garmond during the Hero's Call wish.",
+    "wikiUrl": "https://hollowknight.wiki/w/Hero%27s_Memento"
+  },
+  {
+    "name": "Hunter's Memento",
+    "group": "mementos",
+    "act": 3,
+    "location": "Greymoor, Halfway Home — receive from Nuu after completing the Hunter's Journal required entries.",
+    "wikiUrl": "https://hollowknight.wiki/w/Hunter%27s_Memento"
+  },
+  {
+    "name": "Grey Memento",
+    "group": "mementos",
+    "act": 3,
+    "location": "Sands of Karak — defeat the Watcher at the Edge.",
+    "wikiUrl": "https://hollowknight.wiki/w/Grey_Memento"
+  },
+  {
+    "name": "Surface Memento",
+    "group": "mementos",
+    "act": 3,
+    "location": "Nameless Town — play the Needolin inside a decaying house at the eastern edge.",
+    "wikiUrl": "https://hollowknight.wiki/w/Surface_Memento"
+  },
+  {
+    "name": "Craw Memento",
+    "group": "mementos",
+    "act": 3,
+    "location": "Craw Lake — defeat Crawfather and complete the Court of Craws challenge.",
+    "wikiUrl": "https://hollowknight.wiki/w/Craw_Memento"
+  },
+  {
+    "name": "Materium",
+    "group": "bellhome",
+    "act": 2,
+    "location": "Memorium — upper part of the area, in the room preceding the Voltvessels chamber.",
+    "wikiUrl": "https://hollowknight.wiki/w/Materium"
+  },
+  {
+    "name": "Crawbell",
+    "group": "bellhome",
+    "act": 3,
+    "location": "Craw Lake — collect in the room beyond the Court of Craws arena after defeating its challenge.",
+    "wikiUrl": "https://hollowknight.wiki/w/Crawbell"
   }
 ];
