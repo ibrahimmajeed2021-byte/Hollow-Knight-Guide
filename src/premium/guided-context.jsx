@@ -56,6 +56,11 @@ export function GuidedModeProvider({ children }) {
     });
   }, [goal, save]);
 
+  const resetReveals = useCallback(() => {
+    setRevealed({});
+    save({}, goal);
+  }, [goal, save]);
+
   const chooseGoal = useCallback((nextGoal) => {
     const next = nextGoal && ["boss", "item", "collectible"].includes(nextGoal.kind)
       ? { kind: nextGoal.kind, name: nextGoal.name } : null;
@@ -84,12 +89,13 @@ export function GuidedModeProvider({ children }) {
     window,
     isVisible,
     revealEntry,
+    resetReveals,
     chooseGoal,
     goal,
     hiddenLabel,
     hintFor,
     isCompleted: (kind, item) => isEntryCompleted(kind, item, defeated, collected),
-  }), [enabled, ready, window, isVisible, revealEntry, chooseGoal, goal, defeated, collected]);
+  }), [enabled, ready, window, isVisible, revealEntry, resetReveals, chooseGoal, goal, defeated, collected]);
 
   return <Context.Provider value={value}>{children}</Context.Provider>;
 }
