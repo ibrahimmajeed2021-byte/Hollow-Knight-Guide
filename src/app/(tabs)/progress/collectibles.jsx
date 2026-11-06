@@ -42,6 +42,7 @@ export default function CollectiblesScreen() {
   useEffect(() => {
     const desiredQuery = typeof routeQuery === "string" ? routeQuery : "";
     setQuery(desiredQuery);
+    if (desiredQuery) setFilter("all");
     // Deep links from Home select the collection to which an item belongs.
     const match = desiredQuery
       ? items.find((item) => item.name === desiredQuery)
