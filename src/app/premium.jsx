@@ -64,7 +64,7 @@ export default function PremiumScreen() {
           <AppText style={{ color: colors.muted }}>
             {isPremium
               ? "Thanks for supporting Hollow Knight Guide. Your Premium features are unlocked."
-              : "Keep the entire guide and music player free. Premium adds special themes and extra game-selector tracks."}
+              : "The free guide needs internet. Premium adds offline access, special themes and extra game-selector tracks."}
           </AppText>
           {isPremium && expiresAt ? (
             <AppText style={{ color: colors.muted }}>
@@ -74,6 +74,7 @@ export default function PremiumScreen() {
               {new Date(expiresAt).toLocaleDateString()}
             </AppText>
           ) : null}
+          <AppText>✓ Use Hollow Knight and Silksong guides offline</AppText>
           <AppText>✓ Hollow Knight and Silksong appearance styles</AppText>
           <AppText>✓ All additional game-selector music</AppText>
           <AppText>✓ Same Premium access with monthly, yearly or lifetime purchase</AppText>
@@ -81,7 +82,7 @@ export default function PremiumScreen() {
 
         {error ? (
           <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.card }]}>
-            <AppText accessibilityRole="alert">{__DEV__ ? error : "Purchases are unavailable right now. You can continue using the free guide."}</AppText>
+            <AppText accessibilityRole="alert">{__DEV__ ? error : "Purchases are unavailable right now. You can use the free guide while connected to the internet."}</AppText>
             <Pressable onPress={clearError} accessibilityRole="button">
               <AppText style={{ color: colors.accent, fontWeight: "bold" }}>Dismiss message</AppText>
             </Pressable>
