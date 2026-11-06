@@ -2,7 +2,7 @@
   "expo": {
     "name": "Hollow-Knight-Guide",
     "slug": "Hollow-Knight-Guide",
-    "version": "1.1.0",
+    "version": "1.2.1",
     "orientation": "portrait",
     "icon": "./assets/images/HollowKnightGuideAppIcon V1.0.0.png",
     "scheme": "hollowknightguide",
