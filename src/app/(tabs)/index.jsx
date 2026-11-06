@@ -6,6 +6,7 @@ import { Pressable, StyleSheet, TextInput, View } from "react-native";
 import { AdBanner } from "../../ads/AdBanner";
 import { AppText } from "../../components/hollow/app-text";
 import { Button } from "../../components/hollow/button";
+import { ApiArtworkImage } from "../../components/hollow/api-artwork-image";
 import { Screen } from "../../components/hollow/screen";
 import { useGame } from "../../games/game-context";
 import { useJournal } from "../../journal/journal-context";
@@ -274,10 +275,10 @@ export default function HomeScreen() {
         style={({ pressed }) => [styles.hero, pressed && styles.pressed]}
       >
         {config.loadingBackground ? (
-          <Image source={config.loadingBackground} style={StyleSheet.absoluteFill} contentFit="cover" />
+          <ApiArtworkImage iconUrl={config.backgroundImageUrl} fallbackImage={config.loadingBackground} style={StyleSheet.absoluteFill} contentFit="cover" />
         ) : null}
         <View style={[StyleSheet.absoluteFill, styles.heroDim]} />
-        <Image source={config.loadingImage} style={[styles.heroCharacter, { height: config.loadingImageSize.height * 1.25, width: config.loadingImageSize.width * 1.25 }]} contentFit="contain" />
+        <ApiArtworkImage iconUrl={config.heroImageUrl} fallbackImage={config.loadingImage} style={[styles.heroCharacter, { height: config.loadingImageSize.height * 1.25, width: config.loadingImageSize.width * 1.25 }]} contentFit="contain" />
         <View style={styles.heroContent}>
           <AppText style={styles.heroEyebrow}>YOUR FIELD JOURNAL · {config.tagline.toUpperCase()}</AppText>
           <AppText style={styles.heroTitle}>Your journey continues</AppText>
