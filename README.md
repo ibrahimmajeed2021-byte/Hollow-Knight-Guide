@@ -80,9 +80,28 @@ Use an **existing Expo development-client build** to open the app. Because this 
 
 The app code changes do not require regenerating the static guide API or rebuilding an existing **development client**. Native app config changes or new native modules would still require a new build.
 
+## API-driven icons and location images
+
+The public JSON endpoints now include `iconUrl` for every boss, charm,
+tool and collectible. Entries with a secondary image also expose
+`iconFallbackUrl`, and boss location records expose `imageUrl`.
+The app reads the API-provided `iconUrl` on the Home screen and in guide
+lists, while keeping bundled artwork available offline.
+
+Run `npm run build:api` to generate the JSON and stage bundled images under
+`public/guide-icons/`. When you export the web build these files are copied
+into `dist/guide-icons/` alongside the static JSON. Both are then deployed
+to the same Surge domain. Use `npm run test:api-images` to validate all
+published JSON references against staged image files locally.
+
+After the initial app code update, changing an icon URL in an API JSON
+response can change the online icon without rebuilding the native app.
+Re-deploy the site after changing your generated JSON or images, and
+restart the app if you need it to refresh cached API data.
+
 ## Updating the public guide API
 
-Guide JSON can be regenerated separately when source item data changes:
+Guide JSON and static artwork are regenerated together when source data changes:
 
 ```bash
 npm run build:api
