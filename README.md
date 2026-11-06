@@ -118,6 +118,36 @@ versions are fallback media. Audio has bundled offline fallbacks. An optional li
 manifest can select online audio through `api/media.json`, but do not publicly
 rehost copyrighted game recordings without distribution rights.
 
+## Premium location themes
+
+Settings → Appearance includes **13 Premium appearance styles** with live
+preview tiles, plus the original free Classic style. The Hollow Knight
+selection contains Hallownest, City of Tears, Voidheart, Godhome, Greenpath,
+Crystal Peak and White Palace. Silksong offers Pharloom, Citadel of Song,
+Moss Grotto, Deep Docks, Bilewater and Songclave.
+
+Every theme has a readable light and dark palette. Premium themes also add
+a subtle, location-inspired wallpaper and game-art emblem throughout the
+guide, on the Home hero and on the game selector/loading transitions.
+The art is **atmospheric**, not an exact map screenshot. Enable High Contrast
+to disable decorative screen wallpaper while keeping theme selection and
+the high-contrast text colours.
+
+Premium entitlement is enforced in Settings. Free accounts see locked theme
+tiles that open the paywall. Your selected theme is saved in the existing
+settings storage, preserved if Premium expires, and restored when Premium is
+reactivated. The default theme remains free.
+
+`npm run build:api` now writes `api/media.json` with `themes[themeId]`
+backgroundImageUrl and motifImageUrl fields. Existing game artwork is
+staged to `public/guide-icons` for the online URLs. Theme artwork always
+retains the equivalent local asset so purchased Premium themes work offline;
+online URLs can be changed by editing the media manifest without a
+new native build, but adding entirely new theme IDs requires an app update.
+
+Check theme integrity with `npm run test:themes`, then run
+`npm run test:api-images` before publishing the API.
+
 ## API-driven icons and location images
 
 The public JSON endpoints now include `iconUrl` for every boss, charm,
