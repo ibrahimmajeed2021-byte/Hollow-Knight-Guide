@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { ApiArtworkImage } from "../components/hollow/api-artwork-image";
 import { StyleSheet, View } from "react-native";
 
 import { useGame } from "../games/game-context";
@@ -19,12 +19,8 @@ export function ThemeBackdrop() {
   if (theme.id === "default" || settings.highContrast) return null;
 
   const remote = status === "online" ? mediaManifest?.themes?.[theme.id] : null;
-  const background = remote?.backgroundImageUrl
-    ? { uri: remote.backgroundImageUrl }
-    : theme.backgroundAsset;
-  const motif = remote?.motifImageUrl
-    ? { uri: remote.motifImageUrl }
-    : theme.motifAsset;
+  const hasBackground = theme.backgroundAsset || remote?.backgroundImageUrl;
+  const hasMotif = theme.motifAsset || remote?.motifImageUrl;
 
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
@@ -34,9 +30,10 @@ export function ThemeBackdrop() {
           opacity: isDark ? 0.12 : 0.075,
         }]}
       />
-      {background ? (
-        <Image
-          source={background}
+      {hasBackground ? (
+        <ApiArtworkImage
+          iconUrl={remote?.backgroundImageUrl}
+          fallbackImage={theme.backgroundAsset}
           style={[StyleSheet.absoluteFill, { opacity: isDark ? 0.19 : 0.13 }]}
           contentFit="cover"
           cachePolicy="memory-disk"
@@ -55,9 +52,10 @@ export function ThemeBackdrop() {
           opacity: isDark ? 0.08 : 0.055,
         }]}
       />
-      {motif ? (
-        <Image
-          source={motif}
+      {hasMotif ? (
+        <ApiArtworkImage
+          iconUrl={remote?.motifImageUrl}
+          fallbackImage={theme.motifAsset}
           style={[styles.motif, { opacity: isDark ? 0.14 : 0.1 }]}
           contentFit="contain"
           cachePolicy="memory-disk"
