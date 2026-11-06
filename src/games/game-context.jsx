@@ -41,10 +41,14 @@ export function GameProvider({ children }) {
   const [sources, setSources] = useState({});
   const [mediaManifest, setMediaManifest] = useState(null);
 
+  // Load API data for the guide being used, not six datasets for both games
+  // on every launch. Bundled content renders immediately; cache then remote
+  // refresh retain the existing API-first behaviour and saved journal keys.
   useEffect(() => {
+    if (!gameId) return;
     let cancelled = false;
-    const load = async (id, kind) => {
-      const path = `${id}/${kind}.json`;
+    const load = async (kind) => {
+      const path = `${gameId}/${kind}.json`;
       const cached = await readCached(path);
       if (cached && !cancelled) {
         setRemote((prev) => ({ ...prev, [path]: cached.data }));
@@ -62,15 +66,13 @@ export function GameProvider({ children }) {
         }));
       }
     };
-    Object.keys(games).forEach((id) => {
-      load(id, "bosses");
-      load(id, "items");
-      load(id, "collectibles");
-    });
+    for (const kind of ["bosses", "items", "collectibles"]) {
+      void load(kind);
+    }
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [gameId]);
 
   useEffect(() => {
     let cancelled = false;
