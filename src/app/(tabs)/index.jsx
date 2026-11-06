@@ -7,6 +7,8 @@ import { AdBanner } from "../../ads/AdBanner";
 import { AppText } from "../../components/hollow/app-text";
 import { ApiArtworkImage } from "../../components/hollow/api-artwork-image";
 import { Screen } from "../../components/hollow/screen";
+import { SurfaceCard } from "../../components/hollow/surface-card";
+import { layout, radius, space, type } from "../../ui/design-system";
 import { useGame } from "../../games/game-context";
 import { useJournal } from "../../journal/journal-context";
 import { useLoadouts } from "../../loadouts/loadouts-context";
@@ -85,26 +87,6 @@ function ArtworkThumbnail({ image, fallbackImage, initial, size = 44 }) {
   );
 }
 
-function DashboardCard({ children, onPress, label, style }) {
-  const { colors } = useSettings();
-  const baseStyle = [
-    styles.card,
-    { backgroundColor: colors.card, borderColor: colors.border },
-    style,
-  ];
-  // Non-clickable cards are Views so their nested buttons stay interactive.
-  if (!onPress) return <View style={baseStyle}>{children}</View>;
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      style={({ pressed }) => [baseStyle, pressed && styles.pressed]}
-    >
-      {children}
-    </Pressable>
-  );
-}
 
 function SectionHeading({ title, subtitle }) {
   const { colors } = useSettings();
@@ -123,21 +105,21 @@ function SectionHeading({ title, subtitle }) {
 function SummaryTile({ initial, label, done, total, image, fallbackImage }) {
   const { colors } = useSettings();
   return (
-    <View
-      style={[styles.summaryTile, { backgroundColor: colors.card, borderColor: colors.border }]}
-      accessibilityLabel={label + ": " + done + " of " + total + " completed"}
+    <SurfaceCard
+      style={styles.summaryTile}
+      label={label + ": " + done + " of " + total + " completed"}
     >
       <ArtworkThumbnail initial={initial} image={image} fallbackImage={fallbackImage} size={38} />
       <AppText style={styles.tileCount}>{done}/{total}</AppText>
       <AppText style={[styles.tileLabel, { color: colors.muted }]}>{label}</AppText>
-    </View>
+    </SurfaceCard>
   );
 }
 
 function NextRow({ initial, image, fallbackImage, title, name, detail, onPress, complete }) {
   const { colors } = useSettings();
   return (
-    <DashboardCard onPress={onPress} label={title + ": " + name} style={styles.nextCard}>
+    <SurfaceCard onPress={onPress} label={title + ": " + name} style={styles.nextCard}>
       <ArtworkThumbnail initial={initial} image={image} fallbackImage={fallbackImage} />
       <View style={styles.flex}>
         <AppText style={[styles.overline, { color: colors.muted }]}>{title}</AppText>
@@ -147,7 +129,7 @@ function NextRow({ initial, image, fallbackImage, title, name, detail, onPress, 
         </AppText>
       </View>
       <AppText style={[styles.chevron, { color: colors.accent }]}>›</AppText>
-    </DashboardCard>
+    </SurfaceCard>
   );
 }
 
@@ -349,7 +331,7 @@ export default function HomeScreen() {
               total={quests.length}
             />
           ) : (
-            <DashboardCard
+            <SurfaceCard
               onPress={() => router.push("/progress/collectibles")}
               label="Open Hollow Knight collectibles and challenge checklist"
               style={styles.summaryAction}
@@ -362,7 +344,7 @@ export default function HomeScreen() {
               />
               <AppText style={styles.tileCount}>{pickupDone}/{pickups.length}</AppText>
               <AppText style={[styles.tileLabel, { color: colors.muted }]}>Collectibles</AppText>
-            </DashboardCard>
+            </SurfaceCard>
           )}
         </View> : null}
 
@@ -475,7 +457,7 @@ export default function HomeScreen() {
 
         {showSection("toolkit") ? <>
           <SectionHeading title="Your toolkit" subtitle="Ready for your next encounter" />
-          <DashboardCard
+          <SurfaceCard
             onPress={() => router.push(isSilksong ? "/charms/silksong-loadout" : "/charms/loadout")}
             label={loadout ? "Manage loadout " + loadout.name : "Build a loadout"}
             style={styles.toolkitRow}
@@ -491,14 +473,14 @@ export default function HomeScreen() {
               </AppText>
             </View>
             <AppText style={[styles.chevron, { color: colors.accent }]}>›</AppText>
-          </DashboardCard>
+          </SurfaceCard>
         </> : null}
 
         <SectionHeading
           title="Your companion"
           subtitle={isPremium ? "Go further, your way" : "Optional ways to personalise your journey"}
         />
-        <DashboardCard
+        <SurfaceCard
           onPress={() => router.push("/companion")}
           label={isPremium ? "Open your Premium Companion" : "Discover optional Premium Companion features"}
           style={styles.companionRow}
@@ -519,7 +501,7 @@ export default function HomeScreen() {
             </AppText>
           </View>
           <AppText style={[styles.chevron, { color: colors.accent }]}>›</AppText>
-        </DashboardCard>
+        </SurfaceCard>
 
         <Pressable onPress={() => router.push("/about")} accessibilityRole="button" accessibilityLabel="About, credits and privacy" style={styles.footerLink}>
           <AppText style={[styles.footerText, { color: colors.muted }]}>
@@ -536,7 +518,7 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   screenContent: { paddingTop: 10, paddingBottom: 28 },
-  hero: { marginHorizontal: 16, marginTop: 6, borderRadius: 24, overflow: "hidden", minHeight: 225, backgroundColor: "#08111c" },
+  hero: { marginHorizontal: layout.gutter, marginTop: 6, borderRadius: radius.hero, overflow: "hidden", minHeight: 225, backgroundColor: "#08111c" },
   heroDim: { backgroundColor: "rgba(4,9,17,0.72)" },
   heroCharacter: { position: "absolute", right: 12, bottom: 10, opacity: 0.67 },
   heroContent: { padding: 22, minHeight: 225, justifyContent: "flex-end", maxWidth: "80%", gap: 7 },
@@ -546,17 +528,17 @@ const styles = StyleSheet.create({
   heroProgressTrack: { height: 8, borderRadius: 4, backgroundColor: "rgba(255,255,255,0.32)", overflow: "hidden", marginTop: 5 },
   heroProgressFill: { backgroundColor: "#c5e8d2", height: "100%", borderRadius: 4 },
   heroFooter: { color: "#ffffff", fontSize: 12, fontWeight: "600", marginTop: 1 },
-  content: { paddingHorizontal: 16, gap: 12 },
+  content: { paddingHorizontal: layout.gutter, gap: space.md },
   summaryRow: { flexDirection: "row", gap: 8, marginTop: 12 },
-  summaryTile: { flex: 1, minWidth: 0, padding: 12, borderRadius: 16, borderWidth: 1, gap: 3, alignItems: "center" },
-  summaryAction: { flex: 1, minWidth: 0, padding: 12, borderRadius: 16, alignItems: "center", gap: 3 },
+  summaryTile: { flex: 1, minWidth: 0, padding: space.md, gap: 3, alignItems: "center" },
+  summaryAction: { flex: 1, minWidth: 0, padding: space.md, alignItems: "center", gap: 3 },
   tileInitial: { fontSize: 16, fontWeight: "900" },
   tileCount: { fontSize: 15, fontWeight: "700" },
   tileLabel: { fontSize: 11, textAlign: "center" },
   sectionHeading: { gap: 3, marginTop: 14 },
-  sectionTitle: { fontSize: 21, fontWeight: "800", letterSpacing: -0.3 },
+  sectionTitle: { ...type.heading, letterSpacing: -0.3 },
   sectionHint: { fontSize: 13, lineHeight: 18 },
-  searchWrap: { borderRadius: 15, borderWidth: 1, minHeight: 54, flexDirection: "row", alignItems: "center", paddingHorizontal: 14, gap: 10 },
+  searchWrap: { borderRadius: radius.control, borderWidth: 1, minHeight: 54, flexDirection: "row", alignItems: "center", paddingHorizontal: 14, gap: 10 },
   searchIcon: { fontSize: 24, width: 21, textAlign: "center" },
   searchInput: { flex: 1, minHeight: 52, paddingVertical: 8 },
   clearSearch: { width: 30, height: 38, alignItems: "center", justifyContent: "center" },
@@ -567,9 +549,8 @@ const styles = StyleSheet.create({
   resultMeta: { fontSize: 12, marginTop: 2 },
   emptySearch: { padding: 18, fontSize: 14 },
   nextList: { gap: 9 },
-  card: { borderWidth: 1, borderRadius: 17, padding: 16, gap: 8 },
   pressed: { opacity: 0.76 },
-  nextCard: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 94 },
+  nextCard: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 92 },
   itemMarker: { width: 44, height: 44, borderWidth: 1, borderRadius: 14, alignItems: "center", justifyContent: "center" },
   markerText: { fontSize: 21, fontWeight: "900" },
   markerImage: { width: "100%", height: "100%" },
@@ -585,7 +566,7 @@ const styles = StyleSheet.create({
   shortcutEyebrow: { fontSize: 10, letterSpacing: 1.1, fontWeight: "800" },
   shortcutName: { fontSize: 15, fontWeight: "700", marginTop: 2 },
   toolkitRow: { flexDirection: "row", alignItems: "center", minHeight: 78 },
-  companionRow: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 94 },
+  companionRow: { flexDirection: "row", alignItems: "center", gap: space.md, minHeight: 94 },
   companionSymbol: { width: 48, height: 48, borderWidth: 1, borderRadius: 15, alignItems: "center", justifyContent: "center" },
   companionGlyph: { fontSize: 25 },
   toolkitTitle: { fontSize: 18, fontWeight: "800" },
