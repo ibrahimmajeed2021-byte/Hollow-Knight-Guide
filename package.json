@@ -51,7 +51,8 @@
     "build:api": "node scripts/build-api.mjs",
     "test:progression": "node scripts/test-progression-order.mjs",
     "test:guide": "node scripts/test-guide-completeness.mjs",
-    "test:api-images": "npm run build:api && node scripts/test-api-images.mjs"
+    "test:api-images": "npm run build:api && node scripts/test-api-images.mjs",
+    "test:offline": "node scripts/test-offline-access.mjs"
   },
   "private": true,
   "devDependencies": {
