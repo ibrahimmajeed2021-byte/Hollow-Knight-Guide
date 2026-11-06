@@ -118,6 +118,43 @@ versions are fallback media. Audio has bundled offline fallbacks. An optional li
 manifest can select online audio through `api/media.json`, but do not publicly
 rehost copyrighted game recordings without distribution rights.
 
+## Premium companion: guided exploration, planner and customisation
+
+Three optional Premium features are available from **Settings → Premium
+companion tools** and the **Premium companion** section on Home:
+
+- **Spoiler-free Guided Mode** (`/guided`): hides later boss, item and
+  collectible names, images, rewards and locations in the regular guide.
+  Three sensitivity levels reveal roughly 3, 8 or 18 upcoming entries per
+  category based on progress in that category. Completed entries stay
+  visible. Users can manually reveal any obscured card. Home search only
+  displays visible entries when Guided Mode is active. Hint buttons
+  deliberately reveal increasingly specific directions.
+- **Smart progression planner** (`/planner`): choose a featured goal or
+  search for any existing boss, item or collectible. The planner builds a
+  progress-aware checklist using curated *suggested preparations*. Completion
+  buttons use the existing journal keys, so guide totals stay consistent.
+  Detailed location hints require a tap, and unrevealed steps remain masked
+  in Guided Mode. The planner is not a speedrun route, exhaustive dependency
+  solver or claim that every suggested step is mandatory in a non-linear game.
+- **Premium customisation studio** (`/premium-studio`): choose from six
+  accessible accent presets; comfortable/compact cards; show or hide list
+  thumbnails; adjust theme artwork intensity; turn on gentle, opt-in ambient
+  motion (respects Reduce Motion); and choose which Home sections appear.
+
+All three options are Premium-gated through the existing RevenueCat
+entitlement. Guided Mode defaults **off** and every customisation preference
+defaults to the original look and Home layout. Saved progress, photos, notes,
+loadouts, ads, the music player and other screens retain their existing
+behaviour while these features are off. A completed journal entry is never
+deleted by Guided Mode; individual reveals and planner goals are saved
+separately per game in AsyncStorage.
+
+Run `npm run test:premium-companion` for the spoiler and planner regressions.
+No new API endpoints or native dependencies are required for this feature
+update. The planner uses already-loaded API guide content wherever available
+and gracefully works with bundled data when Premium is offline.
+
 ## Premium location themes
 
 Settings → Appearance includes **13 Premium appearance styles** with live
