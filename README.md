@@ -114,8 +114,9 @@ to be distributed through the normal release process.
 boot code are available locally. Premium offline operation also needs data
 and media on the device. Accordingly the app is API-*first*, not a remote-only
 binary. The static API controls the online images and the locally bundled
-versions are fallback media. Audio remains bundled: do not publicly rehost
-copyrighted game recordings without distribution rights.
+versions are fallback media. Audio has bundled offline fallbacks. An optional licensed streaming URL
+manifest can select online audio through `api/media.json`, but do not publicly
+rehost copyrighted game recordings without distribution rights.
 
 ## API-driven icons and location images
 
@@ -130,6 +131,26 @@ Run `npm run build:api` to generate the JSON and stage bundled images under
 into `dist/guide-icons/` alongside the static JSON. Both are then deployed
 to the same Surge domain. Use `npm run test:api-images` to validate all
 published JSON references against staged image files locally.
+
+To provide authorised streaming audio (optional), create a JSON file
+outside the repository such as `licensed-audio.json`:
+
+```json
+{
+  "loading": {
+    "hollow": "https://your-authorised-host.example/hollow-loading.mp3"
+  },
+  "tracks": {
+    "Hollow Knight Title Theme": "https://your-authorised-host.example/title.mp3"
+  }
+}
+```
+
+Supply it on build:
+`GUIDE_LICENSED_AUDIO_MANIFEST=licensed-audio.json npm run build:api`.
+The URLs must use HTTPS and you must have permission to stream that media.
+No music files are uploaded by default. The app uses API audio URLs when
+available online; Premium uses bundled audio offline.
 
 The `media.json` endpoint now controls both games' Home hero portraits and
 background artwork. These assets are staged into `public/guide-icons/` along
