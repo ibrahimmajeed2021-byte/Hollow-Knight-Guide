@@ -23,6 +23,30 @@ export const selectorTracks = [
 
 const selectorSources = selectorTracks.map((track) => track.source);
 
+// Audio URLs are optional and must point to media the publisher is licensed
+// to distribute. Without an API override, audio stays bundled for Premium
+// offline playback and smooth existing transitions.
+let hostedAudio = null;
+let hostedAudioOnline = false;
+
+const validAudioUrl = (url) =>
+  typeof url === "string" && /^https:\/\//.test(url);
+
+export function configureHostedAudio(manifest, online) {
+  hostedAudio = manifest && typeof manifest === "object" ? manifest : null;
+  hostedAudioOnline = online === true;
+}
+
+export function sourceForTrack(track, manifest = hostedAudio, online = hostedAudioOnline) {
+  const url = online ? manifest?.tracks?.[track?.title] : null;
+  return validAudioUrl(url) ? url : track?.source ?? null;
+}
+
+function sourceForLoading(gameId, manifest = hostedAudio, online = hostedAudioOnline) {
+  const url = online ? manifest?.loading?.[gameId] : null;
+  return validAudioUrl(url) ? url : loadingSources[gameId];
+}
+
 const FADE_MS = 600;
 const FADE_STEPS = 12;
 
@@ -115,21 +139,21 @@ export function pickRandomGameId() {
   return ids[Math.floor(Math.random() * ids.length)];
 }
 
-export function playLoadingSound(gameId) {
-  return play(loadingSources[gameId]);
+export function playLoadingSound(gameId, manifest = hostedAudio, online = hostedAudioOnline) {
+  return play(sourceForLoading(gameId, manifest, online));
 }
 
 // Preview a specific selector song immediately from Settings.
 export function previewSelectorSound(trackIndex = 0) {
   const index = Math.max(0, Math.min(selectorSources.length - 1, trackIndex));
-  return play(selectorSources[index]);
+  return play(sourceForTrack(selectorTracks[index]));
 }
 
 // Free players hear only the two title themes. Premium unlocks every track.
-export function playSelectorSound(random = true, trackIndex = 0, isPremium = false) {
+export function playSelectorSound(random = true, trackIndex = 0, isPremium = false, manifest = hostedAudio, online = hostedAudioOnline) {
   const availableTracks = isPremium ? selectorSources.length : 2;
   const index = random
     ? Math.floor(Math.random() * availableTracks)
     : Math.max(0, Math.min(availableTracks - 1, trackIndex));
-  return play(selectorSources[index]);
+  return play(sourceForTrack(selectorTracks[index], manifest, online));
 }
