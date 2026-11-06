@@ -1,6 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Directory, File, Paths } from 'expo-file-system';
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { normaliseJournal } from './journal-utils.mjs';
 
 const BASE_KEY = 'hollow-knight-guide:journal';
 const JournalContext = createContext(null);
@@ -20,22 +21,39 @@ export function photoUri(photo) {
 export function JournalProvider({ children, suffix = '' }) {
   const STORAGE_KEY = BASE_KEY + suffix;
   const [state, setState] = useState(emptyState);
+  const [ready, setReady] = useState(false);
+  const saveQueue = useRef(Promise.resolve());
 
   useEffect(() => {
+    let mounted = true;
+    setReady(false);
     AsyncStorage.getItem(STORAGE_KEY)
       .then((raw) => {
-        if (raw) setState({ ...emptyState, ...JSON.parse(raw) });
+        if (!mounted) return;
+        setState(raw ? normaliseJournal(JSON.parse(raw)) : emptyState);
       })
-      .catch(() => {});
+      .catch(() => {
+        // A damaged backup must never prevent the guide from starting.
+        if (mounted) setState(emptyState);
+      })
+      .finally(() => { if (mounted) setReady(true); });
+    return () => { mounted = false; };
   }, [STORAGE_KEY]);
 
+  // Do not show a blank journal that could accept a toggle before its saved
+  // progress is loaded. Persist after hydration, in order, to avoid older
+  // asynchronous writes replacing the newest state during rapid toggles.
+  useEffect(() => {
+    if (!ready) return;
+    const snapshot = JSON.stringify(state);
+    saveQueue.current = saveQueue.current
+      .catch(() => {})
+      .then(() => AsyncStorage.setItem(STORAGE_KEY, snapshot));
+  }, [state, ready, STORAGE_KEY]);
+
   const commit = useCallback((updater) => {
-    setState((prev) => {
-      const next = updater(prev);
-      AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
-      return next;
-    });
-  }, [STORAGE_KEY]);
+    setState((prev) => updater(prev));
+  }, []);
 
   const addPhoto = useCallback(
     (sourceUri, { tag = null, note = '' } = {}) => {
@@ -141,6 +159,7 @@ export function JournalProvider({ children, suffix = '' }) {
     [state, addPhoto, updatePhoto, removePhoto, toggleDefeated, toggleCollected, resetProgress, restoreProgress, setNote],
   );
 
+  if (!ready) return null;
   return <JournalContext.Provider value={value}>{children}</JournalContext.Provider>;
 }
 
