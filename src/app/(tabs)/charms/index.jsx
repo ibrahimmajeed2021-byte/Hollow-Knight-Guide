@@ -149,13 +149,11 @@ function HollowCharmsScreen() {
 // journal keys, so progress is shared with the Progress screen.
 const SILKSONG_CATEGORIES = [
   { value: "all", label: "All items" },
-  { value: "equipment", label: "Tools & Crests" },
   { value: "tools", label: "Tools" },
   { value: "crests", label: "Crests" },
   { value: "Red Tool", label: "Red tools" },
   { value: "Blue Tool", label: "Blue tools" },
   { value: "Yellow Tool", label: "Yellow tools" },
-  { value: "collectibles", label: "Collectibles" },
   ...silksongCollectibleGroups
     .filter((group) => group.id !== "wishes")
     .map((group) => ({ value: group.id, label: group.title })),
@@ -163,10 +161,8 @@ const SILKSONG_CATEGORIES = [
 
 const matchesCategory = (row, category) => {
   if (category === "all") return true;
-  if (category === "equipment") return row.type === "equipment";
   if (category === "tools") return row.type === "equipment" && row.item.kind?.endsWith("Tool");
   if (category === "crests") return row.type === "equipment" && row.item.kind === "Crest";
-  if (category === "collectibles") return row.type === "collectible";
   return row.type === "equipment"
     ? row.item.kind === category
     : row.item.group === category;
