@@ -952,13 +952,6 @@ export const hollowCollectibles = [
     "progressOrder": 60114
   },
   {
-    "name": "Godtuner Key Item",
-    "group": "keys",
-    "location": "Royal Waterways — Open Godseeker's cocoon with a Simple Key in the Junk Pit.",
-    "wikiUrl": "https://hollowknight.wiki/w/Items_(Hollow_Knight)",
-    "progressOrder": 90115
-  },
-  {
     "name": "Simple Key #1",
     "group": "keys",
     "location": "Dirtmouth — Buy from Sly for 950 Geo.",
