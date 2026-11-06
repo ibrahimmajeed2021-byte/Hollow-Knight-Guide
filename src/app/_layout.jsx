@@ -20,6 +20,7 @@ import { OfflineAccessGate } from "../network/offline-access-gate";
 import { useOnlineAccess } from "../network/online-access-context";
 import { configureHostedAudio } from "../sound/game-sounds";
 import { JournalProvider } from "../journal/journal-context";
+import { GuidedModeProvider } from "../premium/guided-context";
 import { LoadoutsProvider } from "../loadouts/loadouts-context";
 import { AdsProvider } from "../ads/AdsContext";
 import { PurchasesProvider } from "../purchases/PurchasesContext";
@@ -66,9 +67,11 @@ function GameData() {
   }, [mediaManifest, status]);
   return (
     <JournalProvider key={config.id} suffix={config.storageSuffix}>
-      <LoadoutsProvider key={config.id} suffix={config.storageSuffix}>
-        <AppShell />
-      </LoadoutsProvider>
+      <GuidedModeProvider key={config.id}>
+        <LoadoutsProvider key={config.id} suffix={config.storageSuffix}>
+          <AppShell />
+        </LoadoutsProvider>
+      </GuidedModeProvider>
     </JournalProvider>
   );
 }
