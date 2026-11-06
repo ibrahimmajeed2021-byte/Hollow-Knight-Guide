@@ -1,6 +1,6 @@
 import { Image } from "expo-image";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
@@ -36,24 +36,35 @@ export function LoadingScreen() {
   const subtitle = launch ? "GUIDE" : words.pop();
   const [visible, setVisible] = useState(true);
   const reduce = settings.reduceMotion;
+  // Snapshot startup preferences once for this splash instance. Settings remain
+  // live elsewhere, but changing them must never replay the loading theme or
+  // reset its timer while the user is browsing the app.
+  const startupSettings = useRef({
+    soundEnabled: settings.loadingSoundEnabled,
+    soundVolume: settings.loadingSoundVolume,
+    reduceMotion: settings.reduceMotion,
+  });
 
   useEffect(() => {
     SplashScreen.hideAsync().catch(() => {});
   }, []);
 
-  // Start the hold only AFTER the audio player has been set up and playback
-  // requested. This stops iOS audio initialization from eating into the intro.
-  // Reduce motion shortens animations, but must not cut enabled audio short.
+  // This runs once per game-selection splash (the parent keys the component
+  // by gameId), after game state is loaded. Do not depend on live Settings:
+  // toggling Reduce Motion, volume or sound must not restart loading music.
   useEffect(() => {
     if (!loaded) return;
     let cancelled = false;
     let timer;
-    const soundEnabled = settings.loadingSoundEnabled !== false
-      && (settings.loadingSoundVolume ?? 80) > 0;
-    const volume = soundEnabled ? (settings.loadingSoundVolume ?? 80) / 100 : 0;
+    const prefs = startupSettings.current;
+    const soundEnabled = prefs.soundEnabled !== false
+      && (prefs.soundVolume ?? 80) > 0;
+    const volume = soundEnabled ? (prefs.soundVolume ?? 80) / 100 : 0;
     setSoundVolume(volume);
 
-    const quickMs = reduce ? REDUCED_MOTION_QUICK_MS : QUICK_HOLD_MS;
+    const quickMs = prefs.reduceMotion
+      ? REDUCED_MOTION_QUICK_MS
+      : QUICK_HOLD_MS;
     // Even if loading sound is disabled, request playback with volume zero
     // so a previous selector track is faded out on game selection.
     playLoadingSound(launch ? launchPick : gameId)
@@ -72,10 +83,7 @@ export function LoadingScreen() {
       cancelled = true;
       if (timer) clearTimeout(timer);
     };
-  }, [
-    loaded, launch, launchPick, gameId, reduce,
-    settings.loadingSoundEnabled, settings.loadingSoundVolume,
-  ]);
+  }, [loaded, launch, launchPick, gameId]);
 
   // The game picker sits under this overlay, so its music starts once the launch screen is gone.
   useEffect(() => {
