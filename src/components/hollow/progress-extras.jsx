@@ -14,6 +14,7 @@ import { photoUri, useJournal } from "../../journal/journal-context";
 import { takePhoto } from "../../journal/take-photo";
 import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
+import { layout, radius, space, type } from "../../ui/design-system";
 import { Button } from "./button";
 import { Stat } from "./entry-card";
 
@@ -108,17 +109,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
-  label: { fontWeight: "bold", fontSize: 15 },
+  label: { ...type.label },
   photos: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   notes: {
     borderWidth: 1,
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 15,
-    minHeight: 70,
+    borderRadius: radius.control,
+    padding: space.md,
+    fontSize: 16,
+    minHeight: 88,
     textAlignVertical: "top",
   },
-  thumb: { width: 64, height: 64, borderRadius: 8 },
+  thumb: { width: 68, height: 68, borderRadius: radius.small },
 });
 
 export function CharmSummary({ name, notches, id = name, completedLabel = "Collected" }) {
