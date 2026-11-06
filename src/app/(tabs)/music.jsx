@@ -9,6 +9,7 @@ import { Screen } from "../../components/hollow/screen";
 import { Title } from "../../components/hollow/section-text";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { useGame } from "../../games/game-context";
+import { layout, radius, space, type } from "../../ui/design-system";
 import { useOnlineAccess } from "../../network/online-access-context";
 import { selectorTracks, sourceForTrack, stopSound } from "../../sound/game-sounds";
 
@@ -232,17 +233,17 @@ export default function MusicScreen() {
 }
 
 const styles = StyleSheet.create({
-  pageTitle: { fontSize: 30, marginHorizontal: 16 },
+  pageTitle: { ...type.title, marginHorizontal: layout.gutter },
   nowPlaying: {
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 18,
+    marginHorizontal: layout.gutter,
+    marginTop: space.lg,
+    padding: layout.cardPadding,
     borderWidth: 1,
-    borderRadius: 18,
-    gap: 8,
+    borderRadius: radius.card,
+    gap: space.sm,
   },
   eyebrow: { fontSize: 12, fontWeight: "bold", letterSpacing: 2 },
-  trackTitle: { fontSize: 23, fontWeight: "bold", lineHeight: 30 },
+  trackTitle: { ...type.heading },
   trackGame: { fontSize: 13 },
   slider: { width: "100%", height: 34, marginTop: 12 },
   timeRow: { flexDirection: "row", justifyContent: "space-between" },
@@ -272,16 +273,16 @@ const styles = StyleSheet.create({
   },
   playText: { fontSize: 25, fontWeight: "bold" },
   extraControls: { flexDirection: "row", justifyContent: "center", gap: 10, marginTop: 10 },
-  modeButton: { borderWidth: 1, borderRadius: 18, paddingVertical: 8, paddingHorizontal: 12 },
+  modeButton: { borderWidth: 1, borderRadius: radius.pill, minHeight: layout.touchTarget, paddingVertical: space.sm, paddingHorizontal: space.md, justifyContent: "center" },
   modeText: { fontSize: 13, fontWeight: "bold" },
-  headingRow: { marginHorizontal: 16, marginTop: 24, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
-  listHeading: { fontSize: 21, fontWeight: "bold" },
+  headingRow: { marginHorizontal: layout.gutter, marginTop: space.xxl, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  listHeading: { ...type.heading },
   filterText: { fontSize: 14, fontWeight: "bold" },
-  trackList: { paddingHorizontal: 16, paddingTop: 10, gap: 8 },
+  trackList: { paddingHorizontal: layout.gutter, paddingTop: space.md, gap: space.sm },
   trackRow: {
-    minHeight: 68,
+    minHeight: 72,
     borderWidth: 1,
-    borderRadius: 14,
+    borderRadius: radius.card,
     paddingHorizontal: 12,
     paddingVertical: 9,
     flexDirection: "row",
@@ -294,7 +295,7 @@ const styles = StyleSheet.create({
   trackInfo: { flex: 1, gap: 3 },
   listTrackTitle: { fontSize: 15, fontWeight: "bold" },
   listAction: { fontSize: 13, fontWeight: "bold" },
-  favouriteButton: { width: 40, minHeight: 44, alignItems: "center", justifyContent: "center" },
+  favouriteButton: { width: layout.touchTarget, minHeight: layout.touchTarget, alignItems: "center", justifyContent: "center" },
   favouriteIcon: { fontSize: 25 },
   emptyText: { padding: 16, textAlign: "center", lineHeight: 22 },
 });
