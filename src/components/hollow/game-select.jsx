@@ -6,11 +6,14 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HKFont } from "../../constants/hollow";
 import { gameList } from "../../games/config";
 import { useGame } from "../../games/game-context";
-import { useHaptics } from "../../settings/SettingsContext.jsx";
+import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
+import { ThemeBackdrop } from "../../themes/theme-backdrop";
 
 export function GameSelect() {
   const { gameId, loaded, selectGame } = useGame();
   const triggerHaptic = useHaptics();
+  const { colors, settings } = useSettings();
+  const customTheme = settings.themeStyle !== "default";
   const { top, bottom } = useSafeAreaInsets();
 
   if (!loaded || gameId) return null;
@@ -20,10 +23,11 @@ export function GameSelect() {
       entering={FadeIn.duration(300)}
       style={[
         styles.overlay,
-        { paddingTop: top + 24, paddingBottom: bottom + 24 },
+        { paddingTop: top + 24, paddingBottom: bottom + 24, backgroundColor: customTheme ? colors.background : "#000" },
       ]}
     >
-      <Text style={styles.heading}>CHOOSE YOUR GAME</Text>
+      <ThemeBackdrop />
+      <Text style={[styles.heading, customTheme && { color: colors.text }]}>CHOOSE YOUR GAME</Text>
       <View style={styles.list}>
         {gameList.map((game) => (
           <Pressable
@@ -35,10 +39,10 @@ export function GameSelect() {
               selectGame(game.id);
               router.replace("/");
             }}
-            style={styles.card}
+            style={[styles.card, customTheme && { backgroundColor: colors.card, borderColor: colors.border }]}
           >
-            <Text style={styles.title}>{game.title.toUpperCase()}</Text>
-            <Text style={styles.tagline}>{game.tagline}</Text>
+            <Text style={[styles.title, customTheme && { color: colors.text }]}>{game.title.toUpperCase()}</Text>
+            <Text style={[styles.tagline, customTheme && { color: colors.muted }]}>{game.tagline}</Text>
           </Pressable>
         ))}
       </View>
