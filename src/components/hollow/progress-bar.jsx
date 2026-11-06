@@ -7,16 +7,18 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { useSettings } from "../../settings/SettingsContext.jsx";
+import { clampPercent, motion } from "../../ui/design-system";
 
 export function ProgressBar({ pct, label, height = 10 }) {
   const { colors, settings } = useSettings();
-  const width = useSharedValue(pct);
+  const safePercent = clampPercent(pct);
+  const width = useSharedValue(safePercent);
 
   useEffect(() => {
     width.value = settings.reduceMotion
-      ? pct
-      : withTiming(pct, { duration: 500 });
-  }, [pct, settings.reduceMotion, width]);
+      ? safePercent
+      : withTiming(safePercent, { duration: motion.slow });
+  }, [safePercent, settings.reduceMotion, width]);
 
   const fillStyle = useAnimatedStyle(() => ({ width: `${width.value}%` }));
 
@@ -28,7 +30,7 @@ export function ProgressBar({ pct, label, height = 10 }) {
       ]}
       accessibilityRole="progressbar"
       accessibilityLabel={label}
-      accessibilityValue={{ min: 0, max: 100, now: pct }}
+      accessibilityValue={{ min: 0, max: 100, now: safePercent }}
     >
       <Animated.View
         style={[
