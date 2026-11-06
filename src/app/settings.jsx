@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from "expo-router";
 import { Image } from "expo-image";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Pressable, StyleSheet, Switch, View } from "react-native";
 
 import { useAds } from "../ads/AdsContext";
@@ -65,13 +65,8 @@ const SOURCE_LABELS = {
 function Section({ title, children }) {
   const { colors } = useSettings();
   return (
-    <View
-      style={[
-        styles.section,
-        { backgroundColor: colors.card, borderColor: colors.border },
-      ]}
-    >
-      <AppText style={styles.sectionTitle}>{title}</AppText>
+    <View style={styles.section}>
+      <AppText style={[styles.sectionTitle, { color: colors.text }]}>{title}</AppText>
       {children}
     </View>
   );
@@ -150,6 +145,39 @@ function ThemeChoice({ theme, selected, isPremium, onChoose }) {
   );
 }
 
+function SettingsCategory({ title, subtitle, symbol, open, onPress, children }) {
+  const { colors } = useSettings();
+  return (
+    <View style={[
+      styles.category,
+      { backgroundColor: colors.card, borderColor: open ? colors.accent : colors.border },
+    ]}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={title}
+        accessibilityHint={open ? "Collapse settings category" : "Expand settings category"}
+        accessibilityState={{ expanded: open }}
+        onPress={onPress}
+        style={styles.categoryHeader}
+      >
+        <View style={[styles.categorySymbol, { backgroundColor: colors.background, borderColor: colors.border }]}>
+          <AppText style={[styles.categoryGlyph, { color: colors.accent }]}>{symbol}</AppText>
+        </View>
+        <View style={styles.categoryText}>
+          <AppText style={styles.categoryTitle}>{title}</AppText>
+          <AppText style={[styles.categorySubtitle, { color: colors.muted }]}>{subtitle}</AppText>
+        </View>
+        <AppText style={[styles.categoryChevron, { color: colors.accent }]}>{open ? "−" : "+"}</AppText>
+      </Pressable>
+      {open ? (
+        <View style={[styles.categoryBody, { borderTopColor: colors.border }]}>
+          {children}
+        </View>
+      ) : null}
+    </View>
+  );
+}
+
 function ToggleRow({ label, hint, value, onChange }) {
   const { colors } = useSettings();
   return (
@@ -178,6 +206,13 @@ export default function SettingsScreen() {
   const triggerHaptic = useHaptics();
   const { isPremium } = usePurchases();
   const { privacyOptionsRequired, showPrivacyOptions } = useAds();
+  const [expanded, setExpanded] = useState(null);
+  const [themesOpen, setThemesOpen] = useState(false);
+  const [confirmReset, setConfirmReset] = useState(false);
+  const toggleCategory = (id) => {
+    setExpanded((current) => current === id ? null : id);
+    setConfirmReset(false);
+  };
 
   // Stop a ringtone-style preview as soon as Settings is no longer focused.
   useFocusEffect(
@@ -187,70 +222,44 @@ export default function SettingsScreen() {
   );
 
   return (
-    <Screen>
+    <Screen contentStyle={styles.screenContent}>
       <Title>Settings</Title>
+      <AppText style={[styles.screenSubtitle, { color: colors.muted }]}>
+        Make the guide comfortable to use. Choose a category to see its options.
+      </AppText>
 
-      <Section title="Premium">
-        <AppText style={{ color: colors.muted }}>
-          {isPremium
-            ? "Premium is active. Your location-inspired themes and selector music are unlocked."
-            : "Unlock 13 location-inspired themes, offline access and extra selector music."}
-        </AppText>
+      <View style={[styles.premiumSummary, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <View style={[styles.premiumSymbol, { backgroundColor: colors.background, borderColor: colors.border }]}>
+          <AppText style={[styles.categoryGlyph, { color: colors.accent }]}>✧</AppText>
+        </View>
+        <View style={styles.categoryText}>
+          <AppText style={styles.categoryTitle}>
+            {isPremium ? "Premium Companion" : "Your field guide"}
+          </AppText>
+          <AppText style={[styles.categorySubtitle, { color: colors.muted }]}>
+            {isPremium
+              ? "Premium active · planning, themes and offline access"
+              : "Complete guides stay free · discover optional extras"}
+          </AppText>
+        </View>
         <Pressable
-          onPress={() => router.push("/premium")}
+          onPress={() => router.push("/companion")}
           accessibilityRole="button"
-          style={[styles.resetButton, { backgroundColor: colors.button, alignSelf: "stretch", marginTop: 4, alignItems: "center" }]}
+          accessibilityLabel={isPremium ? "Open Premium Companion" : "Discover Premium Companion"}
+          style={styles.premiumLink}
         >
-          <AppText style={[styles.resetText, { color: colors.buttonText }]}>
-            {isPremium ? "Manage Premium" : "Explore Premium"}
-          </AppText>
+          <AppText style={[styles.premiumLinkText, { color: colors.accent }]}>Open ›</AppText>
         </Pressable>
-      </Section>
+      </View>
 
-      <Section title="Premium companion tools">
-        <AppText style={[styles.hint, { color: colors.muted }]}>
-          {isPremium
-            ? "Your guided companion, progression planner and customisation studio are unlocked."
-            : "Explore extra Premium tools for planning your route and personalising the guide."}
-        </AppText>
-        {[
-          ["Spoiler-free Guided Mode", "/guided"],
-          ["Smart progression planner", "/planner"],
-          ["Customisation studio", "/premium-studio"],
-        ].map(([label, path]) => (
-          <Pressable
-            key={path}
-            onPress={() => router.push(isPremium ? path : "/premium")}
-            accessibilityRole="button"
-            style={[styles.infoLink, { borderColor: colors.border }]}
-          >
-            <AppText style={[styles.infoLinkText, { color: colors.accent }]}>
-              {label}
-            </AppText>
-            <AppText style={{ color: colors.accent }}>
-              {isPremium ? "›" : "🔒"}
-            </AppText>
-          </Pressable>
-        ))}
-      </Section>
-
-      {privacyOptionsRequired ? (
-        <Section title="Ad privacy">
-          <AppText style={{ color: colors.muted }}>
-            Review or update the advertising privacy choices you made earlier.
-          </AppText>
-          <Pressable
-            accessibilityRole="button"
-            onPress={showPrivacyOptions}
-            style={[styles.resetButton, { backgroundColor: colors.button, alignSelf: "stretch", marginTop: 4, alignItems: "center" }]}
-          >
-            <AppText style={[styles.resetText, { color: colors.buttonText }]}>
-              Manage ad privacy choices
-            </AppText>
-          </Pressable>
-        </Section>
-      ) : null}
-
+      <View style={styles.categoryList}>
+        <SettingsCategory
+          title="Appearance & themes"
+          subtitle="Light or dark mode and Hallownest-inspired themes"
+          symbol="✦"
+          open={expanded === "appearance"}
+          onPress={() => toggleCategory("appearance")}
+        >
       <Section title="Appearance">
         <AppText style={styles.rowLabel}>Mode</AppText>
         <Segmented
@@ -264,6 +273,25 @@ export default function SettingsScreen() {
           entire interface and add subtle artwork behind the guide. Premium
           choices can also be used offline.
         </AppText>
+        <Pressable
+          onPress={() => setThemesOpen((open) => !open)}
+          accessibilityRole="button"
+          accessibilityLabel="Browse appearance themes"
+          accessibilityState={{ expanded: themesOpen }}
+          style={[styles.expandThemes, { borderColor: colors.border }]}
+        >
+          <View style={styles.categoryText}>
+            <AppText style={styles.rowLabel}>
+              {themeCatalog.find((theme) => theme.id === settings.themeStyle)?.name ?? "Classic"}
+            </AppText>
+            <AppText style={[styles.hint, { color: colors.muted }]}>
+              {themesOpen ? "Choose a theme below" : "Tap to browse all Hollow Knight and Silksong themes"}
+            </AppText>
+          </View>
+          <AppText style={{ color: colors.accent, fontWeight: "700" }}>{themesOpen ? "−" : "+"}</AppText>
+        </Pressable>
+        {themesOpen ? (
+          <>
         {["Both games", "Hollow Knight", "Silksong"].map((game) => (
           <View key={game} style={styles.themeGroup}>
             <AppText style={[styles.themeGroupTitle, { color: colors.text }]}>
@@ -288,14 +316,26 @@ export default function SettingsScreen() {
             </View>
           </View>
         ))}
+
+          </>
+        ) : null}
+      </Section>
+        </SettingsCategory>
+        <SettingsCategory
+          title="Accessibility & feedback"
+          subtitle="Text size, contrast, motion and haptics"
+          symbol="Aa"
+          open={expanded === "accessibility"}
+          onPress={() => toggleCategory("accessibility")}
+        >
+          <Section title="Readable interface">
         <ToggleRow
           label="High contrast"
           hint="Stronger colours and borders for easier reading"
           value={settings.highContrast}
           onChange={(highContrast) => update({ highContrast })}
         />
-      </Section>
-
+          </Section>
       <Section title="Text size">
         <Segmented
           options={FONT_SIZES}
@@ -306,7 +346,6 @@ export default function SettingsScreen() {
           Preview: The quick knight explores Hallownest.
         </AppText>
       </Section>
-
       <Section title="Haptic feedback">
         <ToggleRow
           label="Haptics"
@@ -328,7 +367,23 @@ export default function SettingsScreen() {
           </>
         )}
       </Section>
+      <Section title="Motion preferences">
+        <ToggleRow
+          label="Reduce motion"
+          hint="Turns off map momentum and zoom animations"
+          value={settings.reduceMotion}
+          onChange={(reduceMotion) => update({ reduceMotion })}
+        />
 
+      </Section>
+        </SettingsCategory>
+        <SettingsCategory
+          title="Audio"
+          subtitle="Loading sounds and game-selector music"
+          symbol="♫"
+          open={expanded === "audio"}
+          onPress={() => toggleCategory("audio")}
+        >
       <LoadingSoundSetting />
 
       <Section title="Game selector music">
@@ -410,7 +465,14 @@ export default function SettingsScreen() {
           </>
         )}
       </Section>
-
+        </SettingsCategory>
+        <SettingsCategory
+          title="Guide preferences"
+          subtitle="Card details and how the guide starts"
+          symbol="⌘"
+          open={expanded === "guide"}
+          onPress={() => toggleCategory("guide")}
+        >
       <Section title="Cards">
         <ToggleRow
           label="Start expanded"
@@ -419,22 +481,13 @@ export default function SettingsScreen() {
           onChange={(startExpanded) => update({ startExpanded })}
         />
       </Section>
-
-      <Section title="Motion">
-        <ToggleRow
-          label="Reduce motion"
-          hint="Turns off map momentum and zoom animations"
-          value={settings.reduceMotion}
-          onChange={(reduceMotion) => update({ reduceMotion })}
-        />
+          <Section title="Navigation">
         <ToggleRow
           label="Remember my game"
           hint="Off: always show the game menu on launch. On: reopen the last game you picked"
           value={settings.rememberGame}
           onChange={(rememberGame) => update({ rememberGame })}
         />
-      </Section>
-
       <Pressable
         onPress={() => {
           clearGame();
@@ -447,7 +500,15 @@ export default function SettingsScreen() {
           Main menu (switch game)
         </AppText>
       </Pressable>
-
+          </Section>
+        </SettingsCategory>
+        <SettingsCategory
+          title="Data & support"
+          subtitle="Guide updates, backups, privacy and app information"
+          symbol="☷"
+          open={expanded === "data"}
+          onPress={() => toggleCategory("data")}
+        >
       <Section title="Data">
         <AppText>{`Source: ${SOURCE_LABELS[dataStatus.source]}`}</AppText>
         <AppText style={{ color: colors.muted, fontSize: 13 }}>
@@ -456,7 +517,7 @@ export default function SettingsScreen() {
             : "Using the data bundled with the app."}
         </AppText>
       </Section>
-
+      <BackupSection />
       <Section title="About & support">
         <AppText style={[styles.hint, { color: colors.muted }]}>
           Read about this unofficial companion, view its source credits,
@@ -481,34 +542,70 @@ export default function SettingsScreen() {
           <AppText style={{ color: colors.accent }}>›</AppText>
         </Pressable>
       </Section>
-
-      <BackupSection />
-
+      {privacyOptionsRequired ? (
+        <Section title="Ad privacy">
+          <AppText style={{ color: colors.muted }}>
+            Review or update the advertising privacy choices you made earlier.
+          </AppText>
+          <Pressable
+            accessibilityRole="button"
+            onPress={showPrivacyOptions}
+            style={[styles.resetButton, { backgroundColor: colors.button, alignSelf: "stretch", marginTop: 4, alignItems: "center" }]}
+          >
+            <AppText style={[styles.resetText, { color: colors.buttonText }]}>
+              Manage ad privacy choices
+            </AppText>
+          </Pressable>
+        </Section>
+      ) : null}
       <Pressable
-        onPress={reset}
+        onPress={() => {
+          if (!confirmReset) { setConfirmReset(true); return; }
+          reset();
+          setConfirmReset(false);
+        }}
         accessibilityRole="button"
         style={[styles.resetButton, { backgroundColor: colors.button }]}
       >
         <AppText style={[styles.resetText, { color: colors.buttonText }]}>
-          Reset to defaults
+          {confirmReset ? "Confirm: reset settings" : "Reset settings to defaults"}
         </AppText>
       </Pressable>
       <AppText style={[styles.hint, styles.centered, { color: colors.muted }]}>
         Defaults: light mode, default style, default text size, default haptics.
+      </AppText>
+        </SettingsCategory>
+      </View>
+      <AppText style={[styles.footerInfo, { color: colors.muted }]}>
+        Preferences save automatically. Your progress, photos and loadouts are separate from appearance settings.
       </AppText>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  section: {
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 14,
-    borderRadius: 16,
-    borderWidth: 1,
-    gap: 10,
+  screenContent: { paddingTop: 10, paddingBottom: 32 },
+  screenSubtitle: { marginHorizontal: 22, marginTop: 6, fontSize: 14, lineHeight: 21, textAlign: "center" },
+  premiumSummary: {
+    marginHorizontal: 16, marginTop: 22, padding: 14, borderRadius: 16,
+    borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 12,
   },
+  premiumSymbol: { width: 42, height: 42, borderRadius: 13, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+  premiumLink: { minHeight: 44, paddingHorizontal: 6, justifyContent: "center" },
+  premiumLinkText: { fontWeight: "800", fontSize: 14 },
+  categoryList: { marginHorizontal: 16, marginTop: 18, gap: 10 },
+  category: { borderWidth: 1, borderRadius: 16, overflow: "hidden" },
+  categoryHeader: { minHeight: 80, padding: 14, flexDirection: "row", alignItems: "center", gap: 12 },
+  categorySymbol: { width: 44, height: 44, borderRadius: 12, borderWidth: 1, alignItems: "center", justifyContent: "center" },
+  categoryGlyph: { fontSize: 19, fontWeight: "800" },
+  categoryText: { flex: 1, gap: 4 },
+  categoryTitle: { fontSize: 17, fontWeight: "800" },
+  categorySubtitle: { fontSize: 13, lineHeight: 18 },
+  categoryChevron: { fontSize: 23, fontWeight: "600" },
+  categoryBody: { borderTopWidth: 1, paddingHorizontal: 14, paddingBottom: 18, paddingTop: 10 },
+  expandThemes: { flexDirection: "row", alignItems: "center", minHeight: 64, padding: 12, borderWidth: 1, borderRadius: 12, gap: 12 },
+  footerInfo: { marginHorizontal: 24, marginTop: 22, lineHeight: 19, fontSize: 12, textAlign: "center" },
+  section: { marginTop: 12, paddingVertical: 8, gap: 12 },
   sectionTitle: { fontWeight: "bold", fontSize: 18 },
   rowLabel: { fontSize: 16 },
   hint: { fontSize: 13 },
