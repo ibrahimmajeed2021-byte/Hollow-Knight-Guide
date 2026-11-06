@@ -4,6 +4,7 @@ import { FlatList } from "react-native";
 
 import { Button } from "../../../components/hollow/button";
 import { EntryCard, Stat } from "../../../components/hollow/entry-card";
+import { EmptyState } from "../../../components/hollow/empty-state";
 import { CharmExtras, CharmSummary } from "../../../components/hollow/progress-extras";
 import { AppText } from "../../../components/hollow/app-text";
 import { WikiLocationSection } from "../../../components/hollow/wiki-location-section";
@@ -106,7 +107,7 @@ export default function CollectiblesScreen() {
         data={data}
         keyExtractor={(item) => item.name}
         ListHeaderComponent={header}
-        ListEmptyComponent={<Body>No entries match these filters.</Body>}
+        ListEmptyComponent={<EmptyState title="No matching collectibles" description="Try another category or status filter." />}
         contentContainerStyle={{ paddingBottom: inset + 16 }}
         keyboardShouldPersistTaps="handled"
         initialNumToRender={8}
