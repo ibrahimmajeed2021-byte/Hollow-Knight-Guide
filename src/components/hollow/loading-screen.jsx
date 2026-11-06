@@ -8,6 +8,7 @@ import { HKFont } from "../../constants/hollow";
 import { games } from "../../games/config";
 import { useGame } from "../../games/game-context";
 import { usePurchases } from "../../purchases/PurchasesContext";
+import { useOnlineAccess } from "../../network/online-access-context";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import {
   pickRandomGameId,
@@ -25,6 +26,7 @@ const REDUCED_MOTION_QUICK_MS = 280;
 export function LoadingScreen() {
   const { settings } = useSettings();
   const { isPremium } = usePurchases();
+  const { status: onlineStatus } = useOnlineAccess();
   const { config, gameId, loaded, mediaManifest } = useGame();
   const launch = !gameId;
   // Which game's loading sound the launch screen uses; re-rolled on every launch.
@@ -72,7 +74,7 @@ export function LoadingScreen() {
       : QUICK_HOLD_MS;
     // Even if loading sound is disabled, request playback with volume zero
     // so a previous selector track is faded out on game selection.
-    playLoadingSound(launch ? launchPick : gameId)
+    playLoadingSound(launch ? launchPick : gameId, mediaManifest?.audio, onlineStatus === "online")
       .then((started) => {
         if (cancelled) return;
         timer = setTimeout(
@@ -100,7 +102,9 @@ export function LoadingScreen() {
     playSelectorSound(
       settings.selectorMusicRandom ?? true,
       settings.selectorMusicTrack ?? 0,
-      isPremium
+      isPremium,
+      mediaManifest?.audio,
+      onlineStatus === "online"
     );
   }, [
     launch,
