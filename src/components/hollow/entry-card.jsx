@@ -4,12 +4,14 @@ import { LayoutAnimation, Pressable, StyleSheet, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 
 import { HKFont } from "../../constants/hollow";
+import { useGuidedMode } from "../../premium/guided-context";
 import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
 
-function EntryCardBase({ image, fallbackImage, name, summary, description, children }) {
+function EntryCardBase({ image, fallbackImage, name, summary, description, children, spoilerEntry, spoilerKind }) {
   const { colors, settings } = useSettings();
   const triggerHaptic = useHaptics();
+  const guided = useGuidedMode();
   const [expanded, setExpanded] = useState(settings.startExpanded);
   const [failedImageKey, setFailedImageKey] = useState(null);
   const imageKey = typeof image === "number"
@@ -19,8 +21,8 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
     ? String(fallbackImage)
     : fallbackImage?.uri ?? JSON.stringify(fallbackImage ?? null);
   const [failedFallbackKey, setFailedFallbackKey] = useState(null);
-  const showArtwork = !!image && failedImageKey !== imageKey;
-  const showFallbackArtwork = !showArtwork && !!fallbackImage &&
+  const showArtwork = settings.showArtwork !== false && !!image && failedImageKey !== imageKey;
+  const showFallbackArtwork = settings.showArtwork !== false && !showArtwork && !!fallbackImage &&
     failedFallbackKey !== fallbackImageKey;
   const displayedImage = showArtwork ? image : showFallbackArtwork ? fallbackImage : null;
 
@@ -30,11 +32,45 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
     setExpanded((value) => !value);
   };
 
+  // Mask undiscovered entries before rendering their names, pictures,
+  // rewards, locations or summaries. The user can reveal them deliberately.
+  const hidden = spoilerKind && spoilerEntry && !guided.isVisible(spoilerKind, spoilerEntry);
+  if (hidden) {
+    return (
+      <View
+        style={[
+          styles.card,
+          { backgroundColor: colors.card, borderColor: colors.border },
+          settings.cardDensity === "compact" && styles.compactCard,
+        ]}
+      >
+        <AppText style={[styles.hiddenTitle, { color: colors.text }]}>
+          {guided.hiddenLabel(spoilerKind)}
+        </AppText>
+        <AppText style={[styles.hiddenHelp, { color: colors.muted }]}>
+          This entry is further ahead in the recommended route. Guided Mode
+          hides its name, artwork and location until you discover or reveal it.
+        </AppText>
+        <Pressable
+          onPress={() => guided.revealEntry(spoilerKind, spoilerEntry)}
+          accessibilityRole="button"
+          accessibilityLabel={"Reveal hidden " + spoilerKind + " details and spoilers"}
+          style={[styles.revealButton, { borderColor: colors.border }]}
+        >
+          <AppText style={[styles.revealText, { color: colors.accent }]}>
+            Reveal entry (spoiler)
+          </AppText>
+        </Pressable>
+      </View>
+    );
+  }
+
   return (
     <View
       style={[
         styles.card,
         { backgroundColor: colors.card, borderColor: colors.border },
+        settings.cardDensity === "compact" && styles.compactCard,
       ]}
     >
       <Pressable
@@ -43,12 +79,12 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
         accessibilityLabel={name}
         accessibilityHint={expanded ? "Collapse details" : "Expand details"}
         accessibilityState={{ expanded }}
-        style={styles.top}
+        style={[styles.top, settings.cardDensity === "compact" && styles.compactTop]}
       >
         {displayedImage ? (
           <Image
             source={displayedImage}
-            style={styles.image}
+            style={[styles.image, settings.cardDensity === "compact" && styles.compactImage]}
             contentFit="contain"
             cachePolicy="memory-disk"
             recyclingKey={name}
@@ -137,6 +173,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   closeDetailsText: { fontSize: 14, fontWeight: "bold" },
+  compactCard: { padding: 10, marginTop: 7 },
+  compactImage: { width: 48, height: 48 },
+  compactTop: { gap: 8 },
+  hiddenTitle: { fontSize: 17, fontWeight: "800" },
+  hiddenHelp: { fontSize: 13, lineHeight: 20, marginTop: 6 },
+  revealButton: { marginTop: 12, borderWidth: 1, borderRadius: 10, padding: 10, alignSelf: "flex-start" },
+  revealText: { fontSize: 14, fontWeight: "700" },
   stat: { marginTop: 4, fontSize: 15 },
   statLabel: { fontWeight: "bold", fontSize: 15 },
 });
