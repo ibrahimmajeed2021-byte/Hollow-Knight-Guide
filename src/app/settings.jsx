@@ -15,6 +15,7 @@ import { useHaptics, useSettings } from "../settings/SettingsContext.jsx";
 import { previewSelectorSound, stopSound } from "../sound/game-sounds";
 import { palettes } from "../constants/hollow";
 import { themeCatalog } from "../themes/theme-catalog";
+import { layout, radius, space, type } from "../ui/design-system";
 
 const MODES = [
   { value: "light", label: "Light" },
@@ -585,28 +586,28 @@ export default function SettingsScreen() {
 
 const styles = StyleSheet.create({
   screenContent: { paddingTop: 10, paddingBottom: 32 },
-  screenSubtitle: { marginHorizontal: 22, marginTop: 6, fontSize: 14, lineHeight: 21, textAlign: "center" },
+  screenSubtitle: { marginHorizontal: space.xl, marginTop: space.sm, ...type.small, textAlign: "center" },
   premiumSummary: {
-    marginHorizontal: 16, marginTop: 22, padding: 14, borderRadius: 16,
+    marginHorizontal: layout.gutter, marginTop: space.xl, padding: layout.cardPadding, borderRadius: radius.card,
     borderWidth: 1, flexDirection: "row", alignItems: "center", gap: 12,
   },
   premiumSymbol: { width: 42, height: 42, borderRadius: 13, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   premiumLink: { minHeight: 44, paddingHorizontal: 6, justifyContent: "center" },
   premiumLinkText: { fontWeight: "800", fontSize: 14 },
-  categoryList: { marginHorizontal: 16, marginTop: 18, gap: 10 },
-  category: { borderWidth: 1, borderRadius: 16, overflow: "hidden" },
-  categoryHeader: { minHeight: 80, padding: 14, flexDirection: "row", alignItems: "center", gap: 12 },
+  categoryList: { marginHorizontal: layout.gutter, marginTop: space.xl, gap: space.md },
+  category: { borderWidth: 1, borderRadius: radius.card, overflow: "hidden" },
+  categoryHeader: { minHeight: 80, padding: layout.cardPadding, flexDirection: "row", alignItems: "center", gap: space.md },
   categorySymbol: { width: 44, height: 44, borderRadius: 12, borderWidth: 1, alignItems: "center", justifyContent: "center" },
   categoryGlyph: { fontSize: 19, fontWeight: "800" },
   categoryText: { flex: 1, gap: 4 },
-  categoryTitle: { fontSize: 17, fontWeight: "800" },
-  categorySubtitle: { fontSize: 13, lineHeight: 18 },
+  categoryTitle: { ...type.subheading },
+  categorySubtitle: { ...type.small },
   categoryChevron: { fontSize: 23, fontWeight: "600" },
   categoryBody: { borderTopWidth: 1, paddingHorizontal: 14, paddingBottom: 18, paddingTop: 10 },
-  expandThemes: { flexDirection: "row", alignItems: "center", minHeight: 64, padding: 12, borderWidth: 1, borderRadius: 12, gap: 12 },
+  expandThemes: { flexDirection: "row", alignItems: "center", minHeight: 64, padding: space.md, borderWidth: 1, borderRadius: radius.control, gap: space.md },
   footerInfo: { marginHorizontal: 24, marginTop: 22, lineHeight: 19, fontSize: 12, textAlign: "center" },
   section: { marginTop: 12, paddingVertical: 8, gap: 12 },
-  sectionTitle: { fontWeight: "bold", fontSize: 18 },
+  sectionTitle: { ...type.subheading },
   rowLabel: { fontSize: 16 },
   hint: { fontSize: 13 },
   centered: { textAlign: "center", marginTop: 8 },
@@ -646,10 +647,10 @@ const styles = StyleSheet.create({
   segmented: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   option: {
     borderWidth: 1,
-    borderRadius: 11,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    minHeight: 40,
+    borderRadius: radius.control,
+    paddingHorizontal: space.md,
+    paddingVertical: space.sm,
+    minHeight: layout.touchTarget,
     justifyContent: "center",
   },
   optionText: { fontSize: 14 },
@@ -657,9 +658,9 @@ const styles = StyleSheet.create({
   toggleText: { flex: 1, gap: 2 },
   trackList: { gap: 8, marginTop: 4 },
   trackOption: {
-    minHeight: 54,
+    minHeight: 58,
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: radius.control,
     paddingHorizontal: 12,
     paddingVertical: 8,
     flexDirection: "row",
@@ -673,10 +674,12 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     marginTop: 20,
     paddingHorizontal: 24,
-    paddingVertical: 10,
-    borderRadius: 8,
+    paddingVertical: space.md,
+    minHeight: layout.touchTarget,
+    justifyContent: "center",
+    borderRadius: radius.control,
   },
   resetText: { fontWeight: "bold" },
-  infoLink: { borderWidth: 1, minHeight: 48, borderRadius: 12, paddingHorizontal: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  infoLink: { borderWidth: 1, minHeight: layout.touchTarget, borderRadius: radius.control, paddingHorizontal: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
   infoLinkText: { fontSize: 15, fontWeight: "700" },
 });
