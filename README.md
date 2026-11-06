@@ -14,6 +14,35 @@ A fan-made companion for **Hollow Knight** and **Hollow Knight: Silksong** built
 
 The **Progress** screen keeps its full completion breakdown, and checkmarks use the original journal keys. Changing screens does not reset saved progress.
 
+## Expanded completion guide
+
+The app now tracks boss variants, Dream bosses, Warrior Dreams and Godhome
+encounters in Hollow Knight, alongside all 46 Grubs, 16 Mask Shards, 9 Vessel
+Fragments, 6 Pale Ore, extra Charm Notches, spells, movement abilities,
+Nail Arts, Dreamers, keys, trials and all five Pantheons.
+
+In Silksong, the guide includes all 30 Fleas, main-story objectives, keys,
+Bellhome upgrades and seven mementos, in addition to the existing boss,
+tool, crest, collectible and wish lists. Main-story objectives and wishes
+share the Quests tab, with a category filter.
+
+All added checklist entries retain local journal keys based on their names;
+existing entries and their saved completion state are unaffected. Existing
+boss and tool information still loads from your bundled data or public JSON
+API, but old JSON snapshots cannot hide newer bundled entries.
+
+This is a **guide-tracked checklist**, not an official achievement percentage.
+Some content is optional, repeatable or mutually exclusive. See
+[CONTENT_AUDIT.md](CONTENT_AUDIT.md) for source references, coverage,
+known limitations and the difference between unique content and variants.
+
+Run the completion data regression check:
+
+```bash
+npm run test:guide
+npm run test:progression
+```
+
 ## Recommended chronological order
 
 Bosses, charms, tools, crests, collectibles and quests follow a recommended
