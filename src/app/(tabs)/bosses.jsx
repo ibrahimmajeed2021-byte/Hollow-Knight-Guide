@@ -13,6 +13,7 @@ import { Screen } from "../../components/hollow/screen";
 import { SearchFilter } from "../../components/hollow/search-filter";
 import { Body, Title } from "../../components/hollow/section-text";
 import { useGame } from "../../games/game-context";
+import { getBossFallbackArtwork } from "../../data/entry-fallback-artwork";
 import { useTabInset } from "../../hooks/use-tab-inset";
 import { useJournal } from "../../journal/journal-context";
 import { useSettings } from "../../settings/SettingsContext.jsx";
@@ -87,6 +88,7 @@ export default function BossesScreen() {
         renderItem={({ item }) => (
           <EntryCard
             image={bossImages[item.image]}
+            fallbackImage={getBossFallbackArtwork(item, bossImages)}
             name={item.name}
             description={item.description}
             summary={<BossSummary name={item.name} health={item.health} />}
