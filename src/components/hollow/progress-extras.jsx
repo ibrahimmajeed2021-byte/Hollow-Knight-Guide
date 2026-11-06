@@ -14,7 +14,7 @@ import { photoUri, useJournal } from "../../journal/journal-context";
 import { takePhoto } from "../../journal/take-photo";
 import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
-import { layout, radius, space, type } from "../../ui/design-system";
+import { radius, space, type } from "../../ui/design-system";
 import { Button } from "./button";
 import { Stat } from "./entry-card";
 
