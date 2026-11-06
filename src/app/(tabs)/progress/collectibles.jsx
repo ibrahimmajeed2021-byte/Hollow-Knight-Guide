@@ -13,6 +13,7 @@ import { Body, Title } from "../../../components/hollow/section-text";
 import { useTabInset } from "../../../hooks/use-tab-inset";
 import { useJournal } from "../../../journal/journal-context";
 import { getCollectibleGuide } from "../../../data/silksong-collectible-guides";
+import { getCollectibleArtwork } from "../../../data/collectible-icons";
 import { useGame } from "../../../games/game-context";
 
 const STATUS = [
@@ -123,7 +124,7 @@ export default function CollectiblesScreen() {
           const isTask = ["wishes", "objectives", "godhome", "trials", "dreamers", "milestones"].includes(item.group);
           return (
             <EntryCard
-              image={guide?.artworkUrl ? { uri: guide.artworkUrl } : undefined}
+              image={getCollectibleArtwork(item, config.id, guide?.artworkUrl)}
               name={item.name}
               description={item.description ?? ""}
               summary={
