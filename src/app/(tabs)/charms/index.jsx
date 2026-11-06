@@ -57,7 +57,12 @@ function HollowCharmsScreen() {
     typeof routeQuery === "string" ? routeQuery : ""
   );
   useEffect(() => {
-    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+    const nextQuery = typeof routeQuery === "string" ? routeQuery : "";
+    setQuery(nextQuery);
+    if (nextQuery) {
+      setFilter("all");
+      setKind("all");
+    }
   }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const [kind, setKind] = useState("all");
@@ -209,7 +214,9 @@ function SilksongItemsScreen() {
     typeof routeQuery === "string" ? routeQuery : ""
   );
   useEffect(() => {
-    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+    const nextQuery = typeof routeQuery === "string" ? routeQuery : "";
+    setQuery(nextQuery);
+    if (nextQuery) setFilter("all");
   }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const [category, setCategory] = useState("all");
