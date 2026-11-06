@@ -193,8 +193,8 @@ export default function SettingsScreen() {
       <Section title="Premium">
         <AppText style={{ color: colors.muted }}>
           {isPremium
-            ? "Premium is active. Your extra themes and selector music are unlocked."
-            : "Unlock Hollow Knight and Silksong themes and more game-selector music."}
+            ? "Premium is active. Your location-inspired themes and selector music are unlocked."
+            : "Unlock 13 location-inspired themes, offline access and extra selector music."}
         </AppText>
         <Pressable
           onPress={() => router.push("/premium")}
