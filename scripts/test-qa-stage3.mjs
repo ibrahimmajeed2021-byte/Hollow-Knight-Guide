@@ -1,13 +1,14 @@
 import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { closeDestination, isPrimaryGuideRoute, isSecondaryGuideRoute } from "../src/navigation/route-policy.mjs";
 import { shouldBlockGuide } from "../src/network/access-policy.mjs";
 import { normaliseJournal } from "../src/journal/journal-utils.mjs";
 import { visibleInGuidedMode } from "../src/premium/guided-logic.mjs";
 
-const root = new URL("..", import.meta.url).pathname;
+const root = fileURLToPath(new URL("..", import.meta.url));
 const read = (path) => readFileSync(join(root, path), "utf8");
 
 for (const route of ["/", "/bosses", "/charms", "/quests", "/music", "/progress"]) {
