@@ -11,6 +11,7 @@ import {
 import { useColorScheme } from "react-native";
 
 import { usePurchases } from "../purchases/PurchasesContext";
+import { resolveTheme } from "../themes/theme-catalog";
 
 import {
   defaultSettings,
@@ -81,7 +82,7 @@ export function SettingsProvider({ children }) {
     const isDark =
       visibleSettings.mode === "dark" ||
       (visibleSettings.mode === "system" && systemScheme === "dark");
-    const style = visibleSettings.themeStyle;
+    const style = resolveTheme(visibleSettings.themeStyle).id;
     const paletteKey =
       style === "default"
         ? isDark
@@ -92,7 +93,7 @@ export function SettingsProvider({ children }) {
         : style;
     const colors = visibleSettings.highContrast
       ? highContrast[isDark ? "dark" : "light"]
-      : palettes[paletteKey];
+      : palettes[paletteKey] ?? palettes[isDark ? "dark" : "default"];
     return {
       settings: visibleSettings,
       update,
