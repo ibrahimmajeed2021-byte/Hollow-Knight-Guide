@@ -23,7 +23,7 @@ export function CollectionEntry({ item }) {
     <EntryCard
       name={item.name}
       image={item.iconUrl ? { uri: item.iconUrl } : getCollectibleArtwork(item, "silksong", guide?.artworkUrl)}
-      fallbackImage={getCollectibleFallbackArtwork(item, "silksong")}
+      fallbackImage={getCollectibleFallbackArtwork(item, "silksong") ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
       description={item.description ?? ""}
       summary={
         <>
