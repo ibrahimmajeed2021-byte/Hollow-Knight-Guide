@@ -32,6 +32,7 @@ export default function GuidedModeScreen() {
   const { isPremium } = usePurchases();
   const guided = useGuidedMode();
   const [hintSteps, setHintSteps] = useState({});
+  const [confirmReset, setConfirmReset] = useState(false);
 
   const upcoming = useMemo(() => [
     { kind: "boss", title: "Bosses", entries: config.bosses || [] },
@@ -141,6 +142,24 @@ export default function GuidedModeScreen() {
           </View>
         ))}
       </View>
+      {settings.guidedMode ? (
+        <Pressable
+          onPress={() => {
+            if (!confirmReset) {
+              setConfirmReset(true);
+              return;
+            }
+            guided.resetReveals();
+            setConfirmReset(false);
+          }}
+          accessibilityRole="button"
+          style={[styles.action, styles.resetReveals, { borderColor: colors.border }]}
+        >
+          <AppText style={{ color: colors.accent, fontWeight: "700" }}>
+            {confirmReset ? "Confirm: hide previously revealed spoilers" : "Reset manual spoiler reveals"}
+          </AppText>
+        </Pressable>
+      ) : null}
       <Button label="Open progression planner" onPress={() => router.push("/planner")} style={styles.mainButton} />
       <AppText style={[styles.footer, { color: colors.muted }]}>
         Guided Mode is optional. Turn it off at any time to restore the original unfiltered guide. Completed entries and those you reveal manually are always visible.
@@ -165,5 +184,6 @@ const styles = StyleSheet.create({
   discoveryName: { fontSize: 16, fontWeight: "700" },
   actions: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   action: { borderWidth: 1, paddingHorizontal: 12, paddingVertical: 10, borderRadius: 10 },
+  resetReveals: { marginHorizontal: 16, marginTop: 16 },
   footer: { marginHorizontal: 20, marginVertical: 12, lineHeight: 20, fontSize: 13 },
 });
