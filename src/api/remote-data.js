@@ -48,3 +48,41 @@ export async function fetchRemote(path) {
     clearTimeout(timer);
   }
 }
+
+
+// Media metadata is a small JSON object rather than an array of entries.
+// The bundled artwork remains available if the server or cached metadata fails.
+const validMediaManifest = (value) =>
+  !!value && typeof value === "object" &&
+  typeof value.games?.hollow?.heroImageUrl === "string" &&
+  typeof value.games?.silksong?.heroImageUrl === "string";
+
+export async function readCachedMediaManifest() {
+  try {
+    const raw = await AsyncStorage.getItem(CACHE_PREFIX + "media.json");
+    const value = raw ? JSON.parse(raw) : null;
+    return validMediaManifest(value) ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+export async function fetchMediaManifest() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  try {
+    const response = await fetch(BASE_URL + "/media.json", {
+      signal: controller.signal,
+      cache: "no-store",
+    });
+    if (!response.ok) return null;
+    const value = await response.json();
+    if (!validMediaManifest(value)) return null;
+    AsyncStorage.setItem(CACHE_PREFIX + "media.json", JSON.stringify(value)).catch(() => {});
+    return value;
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
