@@ -96,7 +96,7 @@ function EntryCardBase({ image, fallbackImage, name, summary, description, child
           />
         ) : (
           <View
-            style={[styles.imageFallback, { borderColor: colors.border, backgroundColor: colors.background }]}
+            style={[styles.imageFallback, { borderColor: colors.border, backgroundColor: colors.background }, settings.cardDensity === "compact" && styles.compactImage]}
             accessibilityLabel={image ? name + " artwork is unavailable" : name + " has no artwork"}
           >
             <AppText style={[styles.fallbackLetter, { color: colors.accent }]}>
