@@ -3,7 +3,7 @@
 export const silksongExtraBosses = [
   {
     "name": "Skull Tyrant (Bone Bottom rematch)",
-    "image": "SkullTyrant",
+    "image": "SkullTyrantTheMarrowBoneBottom",
     "act": 1,
     "kind": "Optional rematch",
     "description": "A separate, optional Skull Tyrant encounter in the Bone Bottom area after the first battle in The Marrow. Its appearance can depend on progression.",
