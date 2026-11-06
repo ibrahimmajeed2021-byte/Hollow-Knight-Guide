@@ -364,3 +364,39 @@ Support: **apolohcr2@outlook.com**
 - `src/components/hollow/` — reusable cards, headers and map-preview components.
 - `src/games/`, `src/data/` — game data and configuration.
 - `scripts/build-api.mjs` and `public/api/` — public static JSON API generator and snapshots.
+
+
+## Performance and battery efficiency — Stage 4
+
+The app keeps all Free/Premium features and preserves per-game journal keys.
+Battery and low-memory optimisation is intentionally selective:
+
+- Free accounts retain a 15-second guide-service reachability check so offline
+  restrictions continue to work. Verified Premium accounts check every 90
+  seconds while foregrounded; both still check when returning to the app.
+  Background/automatic checks do not flicker the global loading state.
+- Only the selected game's three API datasets are fetched. The other game's
+  bundled guide still exists locally and fetches its data when selected.
+- Home does not prepare every entry's image just to create the search index.
+  It resolves thumbnails only for at most seven visible search matches.
+- Optional animated Premium wallpapers stop animating on unfocused screens and
+  when the app is inactive/backgrounded.
+- The iOS expo-image memory cache is capped at 64 MiB and disk cache at 200 MiB.
+- Game selection/loading soundtrack stops when the app leaves the foreground.
+  Music-player background playback remains available when the user starts it.
+
+Run `npm run test:performance` alongside `npm run test:qa-stage3`,
+`npm run test:offline`, `npm run test:themes` and
+`npm run test:guide`. These are regression/source checks, **not** verified
+battery or frame-rate measurements.
+
+### Older-device validation
+
+Test both guides on a real older iPhone if available. Run repeated game
+switches, long Bosses/Items scrolling, image expansion, searches, offline
+Free/Premium checks, backgrounding/resuming and Music playback. Use Xcode
+Instruments (Time Profiler, Allocations and Energy) to capture memory,
+CPU time and battery-related activity. Compare the same workflow before/after
+in a **release/profile build**: a development client and iOS Simulator cannot
+give representative battery-drain numbers. Monitor for image reloads or blank
+artwork if the new cache limit is too aggressive.
