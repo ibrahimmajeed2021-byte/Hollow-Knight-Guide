@@ -3,6 +3,7 @@ import { useLocalSearchParams } from "expo-router";
 import { FlatList } from "react-native";
 
 import { CollectionEntry } from "../../components/hollow/collection-entry";
+import { EmptyState } from "../../components/hollow/empty-state";
 import { Screen } from "../../components/hollow/screen";
 import { SearchFilter } from "../../components/hollow/search-filter";
 import { Body, Title } from "../../components/hollow/section-text";
@@ -102,7 +103,7 @@ export default function QuestsScreen() {
             </Body>
           </>
         }
-        ListEmptyComponent={<Body>No quests match your filters.</Body>}
+        ListEmptyComponent={<EmptyState title="No matching quests" description="Try another search or quest status." />}
         renderItem={({ item }) => <CollectionEntry item={item} />}
       />
     </Screen>
