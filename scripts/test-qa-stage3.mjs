@@ -47,7 +47,9 @@ const journal = {
 };
 assert.deepEqual(normaliseJournal(journal), journal);
 const journalSource = read("src/journal/journal-context.jsx");
-assert.match(journalSource, /if \(!ready\) return null/);
+assert.match(journalSource, /if \(!ready\) \{/, "Journal must wait for hydration");
+assert.ok(journalSource.includes('accessibilityLabel="Loading your saved guide progress"'),
+  "Saved progress loading should be accessible");
 assert.match(journalSource, /saveQueue\.current/);
 assert.match(journalSource, /resetProgress[\s\S]*defeated: \{\}, collected: \{\}/);
 assert.match(read("src/app/_layout.jsx"),
