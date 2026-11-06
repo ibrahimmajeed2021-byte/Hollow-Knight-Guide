@@ -1,18 +1,22 @@
-import { useEffect } from "react";
-import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from "react-native";
 import { AppText } from "../components/hollow/app-text";
 import { useOnlineAccess } from "./online-access-context";
 import { setSoundPlaybackAllowed } from "../sound/game-sounds";
 import { useSettings } from "../settings/SettingsContext.jsx";
+import { usePurchases } from "../purchases/PurchasesContext";
 
 // Absolute overlay sits above the game picker, splash transition and tabs.
 // Premium is exempt and can keep using the bundled/cached guide offline.
 export function OfflineAccessGate() {
   const { blocked, status, checking, retry } = useOnlineAccess();
   const { colors } = useSettings();
+  const { ready, busy, previewFree, restorePurchases } = usePurchases();
+  const [restoreMessage, setRestoreMessage] = useState("");
 
   useEffect(() => {
     setSoundPlaybackAllowed(!blocked);
+    if (!blocked) setRestoreMessage("");
   }, [blocked]);
 
   if (!blocked) return null;
@@ -39,7 +43,7 @@ export function OfflineAccessGate() {
               We couldn't reach the guide service. If you're already connected, check your signal and try again.
             </AppText>
             <AppText style={[styles.premium, { color: colors.muted }]}>
-              Premium users can access their downloaded guide offline.
+              Premium works offline after the purchase has been verified on this device while connected.
             </AppText>
             <Pressable
               onPress={retry}
@@ -53,6 +57,32 @@ export function OfflineAccessGate() {
                 {checking ? "Checking…" : "Try again"}
               </AppText>
             </Pressable>
+            {Platform.OS !== "web" && !previewFree ? (
+              <Pressable
+                onPress={async () => {
+                  setRestoreMessage("");
+                  const success = await restorePurchases();
+                  if (!success) {
+                    setRestoreMessage(
+                      "We couldn't verify a Premium purchase. Connect to the internet and try again.",
+                    );
+                  }
+                }}
+                disabled={!ready || busy}
+                accessibilityRole="button"
+                accessibilityLabel="Restore an existing Premium purchase"
+                style={[styles.restoreButton, { borderColor: colors.border, opacity: busy ? 0.6 : 1 }]}
+              >
+                <AppText style={[styles.restoreText, { color: colors.accent }]}>
+                  {busy ? "Restoring…" : "Restore Premium purchase"}
+                </AppText>
+              </Pressable>
+            ) : null}
+            {restoreMessage ? (
+              <AppText accessibilityRole="alert" style={[styles.hint, { color: colors.muted }]}>
+                {restoreMessage}
+              </AppText>
+            ) : null}
           </>
         ) : (
           <ActivityIndicator size="large" color={colors.accent} style={styles.progress} />
@@ -87,5 +117,7 @@ const styles = StyleSheet.create({
   premium: { fontSize: 13, lineHeight: 20, textAlign: "center" },
   button: { width: "100%", minHeight: 52, borderRadius: 12, flexDirection: "row", gap: 10, alignItems: "center", justifyContent: "center", marginTop: 6 },
   buttonText: { fontSize: 17, fontWeight: "700" },
+  restoreButton: { width: "100%", minHeight: 48, borderRadius: 12, borderWidth: 1, alignItems: "center", justifyContent: "center", marginTop: 2 },
+  restoreText: { fontSize: 15, fontWeight: "700" },
   progress: { marginTop: 12 },
 });
