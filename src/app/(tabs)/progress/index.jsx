@@ -1,5 +1,6 @@
 import { router } from "expo-router";
-import { Alert, Platform, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
+import { useState } from "react";
 
 import { AppText } from "../../../components/hollow/app-text";
 import { Button } from "../../../components/hollow/button";
@@ -39,6 +40,8 @@ function ProgressRow({ label, done, total, onPress, big }) {
 
 export default function ProgressScreen() {
   const { defeated, collected, photos, resetProgress } = useJournal();
+  const [confirmingReset, setConfirmingReset] = useState(false);
+  const [resetMessage, setResetMessage] = useState(false);
   const { config } = useGame();
   const { colors } = useSettings();
   const isSilksong = config.id === "silksong";
@@ -60,15 +63,11 @@ export default function ProgressScreen() {
   const totalDone = bossDone + itemDone + collectibleDone;
   const totalItems = bosses.length + items.length + collectibleTotal;
 
-  const confirmReset = () =>
-    Alert.alert(
-      "Reset progress?",
-      `This clears all defeated bosses and collected ${config.itemsLabel.toLowerCase()} and all tracked collectibles, abilities and challenges. Your photo journal and saved loadouts will remain.`,
-      [
-        { text: "Cancel", style: "cancel" },
-        { text: "Reset", style: "destructive", onPress: resetProgress },
-      ],
-    );
+  const confirmReset = () => {
+    resetProgress();
+    setConfirmingReset(false);
+    setResetMessage(true);
+  };
 
   return (
     <Screen>
@@ -149,11 +148,30 @@ export default function ProgressScreen() {
             style={styles.gap}
           />
         )}
-        <Button
-          label="Reset progress"
-          variant="outline"
-          onPress={confirmReset}
-        />
+        {resetMessage ? (
+          <AppText accessibilityRole="alert" style={[styles.note, { color: colors.accent }]}>
+            Your checklist has been reset. Photos, notes and saved loadouts remain untouched.
+          </AppText>
+        ) : null}
+        {confirmingReset ? (
+          <SurfaceCard style={styles.resetConfirmation}>
+            <AppText style={styles.resetTitle}>Reset this game's progress?</AppText>
+            <AppText style={[styles.note, { color: colors.muted }]}>
+              This clears completed bosses, {config.itemsLabel.toLowerCase()} and collectible checkmarks for {config.title}.
+              Your photos, notes and loadouts remain saved.
+            </AppText>
+            <View style={styles.resetActions}>
+              <Button label="Cancel" variant="outline" onPress={() => setConfirmingReset(false)} style={styles.resetAction} />
+              <Button label="Yes, reset progress" onPress={confirmReset} style={styles.resetAction} />
+            </View>
+          </SurfaceCard>
+        ) : (
+          <Button
+            label="Reset progress"
+            variant="outline"
+            onPress={() => { setResetMessage(false); setConfirmingReset(true); }}
+          />
+        )}
       </View>
     </Screen>
   );
@@ -176,4 +194,8 @@ const styles = StyleSheet.create({
   note: { fontSize: 13, lineHeight: 19, paddingHorizontal: 2 },
   sectionTitle: { ...type.heading, marginTop: space.md },
   gap: { marginTop: 8 },
+  resetConfirmation: { gap: 12 },
+  resetTitle: { fontSize: 17, fontWeight: "800" },
+  resetActions: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  resetAction: { flexGrow: 1, minWidth: 125 },
 });
