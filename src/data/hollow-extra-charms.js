@@ -2,7 +2,7 @@
 export const hollowExtraCharms = [
   {
     "name": "Fury of the Fallen",
-    "image": null,
+    "image": "FuryOfTheFallen",
     "notches": "2",
     "description": "Increases Nail damage when the Knight is down to one remaining Mask.",
     "location": "King's Pass — hidden alcove east of the starting room, reached by a concealed platforming path.",
