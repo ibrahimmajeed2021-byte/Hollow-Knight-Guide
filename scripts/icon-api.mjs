@@ -172,5 +172,11 @@ export function createIconApi(root) {
     return { ...entry, ...fields(url || backup, backup) };
   }
 
-  return { boss, equipment, collectible, stagedCount: () => staged.size };
+  return {
+    boss,
+    equipment,
+    collectible,
+    asset: publicAsset,
+    stagedCount: () => staged.size,
+  };
 }
