@@ -30,7 +30,12 @@ export default function QuestsScreen() {
   const inset = useTabInset();
   const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
   useEffect(() => {
-    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+    const nextQuery = typeof routeQuery === "string" ? routeQuery : "";
+    setQuery(nextQuery);
+    if (nextQuery) {
+      setFilter("all");
+      setQuestType("all");
+    }
   }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const [questType, setQuestType] = useState("all");
