@@ -12,7 +12,7 @@ function packageName(item) {
   if (id.includes("lifetime")) return "Lifetime Premium";
   if (id.includes("yearly") || id.includes("annual")) return "Yearly Premium";
   if (id.includes("monthly")) return "Monthly Premium";
-  return item.product.title || item.identifier;
+  return item.product.title || "Premium plan";
 }
 
 export default function PremiumScreen() {
@@ -81,7 +81,7 @@ export default function PremiumScreen() {
 
         {error ? (
           <View style={[styles.card, { borderColor: colors.border, backgroundColor: colors.card }]}>
-            <AppText accessibilityRole="alert">{error}</AppText>
+            <AppText accessibilityRole="alert">{__DEV__ ? error : "Purchases are unavailable right now. You can continue using the free guide."}</AppText>
             <Pressable onPress={clearError} accessibilityRole="button">
               <AppText style={{ color: colors.accent, fontWeight: "bold" }}>Dismiss message</AppText>
             </Pressable>
@@ -94,14 +94,14 @@ export default function PremiumScreen() {
               disabled={!ready || busy || !offerings?.current}
               accessibilityRole="button"
               onPress={presentPaywall}
-              style={[styles.primary, { backgroundColor: colors.button, opacity: !ready || busy ? 0.6 : 1 }]}
+              style={[styles.primary, { backgroundColor: colors.button, opacity: !ready || busy || !offerings?.current ? 0.6 : 1 }]}
             >
               <AppText style={[styles.primaryText, { color: colors.buttonText }]}>
-                {busy ? "Please wait…" : "View Premium paywall"}
+                {busy ? "Please wait…" : "Explore Premium plans"}
               </AppText>
             </Pressable>
 
-            <AppText style={styles.heading}>Purchase options</AppText>
+            <AppText style={styles.heading}>Available plans</AppText>
             {packages.length ? packages.map((item) => (
               <Pressable
                 key={item.identifier}
@@ -113,19 +113,21 @@ export default function PremiumScreen() {
               >
                 <View style={styles.packageText}>
                   <AppText style={styles.productTitle}>{packageName(item)}</AppText>
-                  <AppText style={{ color: colors.muted, fontSize: 13 }}>
-                    {item.product.identifier}
-                  </AppText>
+                  {__DEV__ ? (
+                    <AppText style={{ color: colors.muted, fontSize: 12 }}>
+                      {item.product.identifier}
+                    </AppText>
+                  ) : null}
                 </View>
                 <AppText style={{ color: colors.accent, fontWeight: "bold" }}>
-                  {item.product.priceString || "Choose"}
+                  {item.product.priceString || "See price"}
                 </AppText>
               </Pressable>
             )) : (
               <AppText style={{ color: colors.muted }}>
                 {ready
-                  ? "No purchase options found. In RevenueCat, add monthly, yearly and lifetime products to a Current offering."
-                  : "Loading available purchases…"}
+                  ? "Plans aren't available right now. The full guide remains free to use."
+                  : "Loading available plans…"}
               </AppText>
             )}
           </>
@@ -148,14 +150,19 @@ export default function PremiumScreen() {
             style={[styles.secondary, { borderColor: colors.border }]}
           >
             <AppText style={{ color: colors.text, fontWeight: "bold" }}>
-              Manage subscription / Customer Center
+              Manage subscription
             </AppText>
           </Pressable>
         ) : null}
 
         <AppText style={[styles.note, { color: colors.muted }]}>
-          Purchases are managed by RevenueCat. Test Store purchases are simulated and do not charge real money. A monthly or yearly subscription renews until cancelled; lifetime is a one-time purchase.
+          {__DEV__
+            ? "Development purchase testing is active. Test Store transactions do not charge real money."
+            : "Subscriptions renew automatically unless cancelled. The price, billing period and cancellation terms are shown before purchase. A lifetime plan, if offered, is a one-time payment."}
         </AppText>
+        <Pressable onPress={() => router.push("/privacy")} accessibilityRole="button" style={styles.back}>
+          <AppText style={{ color: colors.accent }}>Privacy notice</AppText>
+        </Pressable>
         <Pressable onPress={() => router.back()} accessibilityRole="button" style={styles.back}>
           <AppText style={{ color: colors.accent }}>Back to settings</AppText>
         </Pressable>

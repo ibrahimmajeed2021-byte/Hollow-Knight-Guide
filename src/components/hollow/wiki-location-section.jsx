@@ -66,9 +66,22 @@ export function WikiLocationSection({ item, gameId, guideOverride }) {
           />
         </>
       ) : guide.imageUrl ? (
-        <AppText style={[styles.mapLabel, { color: colors.muted }]}>
-          Wiki image could not load. Use the source link below to view its location map or artwork.
-        </AppText>
+        <View style={[styles.imageFallback, { borderColor: colors.border, backgroundColor: colors.card }]}>
+          <AppText style={[styles.imageFallbackTitle, { color: colors.text }]}>
+            {guide.imageType === "artwork" ? "Artwork preview unavailable" : "Map preview unavailable"}
+          </AppText>
+          <AppText style={[styles.imageFallbackHelp, { color: colors.muted }]}>
+            Your location details are still here. Open the wiki source below or try loading the preview again.
+          </AppText>
+          <Pressable
+            onPress={() => setFailedImageUrl(null)}
+            accessibilityRole="button"
+            accessibilityLabel="Retry wiki image preview"
+            style={[styles.retryButton, { borderColor: colors.border }]}
+          >
+            <AppText style={[styles.retryText, { color: colors.accent }]}>Try image again</AppText>
+          </Pressable>
+        </View>
       ) : null}
 
       <View style={styles.links}>
@@ -138,6 +151,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
   },
+  imageFallback: { borderWidth: 1, borderRadius: 12, padding: 16, gap: 8, alignItems: "flex-start" },
+  imageFallbackTitle: { fontSize: 15, fontWeight: "700" },
+  imageFallbackHelp: { fontSize: 13, lineHeight: 20 },
+  retryButton: { borderWidth: 1, borderRadius: 9, minHeight: 42, paddingHorizontal: 14, paddingVertical: 9, justifyContent: "center" },
+  retryText: { fontSize: 14, fontWeight: "700" },
   credit: {
     fontSize: 12,
     lineHeight: 18,

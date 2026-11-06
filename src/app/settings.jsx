@@ -59,7 +59,7 @@ const SELECTOR_TRACKS = [
 ];
 
 const SOURCE_LABELS = {
-  online: "Online (latest)",
+  online: "Online (checked this session)",
   cached: "Cached (saved from last time)",
   bundled: "Bundled (offline)",
 };
@@ -377,9 +377,34 @@ export default function SettingsScreen() {
         <AppText>{`Source: ${SOURCE_LABELS[dataStatus.source]}`}</AppText>
         <AppText style={{ color: colors.muted, fontSize: 13 }}>
           {dataStatus.at
-            ? `Last updated ${new Date(dataStatus.at).toLocaleString()}`
+            ? `Last checked ${new Date(dataStatus.at).toLocaleString()}`
             : "Using the data bundled with the app."}
         </AppText>
+      </Section>
+
+      <Section title="About & support">
+        <AppText style={[styles.hint, { color: colors.muted }]}>
+          Read about this unofficial companion, view its source credits,
+          contact the developer or check how app data is handled.
+        </AppText>
+        <Pressable
+          onPress={() => router.push("/about")}
+          accessibilityRole="button"
+          accessibilityLabel="About this guide and source credits"
+          style={[styles.infoLink, { borderColor: colors.border }]}
+        >
+          <AppText style={[styles.infoLinkText, { color: colors.accent }]}>About & source credits</AppText>
+          <AppText style={{ color: colors.accent }}>›</AppText>
+        </Pressable>
+        <Pressable
+          onPress={() => router.push("/privacy")}
+          accessibilityRole="button"
+          accessibilityLabel="Privacy notice"
+          style={[styles.infoLink, { borderColor: colors.border }]}
+        >
+          <AppText style={[styles.infoLinkText, { color: colors.accent }]}>Privacy notice</AppText>
+          <AppText style={{ color: colors.accent }}>›</AppText>
+        </Pressable>
       </Section>
 
       <BackupSection />
@@ -447,4 +472,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   resetText: { fontWeight: "bold" },
+  infoLink: { borderWidth: 1, minHeight: 48, borderRadius: 12, paddingHorizontal: 14, flexDirection: "row", alignItems: "center", justifyContent: "space-between" },
+  infoLinkText: { fontSize: 15, fontWeight: "700" },
 });

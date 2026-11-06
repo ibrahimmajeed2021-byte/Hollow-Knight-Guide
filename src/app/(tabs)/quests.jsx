@@ -1,4 +1,5 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useLocalSearchParams } from "expo-router";
 import { FlatList } from "react-native";
 
 import { CollectionEntry } from "../../components/hollow/collection-entry";
@@ -17,9 +18,13 @@ const STATUS_FILTERS = [
 
 export default function QuestsScreen() {
   const { config } = useGame();
+  const { query: routeQuery } = useLocalSearchParams();
   const { collected } = useJournal();
   const inset = useTabInset();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
+  useEffect(() => {
+    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+  }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const [kind, setKind] = useState("all");
   const isSilksong = config.id === "silksong";

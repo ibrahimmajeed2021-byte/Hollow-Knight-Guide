@@ -1,78 +1,73 @@
-# Welcome to your Expo app 👋
+# Hollow Knight Guide — Hallownest & Pharloom Field Guide
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A fan-made companion for **Hollow Knight** and **Hollow Knight: Silksong** built with Expo and React Native. It is an **independent, unofficial project**, not endorsed, published or affiliated with Team Cherry.
 
-## Get started
+## What the app does
 
-1. Install dependencies
+- Guides and locations for bosses, charms, tools, crests, collectibles and Silksong wishes.
+- On-device progress tracking for boss defeats, item pickups and completed quests.
+- A home dashboard with real completion totals, cross-guide search, and shortcuts to unfinished entries.
+- Charms and crest/tool loadout builders, personal notes and a local photo journal.
+- Map previews and source links, with graceful offline/image-error fallbacks.
+- Themes, accessibility controls, and a music player.
+- Optional Premium themes and selector extras; the main guide remains free.
 
-   ```bash
-   npm install
-   ```
+The **Progress** screen keeps its full completion breakdown, and checkmarks use the original journal keys. Changing screens does not reset saved progress.
 
-2. Start the app
+## Run and test
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+Install dependencies in your local clone:
 
 ```bash
-npm run reset-project
+npm install
+npx expo start --dev-client --clear
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Use an **existing Expo development-client build** to open the app. Because this project has native RevenueCat and AdMob dependencies, Expo Go is not a substitute for the full development client.
 
-### Other setup steps
+### Home and trust overhaul checks
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+1. Select **Hollow Knight**. Check the hero progress bar, boss/charms counts, item search and next-unfinished shortcuts.
+2. Search for a boss or charm, tap its result, confirm the correct tab opens and the list filters by that name. Mark it done and return Home to check that counts update.
+3. Switch to **Silksong**. Confirm the dashboard now includes items and quests, then test searches for a boss, a tool, a Mask Shard and a wish. Verify all results land in their matching tab.
+4. On **Settings → About & support**, open **About & source credits**, then **Privacy notice**; test links and Back navigation.
+5. Expand a wiki map while offline. Its acquisition text and wiki credits should still be visible. When a remote preview fails, a clear placeholder and Retry button should appear.
+6. Open Premium in the development client and check its offering and Restore Purchases buttons. For a production build, technical SKU/configuration error text should not appear in the UI.
+7. Switch games more than once. Confirm the short loading animation and game-selector music still work and saved progress remains independent for each game.
+8. Test large text/high contrast/reduced motion and the progress backup/restore flow.
 
-## Learn more
+The app code changes do not require regenerating the static guide API or rebuilding an existing **development client**. Native app config changes or new native modules would still require a new build.
 
-To learn more about developing your project with Expo, look at the following resources:
+## Updating the public guide API
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+Guide JSON can be regenerated separately when source item data changes:
 
-## Join the community
+```bash
+npm run build:api
+npx expo export --platform web
+npx surge ./dist hollow-knight-guide-ibrahim.surge.sh
+```
 
-Join our community of developers creating universal apps.
+Pushing code to GitHub alone does **not** update the public Surge deployment. Check the latest JSON on your own Surge endpoint when updating content.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Source attribution and intellectual property
 
+- Gameplay information and location references are adapted from [Hollow Knight Wiki](https://hollowknight.wiki/w/Main_Page). Wiki article text is community contributed; **individual images and media may have different copyright restrictions**. Location cards link to the source file pages where available.
+- Hollow Knight and Silksong are games by [Team Cherry](https://www.teamcherry.com.au/games). Their art, game imagery and music are not claimed as original assets of this guide.
+- Musical compositions are by Christopher Larkin.
 
-## Silksong Items and Quests navigation
+**Important before distributing or monetising:** review permissions to reproduce or stream game graphics and recordings, and verify compliance with platform app-review rules. An attribution or fan-project notice does not itself grant permission.
 
-- **Items** replaces the Silksong **Tools & Crests** tab and includes tools,
-  crests, Mask Shards, Spool Fragments, Memory Lockets, Silk Hearts,
-  Pale Oil, Craftmetal, and Skills & Abilities.
-- Swipe the category filters to focus on an item family; search and
-  collected/not-collected filters work across the combined list.
-- **Quests** is a separate Silksong-only tab showing all 54 wishes, with quest
-  type, location, rewards, search, and completed/not-completed filters.
-- **Progress** keeps its existing completion breakdown. Tapping a category
-  opens the relevant Items filter or Quests tab. The old all-collectibles
-  checklist remains available as a combined view.
-- The original item names and `c:<name>` keys remain unchanged, so existing
-  checkmarks and notes carry over automatically. Quests are marked **Completed**.
-- The Hollow Knight **Charms** tab remains unchanged.
+## Privacy and support
 
-These are JavaScript-only navigation changes; test with the existing Expo
-  development client. No API rebuild or new native binary is needed unless
-  you change native dependencies. Publishing the Surge data API separately
-  is only necessary for data changes, not these tab UI changes.
+Read the [public privacy notice](PRIVACY.md). A matching in-app privacy screen is reachable from Settings. The notice covers on-device checklist data, photo files, optional ads/purchases and third-party content requests; review it again for the exact production build.
+
+Support: **apolohcr2@outlook.com**
+
+## Project structure
+
+- `src/app/(tabs)/` — main Home, Bosses, Items/Charms, Quests, Music and Progress navigation.
+- `src/app/about.jsx` and `src/app/privacy.jsx` — attribution and privacy pages.
+- `src/components/hollow/` — reusable cards, headers and map-preview components.
+- `src/games/`, `src/data/` — game data and configuration.
+- `scripts/build-api.mjs` and `public/api/` — public static JSON API generator and snapshots.

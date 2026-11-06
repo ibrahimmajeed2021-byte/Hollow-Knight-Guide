@@ -48,7 +48,11 @@ function HollowCharmsScreen() {
   const charms = config.items;
   const charmImages = config.itemImages;
   const inset = useTabInset();
-  const [query, setQuery] = useState("");
+  const { query: routeQuery } = useLocalSearchParams();
+  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
+  useEffect(() => {
+    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+  }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const [kind, setKind] = useState("all");
   const hasKinds = charms.some((c) => c.kind);
@@ -171,9 +175,12 @@ const matchesCategory = (row, category) => {
 function SilksongItemsScreen() {
   const { config } = useGame();
   const { collected } = useJournal();
-  const { category: routeCategory } = useLocalSearchParams();
+  const { category: routeCategory, query: routeQuery } = useLocalSearchParams();
   const inset = useTabInset();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(typeof routeQuery === "string" ? routeQuery : "");
+  useEffect(() => {
+    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+  }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const [category, setCategory] = useState("all");
 
