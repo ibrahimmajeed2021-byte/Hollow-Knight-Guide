@@ -1,16 +1,12 @@
 import { Platform } from 'react-native';
 import { usePathname } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { isSecondaryGuideRoute } from '../navigation/route-policy.mjs';
 
 const TAB_BAR_HEIGHT = 64;
 
 export function isTabBarHidden(pathname) {
-  return (
-    pathname.startsWith('/progress/photo') ||
-    pathname === '/progress/booth' ||
-    pathname === '/charms/loadout' ||
-    pathname === '/settings'
-  );
+  return isSecondaryGuideRoute(pathname);
 }
 
 export function useTabInset() {
