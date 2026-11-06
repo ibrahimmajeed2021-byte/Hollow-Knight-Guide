@@ -9,7 +9,7 @@ import {
 } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef } from "react";
-import { Platform, View } from "react-native";
+import { AppState, Platform, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { GameSelect } from "../components/hollow/game-select";
@@ -19,7 +19,7 @@ import { GameProvider, useGame } from "../games/game-context";
 import { OnlineAccessProvider } from "../network/online-access-context";
 import { OfflineAccessGate } from "../network/offline-access-gate";
 import { useOnlineAccess } from "../network/online-access-context";
-import { configureHostedAudio } from "../sound/game-sounds";
+import { configureHostedAudio, stopSound } from "../sound/game-sounds";
 import { JournalProvider } from "../journal/journal-context";
 import { GuidedModeProvider } from "../premium/guided-context";
 import { LoadoutsProvider } from "../loadouts/loadouts-context";
@@ -39,6 +39,16 @@ function AppShell() {
   const triggerHaptic = useHaptics();
   const pathname = usePathname();
   const previousPath = useRef(pathname);
+
+  // The guide's menu/loading soundtrack should not run with the phone locked
+  // or when switching apps. The dedicated Music player is independent and
+  // retains its explicit background-playback behaviour.
+  useEffect(() => {
+    const listener = AppState.addEventListener("change", (state) => {
+      if (state !== "active") stopSound();
+    });
+    return () => listener.remove();
+  }, []);
 
   useEffect(() => {
     if (previousPath.current !== pathname) {
