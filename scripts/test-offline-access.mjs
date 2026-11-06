@@ -7,7 +7,10 @@ const cases = [
   { status: "checking", premium: false, ready: true, expected: true },
   { status: "unreachable", premium: true, ready: true, expected: false },
   { status: "checking", premium: true, ready: true, expected: false },
-  { status: "unreachable", premium: false, ready: false, expected: false },
+  { status: "unreachable", premium: false, ready: false, expected: true },
+  { status: "checking", premium: false, ready: false, expected: true },
+  { status: "checking", premium: true, ready: false, expected: true },
+  { status: "online", premium: false, ready: false, expected: false },
 ];
 
 for (const test of cases) {
