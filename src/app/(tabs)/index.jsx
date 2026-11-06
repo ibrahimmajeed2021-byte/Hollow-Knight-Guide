@@ -426,90 +426,103 @@ export default function HomeScreen() {
         </> : null}
 
         {showSection("continue") ? <>
-        <SectionHeading title="Continue exploring" subtitle="Pick up where you left off" />
-        <View style={styles.nextList}>
-          <NextRow
-            initial="B"
-            image={nextBossSafe ? nextBossArtwork.image : null}
-            fallbackImage={nextBossSafe ? nextBossArtwork.fallbackImage : null}
-            title="NEXT BOSS"
-            name={nextBossSafe ? (nextBoss?.name ?? "All bosses defeated") : guided.hiddenLabel("boss")}
-            detail="Open boss guide and location"
-            complete={!nextBoss}
-            onPress={() => navigateTo("/bosses", nextBossSafe ? nextBoss?.name : null)}
-          />
-          <NextRow
-            initial={isSilksong ? "I" : "C"}
-            image={nextItemSafe ? nextItemArtwork.image : null}
-            fallbackImage={nextItemSafe ? nextItemArtwork.fallbackImage : null}
-            title={isSilksong ? "NEXT ITEM" : "NEXT CHARM"}
-            name={nextItemSafe ? (nextItem?.name ?? (isSilksong ? "All items collected" : "All charms collected")) : guided.hiddenLabel(nextItemKind)}
-            detail={nextEquipment ? "Open equipment guide" : "View location and acquisition details"}
-            complete={!nextItem}
-            onPress={() => navigateTo("/charms", nextItemSafe ? nextItem?.name : null)}
-          />
-          {!isSilksong ? (
+          <SectionHeading title="Continue exploring" subtitle="A good place to pick up your journey" />
+          <View style={styles.nextList}>
             <NextRow
-              initial="G"
-              image={nextPickupSafe ? nextPickupArtwork.image : null}
-              fallbackImage={nextPickupSafe ? nextPickupArtwork.fallbackImage : null}
-              title="NEXT COLLECTIBLE"
-              name={nextPickupSafe ? (nextPickup?.name ?? "All collectibles completed") : guided.hiddenLabel("collectible")}
-              detail={nextPickupSafe ? (nextPickup?.location ?? "See your Hallownest checklist") : "Explore more to reveal this discovery"}
-              complete={!nextPickup}
-              onPress={() => navigateTo("/progress/collectibles", nextPickupSafe ? nextPickup?.name : null)}
+              initial="B"
+              image={nextBossSafe ? nextBossArtwork.image : null}
+              fallbackImage={nextBossSafe ? nextBossArtwork.fallbackImage : null}
+              title="NEXT BOSS"
+              name={nextBossSafe ? (nextBoss?.name ?? "All bosses defeated") : guided.hiddenLabel("boss")}
+              detail={nextBossSafe ? "Boss guide and location" : "Continue exploring to discover this boss"}
+              complete={!nextBoss}
+              onPress={() => navigateTo("/bosses", nextBossSafe ? nextBoss?.name : null)}
             />
-          ) : null}
-          {isSilksong ? (
             <NextRow
-              initial="Q"
-              image={nextQuestSafe ? nextQuestArtwork.image : null}
-              fallbackImage={nextQuestSafe ? nextQuestArtwork.fallbackImage : null}
-              title="NEXT QUEST"
-              name={nextQuestSafe ? (nextQuest?.name ?? "All quests completed") : guided.hiddenLabel("collectible")}
-              detail="See requirements and rewards"
-              complete={!nextQuest}
-              onPress={() => navigateTo("/quests", nextQuestSafe ? nextQuest?.name : null)}
+              initial={isSilksong ? "I" : "C"}
+              image={nextItemSafe ? nextItemArtwork.image : null}
+              fallbackImage={nextItemSafe ? nextItemArtwork.fallbackImage : null}
+              title={isSilksong ? "NEXT ITEM" : "NEXT CHARM"}
+              name={nextItemSafe
+                ? (nextItem?.name ?? (isSilksong ? "All items collected" : "All charms collected"))
+                : guided.hiddenLabel(nextItemKind)}
+              detail={nextItemSafe ? "See where to find it" : "Keep exploring to reveal this discovery"}
+              complete={!nextItem}
+              onPress={() => navigateTo("/charms", nextItemSafe ? nextItem?.name : null)}
             />
-          ) : null}
-        </View>
+            <Pressable
+              onPress={() => navigateTo(
+                isSilksong ? "/quests" : "/progress/collectibles",
+                isSilksong
+                  ? (nextQuestSafe ? nextQuest?.name : null)
+                  : (nextPickupSafe ? nextPickup?.name : null),
+              )}
+              accessibilityRole="button"
+              accessibilityLabel={isSilksong ? "Browse Silksong quests" : "Browse Hollow Knight collectibles"}
+              style={[styles.secondaryShortcut, { borderColor: colors.border }]}
+            >
+              <View style={styles.flex}>
+                <AppText style={[styles.shortcutEyebrow, { color: colors.muted }]}>
+                  {isSilksong ? "QUESTS" : "COLLECTIBLES"}
+                </AppText>
+                <AppText style={styles.shortcutName} numberOfLines={1}>
+                  {isSilksong
+                    ? (nextQuestSafe ? (nextQuest?.name ?? "All quests completed") : guided.hiddenLabel("collectible"))
+                    : (nextPickupSafe ? (nextPickup?.name ?? "All collectibles completed") : guided.hiddenLabel("collectible"))}
+                </AppText>
+              </View>
+              <AppText style={[styles.chevron, { color: colors.accent }]}>›</AppText>
+            </Pressable>
+          </View>
         </> : null}
 
         {showSection("toolkit") ? <>
-        <SectionHeading title="Your toolkit" subtitle="Useful shortcuts for your next session" />
-        <DashboardCard>
-          <AppText style={styles.toolkitTitle}>{loadout ? loadout.name : "Your loadout"}</AppText>
-          <AppText style={[styles.toolkitNote, { color: colors.muted }]}>
-            {loadout
-              ? isSilksong
-                ? (loadout.crest || "Crest") + " · " + (loadout.tools?.length ?? 0) + " tools equipped"
-                : (loadout.charms?.length ?? 0) + " charms equipped"
-              : "Save your favourite combinations for a boss or area."}
-          </AppText>
-          <Button
-            label={loadout ? "Manage loadouts" : "Build a loadout"}
+          <SectionHeading title="Your toolkit" subtitle="Ready for your next encounter" />
+          <DashboardCard
             onPress={() => router.push(isSilksong ? "/charms/silksong-loadout" : "/charms/loadout")}
-          />
-        </DashboardCard>
+            label={loadout ? "Manage loadout " + loadout.name : "Build a loadout"}
+            style={styles.toolkitRow}
+          >
+            <View style={styles.flex}>
+              <AppText style={styles.toolkitTitle}>{loadout ? loadout.name : "Build a loadout"}</AppText>
+              <AppText style={[styles.toolkitNote, { color: colors.muted }]}>
+                {loadout
+                  ? isSilksong
+                    ? (loadout.crest || "Crest") + " · " + (loadout.tools?.length ?? 0) + " tools"
+                    : (loadout.charms?.length ?? 0) + " charms equipped"
+                  : "Save your favourite equipment for bosses and areas."}
+              </AppText>
+            </View>
+            <AppText style={[styles.chevron, { color: colors.accent }]}>›</AppText>
+          </DashboardCard>
         </> : null}
 
-        {isPremium ? (
-          <>
-            <SectionHeading
-              title="Premium companion"
-              subtitle="Tailor your guide and plan your next milestone"
-            />
-            <DashboardCard>
-              <AppText style={styles.toolkitTitle}>Plan, explore, personalise</AppText>
-              <AppText style={[styles.toolkitNote, { color: colors.muted }]}>
-                Explore without spoilers, follow your personalised route, or customise the look and layout.
-              </AppText>
-              <Button label="Spoiler-free Guided Mode" onPress={() => router.push("/guided")} />
-              <Button label="Smart progression planner" onPress={() => router.push("/planner")} />
-              <Button label="Customisation studio" onPress={() => router.push("/premium-studio")} />
-            </DashboardCard>
-          </>
-        ) : null}
+        <SectionHeading
+          title="Your companion"
+          subtitle={isPremium ? "Go further, your way" : "Optional ways to personalise your journey"}
+        />
+        <DashboardCard
+          onPress={() => router.push("/companion")}
+          label={isPremium ? "Open your Premium Companion" : "Discover optional Premium Companion features"}
+          style={styles.companionRow}
+        >
+          <View style={[styles.companionSymbol, { borderColor: colors.border, backgroundColor: colors.background }]}>
+            <AppText style={[styles.companionGlyph, { color: colors.accent }]}>✧</AppText>
+          </View>
+          <View style={styles.flex}>
+            <AppText style={styles.toolkitTitle}>
+              {isPremium ? "Premium Companion" : "Make the guide yours"}
+            </AppText>
+            <AppText style={[styles.toolkitNote, { color: colors.muted }]}>
+              {isPremium
+                ? (guided.goal
+                  ? "Continue your plan or explore in Guided Mode"
+                  : "Guided Mode, your planner and customisation")
+                : "See the extra guidance and offline features"}
+            </AppText>
+          </View>
+          <AppText style={[styles.chevron, { color: colors.accent }]}>›</AppText>
+        </DashboardCard>
 
         <Pressable onPress={() => router.push("/about")} accessibilityRole="button" accessibilityLabel="About, credits and privacy" style={styles.footerLink}>
           <AppText style={[styles.footerText, { color: colors.muted }]}>
@@ -568,6 +581,16 @@ const styles = StyleSheet.create({
   nextName: { fontSize: 16, fontWeight: "700", marginTop: 3 },
   nextDetail: { fontSize: 12, marginTop: 4 },
   chevron: { fontSize: 27, fontWeight: "400" },
+  secondaryShortcut: {
+    minHeight: 64, borderTopWidth: 1, marginHorizontal: 6, paddingHorizontal: 12,
+    paddingVertical: 12, flexDirection: "row", alignItems: "center", gap: 10,
+  },
+  shortcutEyebrow: { fontSize: 10, letterSpacing: 1.1, fontWeight: "800" },
+  shortcutName: { fontSize: 15, fontWeight: "700", marginTop: 2 },
+  toolkitRow: { flexDirection: "row", alignItems: "center", minHeight: 78 },
+  companionRow: { flexDirection: "row", alignItems: "center", gap: 12, minHeight: 94 },
+  companionSymbol: { width: 48, height: 48, borderWidth: 1, borderRadius: 15, alignItems: "center", justifyContent: "center" },
+  companionGlyph: { fontSize: 25 },
   toolkitTitle: { fontSize: 18, fontWeight: "800" },
   toolkitNote: { fontSize: 13, lineHeight: 18 },
   footerLink: { alignItems: "center", marginTop: 10, gap: 6, paddingVertical: 12 },
