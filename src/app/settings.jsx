@@ -207,6 +207,33 @@ export default function SettingsScreen() {
         </Pressable>
       </Section>
 
+      <Section title="Premium companion tools">
+        <AppText style={[styles.hint, { color: colors.muted }]}>
+          {isPremium
+            ? "Your guided companion, progression planner and customisation studio are unlocked."
+            : "Explore extra Premium tools for planning your route and personalising the guide."}
+        </AppText>
+        {[
+          ["Spoiler-free Guided Mode", "/guided"],
+          ["Smart progression planner", "/planner"],
+          ["Customisation studio", "/premium-studio"],
+        ].map(([label, path]) => (
+          <Pressable
+            key={path}
+            onPress={() => router.push(isPremium ? path : "/premium")}
+            accessibilityRole="button"
+            style={[styles.infoLink, { borderColor: colors.border }]}
+          >
+            <AppText style={[styles.infoLinkText, { color: colors.accent }]}>
+              {label}
+            </AppText>
+            <AppText style={{ color: colors.accent }}>
+              {isPremium ? "›" : "🔒"}
+            </AppText>
+          </Pressable>
+        ))}
+      </Section>
+
       {privacyOptionsRequired ? (
         <Section title="Ad privacy">
           <AppText style={{ color: colors.muted }}>
