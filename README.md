@@ -80,6 +80,43 @@ Use an **existing Expo development-client build** to open the app. Because this 
 
 The app code changes do not require regenerating the static guide API or rebuilding an existing **development client**. Native app config changes or new native modules would still require a new build.
 
+## Free online access and Premium offline mode
+
+Free users need an active internet connection to the guide service. An
+app-wide connection gate checks `/api/index.json` on launch, periodically,
+and when the app returns to the foreground. If it cannot reach the guide,
+Free users see a connection-required screen with a Retry button. Switching
+off Wi-Fi does not count as offline if cellular data still works. A service
+outage can also trigger the message; the wording explains this.
+
+Premium subscriptions and lifetime purchases use the existing RevenueCat
+entitlement `hollow_knight_guide_pro`. Offline Premium uses locally
+bundled artwork, guide data and music plus cached API information. A locally
+recorded positive entitlement is a backup for RevenueCat's own offline
+CustomerInfo cache; time-limited subscriptions are not extended past their
+last known expiration without verification. Premium purchases require an
+internet connection the first time.
+
+When a Free user loses connection, guide screens are covered and both
+selector/loading music and the music player are stopped/paused.
+
+Test the policy with `npm run test:offline`. On a device, use the Premium
+screen's **Preview Free Mode** (Debug only), disable both Wi-Fi and cellular
+data, wait for the check, then reconnect. Repeat with Premium active.
+The service ping checks every 15 seconds, with a 6.5-second timeout.
+It does not test whether an AdMob ad actually loaded or can be shown.
+
+The network gate is a JavaScript feature and does **not** require a new native
+build for an existing development client. Production app updates still need
+to be distributed through the normal release process.
+
+**Important:** An app cannot run before its native icon/splash and essential
+boot code are available locally. Premium offline operation also needs data
+and media on the device. Accordingly the app is API-*first*, not a remote-only
+binary. The static API controls the online images and the locally bundled
+versions are fallback media. Audio remains bundled: do not publicly rehost
+copyrighted game recordings without distribution rights.
+
 ## API-driven icons and location images
 
 The public JSON endpoints now include `iconUrl` for every boss, charm,
@@ -93,6 +130,10 @@ Run `npm run build:api` to generate the JSON and stage bundled images under
 into `dist/guide-icons/` alongside the static JSON. Both are then deployed
 to the same Surge domain. Use `npm run test:api-images` to validate all
 published JSON references against staged image files locally.
+
+The `media.json` endpoint now controls both games' Home hero portraits and
+background artwork. These assets are staged into `public/guide-icons/` along
+with the artwork used by item endpoints.
 
 After the initial app code update, changing an icon URL in an API JSON
 response can change the online icon without rebuilding the native app.
