@@ -162,7 +162,7 @@ export default function HomeScreen() {
   const { loadouts } = useLoadouts();
   const { config, dataStatus, mediaManifest } = useGame();
   const activeTheme = resolveTheme(settings.themeStyle);
-  const customTheme = activeTheme.id !== "default";
+  const customTheme = activeTheme.id !== "default" && !settings.highContrast;
   const hostedTheme = networkStatus === "online"
     ? mediaManifest?.themes?.[activeTheme.id] : null;
   const homeBackground = customTheme ? activeTheme.backgroundAsset : config.loadingBackground;
