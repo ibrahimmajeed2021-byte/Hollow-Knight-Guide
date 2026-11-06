@@ -126,7 +126,7 @@ export default function CollectiblesScreen() {
           return (
             <EntryCard
               image={item.iconUrl ? { uri: item.iconUrl } : getCollectibleArtwork(item, config.id, guide?.artworkUrl)}
-              fallbackImage={getCollectibleFallbackArtwork(item, config.id)}
+              fallbackImage={getCollectibleFallbackArtwork(item, config.id) ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
               name={item.name}
               description={item.description ?? ""}
               summary={
