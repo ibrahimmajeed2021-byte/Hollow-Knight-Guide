@@ -75,7 +75,8 @@ export default function PremiumScreen() {
             </AppText>
           ) : null}
           <AppText>✓ Use Hollow Knight and Silksong guides offline</AppText>
-          <AppText>✓ Hollow Knight and Silksong appearance styles</AppText>
+          <AppText>✓ 13 Premium themes across Hollow Knight and Silksong</AppText>
+          <AppText>✓ Citadel of Song, Voidheart, Godhome and more atmospheric backgrounds</AppText>
           <AppText>✓ All additional game-selector music</AppText>
           <AppText>✓ Same Premium access with monthly, yearly or lifetime purchase</AppText>
         </View>
