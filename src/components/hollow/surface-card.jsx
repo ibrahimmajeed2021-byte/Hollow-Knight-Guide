@@ -26,7 +26,7 @@ export function SurfaceCard({
     },
     style,
   ];
-  if (!onPress) return <View style={base}>{children}</View>;
+  if (!onPress) return <View style={base} accessible={!!label} accessibilityLabel={label}>{children}</View>;
   return (
     <Pressable
       accessibilityRole="button"
