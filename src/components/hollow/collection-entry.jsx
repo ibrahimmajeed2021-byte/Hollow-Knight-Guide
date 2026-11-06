@@ -21,6 +21,8 @@ export function CollectionEntry({ item }) {
   const key = `c:${item.name}`;
   return (
     <EntryCard
+      spoilerKind="collectible"
+      spoilerEntry={item}
       name={item.name}
       image={item.iconUrl ? { uri: item.iconUrl } : getCollectibleArtwork(item, "silksong", guide?.artworkUrl)}
       fallbackImage={getCollectibleFallbackArtwork(item, "silksong") ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
