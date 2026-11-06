@@ -5,7 +5,6 @@ import { Pressable, StyleSheet, TextInput, View } from "react-native";
 
 import { AdBanner } from "../../ads/AdBanner";
 import { AppText } from "../../components/hollow/app-text";
-import { Button } from "../../components/hollow/button";
 import { ApiArtworkImage } from "../../components/hollow/api-artwork-image";
 import { Screen } from "../../components/hollow/screen";
 import { useGame } from "../../games/game-context";
@@ -232,8 +231,6 @@ export default function HomeScreen() {
   const nextItemArtwork = homeArtwork(
     nextItem, isSilksong && nextItemRow?.type === "collectible" ? "collectible" : "equipment", config,
   );
-  const nextPickupArtwork = homeArtwork(nextPickup, "collectible", config);
-  const nextQuestArtwork = homeArtwork(nextQuest, "collectible", config);
   const loadout = loadouts[0];
 
   const lookup = useMemo(() => [
