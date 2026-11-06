@@ -1,4 +1,4 @@
-import { Image } from "expo-image";
+import { ApiArtworkImage } from "./api-artwork-image";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -25,11 +25,16 @@ const REDUCED_MOTION_QUICK_MS = 280;
 export function LoadingScreen() {
   const { settings } = useSettings();
   const { isPremium } = usePurchases();
-  const { config, gameId, loaded } = useGame();
+  const { config, gameId, loaded, mediaManifest } = useGame();
   const launch = !gameId;
   // Which game's loading sound the launch screen uses; re-rolled on every launch.
   const [launchPick] = useState(pickRandomGameId);
-  const heroes = launch ? [games.hollow, games.silksong] : [config];
+  const heroes = launch
+    ? [games.hollow, games.silksong].map((game) => ({
+        ...game,
+        heroImageUrl: mediaManifest?.games?.[game.id]?.heroImageUrl,
+      }))
+    : [config];
   const words = launch
     ? ["HOLLOW KNIGHT & SILKSONG"]
     : config.guideTitle.toUpperCase().split(" ");
@@ -125,8 +130,9 @@ export function LoadingScreen() {
     >
       {!launch && config.loadingBackground ? (
         <>
-          <Image
-            source={config.loadingBackground}
+          <ApiArtworkImage
+            iconUrl={config.backgroundImageUrl}
+            fallbackImage={config.loadingBackground}
             style={StyleSheet.absoluteFill}
             contentFit="cover"
             blurRadius={2}
@@ -140,8 +146,9 @@ export function LoadingScreen() {
       >
         {heroes.map((g) => (
           <View key={g.id}>
-            <Image
-              source={g.loadingImage}
+            <ApiArtworkImage
+              iconUrl={g.heroImageUrl}
+              fallbackImage={g.loadingImage}
               style={g.loadingImageSize}
               contentFit="contain"
             />
