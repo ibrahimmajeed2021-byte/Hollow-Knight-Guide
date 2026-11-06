@@ -215,51 +215,45 @@ export default function HomeScreen() {
   );
   const loadout = loadouts[0];
 
-  const lookup = useMemo(() => [
-    ...bosses.filter((entry) => guided.isVisible("boss", entry)).map((entry) => ({
-      id: "boss:" + entry.name,
-      name: entry.name,
-      category: "Boss",
-      location: (entry.locations ?? []).map((loc) => loc.name).join(" "),
-      path: "/bosses",
-      ...homeArtwork(entry, "boss", config),
-    })),
-    ...equipment.filter((entry) => guided.isVisible("item", entry)).map((entry) => ({
-      id: "item:" + entry.name,
-      name: entry.name,
-      category: isSilksong ? "Tool or Crest" : "Charm",
-      location: entry.location ?? "",
-      path: "/charms",
-      ...homeArtwork(entry, "equipment", config),
-    })),
-    ...pickups.filter((entry) => guided.isVisible("collectible", entry)).map((entry) => ({
-      id: "pickup:" + entry.name,
-      name: entry.name,
-      category: "Item",
-      location: entry.location ?? "",
-      path: isSilksong ? "/charms" : "/progress/collectibles",
-      ...homeArtwork(entry, "collectible", config),
-    })),
-    ...quests.filter((entry) => guided.isVisible("collectible", entry)).map((entry) => ({
-      id: "quest:" + entry.name,
-      name: entry.name,
-      category: "Quest",
-      location: entry.location ?? "",
-      path: "/quests",
-      ...homeArtwork(entry, "collectible", config),
-    })),
-  ], [bosses, equipment, pickups, quests, isSilksong, config, guided]);
-
+  // Do not build hundreds of image-source objects on every Home render.
+  // Scan entry text only when the user searches; resolve artwork for the
+  // seven visible matches, never the full guide.
   const searchResults = useMemo(() => {
     const term = query.trim().toLowerCase();
-    if (!term) return [];
-    return lookup
-      .filter((entry) =>
-        entry.name.toLowerCase().includes(term) ||
-        entry.location.toLowerCase().includes(term),
-      )
-      .slice(0, 7);
-  }, [lookup, query]);
+    if (!term || settings.homeSections?.search === false) return [];
+
+    const matches = [];
+    const addMatches = (entries, kind, category, path, artworkKind, prefix) => {
+      for (const entry of entries) {
+        if (matches.length >= 7) break;
+        const location = kind === "boss"
+          ? (entry.locations ?? []).map((loc) => loc.name).join(" ")
+          : entry.location ?? "";
+        if (!entry.name.toLowerCase().includes(term) &&
+            !String(location).toLowerCase().includes(term)) continue;
+        if (!guided.isVisible(kind, entry)) continue;
+        matches.push({
+          id: prefix + entry.name,
+          name: entry.name,
+          category,
+          location,
+          path,
+          ...homeArtwork(entry, artworkKind, config),
+        });
+      }
+    };
+
+    addMatches(bosses, "boss", "Boss", "/bosses", "boss", "boss:");
+    addMatches(equipment, "item", isSilksong ? "Tool or Crest" : "Charm",
+      "/charms", "equipment", "item:");
+    addMatches(pickups, "collectible", "Item",
+      isSilksong ? "/charms" : "/progress/collectibles", "collectible", "pickup:");
+    addMatches(quests, "collectible", "Quest", "/quests", "collectible", "quest:");
+    return matches;
+  }, [
+    query, bosses, equipment, pickups, quests, isSilksong, config,
+    guided.isVisible, settings.homeSections?.search,
+  ]);
 
   const sourceLabel = dataStatus.source === "online"
     ? "Guide data updated online"
