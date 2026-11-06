@@ -35,7 +35,9 @@ export default function BossesScreen() {
     typeof routeQuery === "string" ? routeQuery : ""
   );
   useEffect(() => {
-    setQuery(typeof routeQuery === "string" ? routeQuery : "");
+    const nextQuery = typeof routeQuery === "string" ? routeQuery : "";
+    setQuery(nextQuery);
+    if (nextQuery) setFilter("all");
   }, [routeQuery]);
   const [filter, setFilter] = useState("all");
   const data = useMemo(() => {
