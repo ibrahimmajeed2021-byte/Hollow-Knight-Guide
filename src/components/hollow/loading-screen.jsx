@@ -6,6 +6,7 @@ import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 import { HKFont } from "../../constants/hollow";
 import { games } from "../../games/config";
+import { resolveTheme } from "../../themes/theme-catalog";
 import { useGame } from "../../games/game-context";
 import { usePurchases } from "../../purchases/PurchasesContext";
 import { useOnlineAccess } from "../../network/online-access-context";
@@ -24,19 +25,34 @@ const QUICK_HOLD_MS = 800;
 const REDUCED_MOTION_QUICK_MS = 280;
 
 export function LoadingScreen() {
-  const { settings } = useSettings();
+  const { settings, colors } = useSettings();
   const { isPremium } = usePurchases();
   const { status: onlineStatus } = useOnlineAccess();
   const { config, gameId, loaded, mediaManifest } = useGame();
   const launch = !gameId;
   // Which game's loading sound the launch screen uses; re-rolled on every launch.
   const [launchPick] = useState(pickRandomGameId);
+  const activeTheme = resolveTheme(settings.themeStyle);
+  const customTheme = !launch && activeTheme.id !== "default";
+  const hostedTheme = customTheme && onlineStatus === "online"
+    ? mediaManifest?.themes?.[activeTheme.id] : null;
+  const splashBackground = customTheme
+    ? activeTheme.backgroundAsset : config.loadingBackground;
+  const splashBackgroundUrl = customTheme
+    ? hostedTheme?.backgroundImageUrl : config.backgroundImageUrl;
   const heroes = launch
     ? [games.hollow, games.silksong].map((game) => ({
         ...game,
         heroImageUrl: mediaManifest?.games?.[game.id]?.heroImageUrl,
       }))
-    : [config];
+    : customTheme
+      ? [{
+          ...config,
+          loadingImage: activeTheme.motifAsset ?? config.loadingImage,
+          heroImageUrl: hostedTheme?.motifImageUrl,
+          loadingImageSize: { width: 170, height: 165 },
+        }]
+      : [config];
   const words = launch
     ? ["HOLLOW KNIGHT & SILKSONG"]
     : config.guideTitle.toUpperCase().split(" ");
@@ -129,14 +145,14 @@ export function LoadingScreen() {
       pointerEvents="auto"
       style={[
         styles.overlay,
-        { backgroundColor: launch ? "#000" : config.loadingColor },
+        { backgroundColor: launch ? "#000" : customTheme ? colors.header : config.loadingColor },
       ]}
     >
-      {!launch && config.loadingBackground ? (
+      {!launch && (splashBackground || splashBackgroundUrl) ? (
         <>
           <ApiArtworkImage
-            iconUrl={config.backgroundImageUrl}
-            fallbackImage={config.loadingBackground}
+            iconUrl={splashBackgroundUrl}
+            fallbackImage={splashBackground}
             style={StyleSheet.absoluteFill}
             contentFit="cover"
             blurRadius={2}
