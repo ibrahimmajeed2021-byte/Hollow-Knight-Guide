@@ -5,7 +5,7 @@
 export const hollowExtraBosses = [
   {
     "name": "Xero",
-    "image": null,
+    "image": "Xero",
     "kind": "Warrior Dream",
     "description": "Dream Nail at Xero's grave after reaching the Resting Grounds.",
     "health": "Scales with Nail upgrades",
@@ -20,7 +20,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Gorb",
-    "image": null,
+    "image": "Gorb",
     "kind": "Warrior Dream",
     "description": "Find Gorb's memorial near the top of the cliffs; Dream Nail to begin the duel.",
     "health": "Scales with Nail upgrades",
@@ -35,7 +35,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Elder Hu",
-    "image": null,
+    "image": "ElderHu",
     "kind": "Warrior Dream",
     "description": "Find the warrior's grave in eastern Fungal Wastes and use the Dream Nail.",
     "health": "Scales with Nail upgrades",
@@ -50,7 +50,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "No Eyes",
-    "image": null,
+    "image": "NoEyes",
     "kind": "Warrior Dream",
     "description": "Use the Dream Nail at the shrine in the dark Stone Sanctuary.",
     "health": "Scales with Nail upgrades",
@@ -65,7 +65,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Marmu",
-    "image": null,
+    "image": "Marmu",
     "kind": "Warrior Dream",
     "description": "Locate Marmu's grave in Queen's Gardens and challenge the spirit.",
     "health": "Scales with Nail upgrades",
@@ -80,7 +80,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Galien",
-    "image": null,
+    "image": "Galien",
     "kind": "Warrior Dream",
     "description": "Find Galien's resting place near the Failed Tramway and use the Dream Nail.",
     "health": "Scales with Nail upgrades",
@@ -95,7 +95,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Markoth",
-    "image": null,
+    "image": "Markoth",
     "kind": "Warrior Dream",
     "description": "Reach the secluded eastern Kingdom's Edge grave beyond a Shade Gate.",
     "health": "Scales with Nail upgrades",
@@ -110,7 +110,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Failed Champion",
-    "image": null,
+    "image": "FailedChampion",
     "kind": "Dream Boss",
     "description": "Dream Nail the False Knight's remains above the arena after the initial fight.",
     "health": "See linked wiki for phase-dependent values",
@@ -125,7 +125,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Soul Tyrant",
-    "image": null,
+    "image": "SoulTyrant",
     "kind": "Dream Boss",
     "description": "Dream Nail Soul Master's remains in the upper arena after winning the original fight.",
     "health": "See linked wiki for phase-dependent values",
@@ -140,7 +140,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Lost Kin",
-    "image": null,
+    "image": "LostKin",
     "kind": "Dream Boss",
     "description": "Dream Nail Broken Vessel's remains after the normal encounter.",
     "health": "See linked wiki for phase-dependent values",
@@ -155,7 +155,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "White Defender",
-    "image": null,
+    "image": "WhiteDefender",
     "kind": "Dream Boss",
     "description": "Return to Dung Defender's hidden sleeping place and use the Dream Nail.",
     "health": "See linked wiki for phase-dependent values",
@@ -170,7 +170,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Grey Prince Zote",
-    "image": null,
+    "image": "GreyPrinceZote",
     "kind": "Dream Boss",
     "description": "Rescue Bretta and Zote and defeat Zote in the Colosseum, then Dream Nail Bretta's statue.",
     "health": "See linked wiki for phase-dependent values",
@@ -185,7 +185,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Nightmare King Grimm",
-    "image": null,
+    "image": "NightmareKingGrimm",
     "kind": "Dream Boss",
     "description": "Progress the Grimm Troupe ritual after defeating Troupe Master Grimm; challenge Grimm's dream form.",
     "health": "See linked wiki for phase-dependent values",
@@ -200,7 +200,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Enraged Guardian",
-    "image": null,
+    "image": "EnragedGuardian",
     "kind": "Boss Variant",
     "description": "Return to Crystal Guardian's upper chamber with Monarch Wings for the harder rematch.",
     "health": "See linked wiki for phase-dependent values",
@@ -215,7 +215,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Hornet Sentinel",
-    "image": null,
+    "image": "HornetSentinel",
     "kind": "Boss Variant",
     "description": "Challenge Hornet again at the Cast-Off Shell area to earn entry toward the Abyss.",
     "health": "See linked wiki for phase-dependent values",
@@ -230,7 +230,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Pure Vessel",
-    "image": null,
+    "image": "PureVessel",
     "kind": "Godhome",
     "description": "Reach the final encounter of the fourth Pantheon; refight in Hall of Gods after encountering.",
     "health": "See linked wiki for phase-dependent values",
@@ -245,7 +245,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Absolute Radiance",
-    "image": null,
+    "image": "AbsoluteRadiance",
     "kind": "Godhome",
     "description": "Reach the final encounter of the fifth Pantheon; refight in Hall of Gods afterward.",
     "health": "See linked wiki for phase-dependent values",
@@ -260,7 +260,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Sisters of Battle",
-    "image": null,
+    "image": "SistersOfBattle",
     "kind": "Godhome",
     "description": "Encounter the three Mantis Lords simultaneously in the fifth Pantheon.",
     "health": "See linked wiki for phase-dependent values",
@@ -275,7 +275,7 @@ export const hollowExtraBosses = [
   },
   {
     "name": "Winged Nosk",
-    "image": null,
+    "image": "WingedNosk",
     "kind": "Godhome",
     "description": "Encounter this flying Nosk variant in the fifth Pantheon.",
     "health": "See linked wiki for phase-dependent values",
