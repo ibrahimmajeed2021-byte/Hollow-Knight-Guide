@@ -3,12 +3,14 @@ import { ScrollView, StyleSheet, View } from "react-native";
 import { useTabInset } from "../../hooks/use-tab-inset";
 import { useSettings } from "../../settings/SettingsContext";
 import { AppHeader } from "./app-header";
+import { ThemeBackdrop } from "../../themes/theme-backdrop";
 
 export function Screen({ children, scroll = true, contentStyle }) {
   const { colors } = useSettings();
   const inset = useTabInset();
   return (
     <View style={[styles.root, { backgroundColor: colors.background }]}>
+      <ThemeBackdrop />
       <AppHeader />
       {scroll ? (
         <ScrollView
