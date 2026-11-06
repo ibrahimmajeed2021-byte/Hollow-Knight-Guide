@@ -45,6 +45,25 @@ for (const gameId of ["hollow", "silksong"]) {
   checkUrl(game?.backgroundImageUrl, "media " + gameId + " background");
 }
 
+// Every Premium theme must publish its wallpaper/motif URLs. Themes without
+// a scene background still have a motif; their colour palette supplies the base.
+const expectedThemes = [
+  "hollowknight", "cityOfTears", "voidheart", "godhome", "greenpath",
+  "crystalPeak", "whitePalace", "silksong", "citadelOfSong", "mossGrotto",
+  "deepDocks", "bilewater", "songclave",
+];
+for (const id of expectedThemes) {
+  const theme = media.themes?.[id];
+  if (!theme) {
+    failed.push("media themes." + id + " is missing");
+    continue;
+  }
+  checkUrl(theme.motifImageUrl, "media theme " + id + " motif");
+  if (theme.backgroundImageUrl) {
+    checkUrl(theme.backgroundImageUrl, "media theme " + id + " background");
+  }
+}
+
 for (const collection of collections) {
   const list = JSON.parse(readFileSync(join(apiDir, collection), "utf8"));
   assert.ok(Array.isArray(list) && list.length, collection + " must contain items");
