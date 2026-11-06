@@ -5,6 +5,7 @@ import { AppText } from "../../../components/hollow/app-text";
 import { Button } from "../../../components/hollow/button";
 import { CollectionEntry } from "../../../components/hollow/collection-entry";
 import { EntryCard, Stat } from "../../../components/hollow/entry-card";
+import { EmptyState } from "../../../components/hollow/empty-state";
 import {
   CharmExtras,
   CharmSummary,
@@ -92,9 +93,7 @@ function HollowCharmsScreen() {
         data={data}
         keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
-          <AppText style={{ textAlign: "center", marginTop: 24 }}>
-            No {config.itemsLabel.toLowerCase()} match.
-          </AppText>
+          <EmptyState title="No matching charms" description="Try another name or adjust the filters." />
         }
         keyExtractor={(c) => c.name}
         initialNumToRender={8}
@@ -305,7 +304,7 @@ function SilksongItemsScreen() {
             </Body>
           </>
         }
-        ListEmptyComponent={<Body>No items match your filters.</Body>}
+        ListEmptyComponent={<EmptyState title="No matching items" description="Try another category or clear the search." />}
         renderItem={({ item: row }) => {
           if (row.type === "collectible") {
             return <CollectionEntry item={row.item} />;
