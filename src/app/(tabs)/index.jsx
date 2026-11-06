@@ -26,13 +26,13 @@ function homeArtwork(item, kind, config) {
   if (kind === "boss") {
     return {
       image: item.iconUrl ? { uri: item.iconUrl } : config.bossImages[item.image],
-      fallbackImage: getBossFallbackArtwork(item, config.bossImages) ?? config.bossImages[item.image],
+      fallbackImage: getBossFallbackArtwork(item, config.bossImages) ?? config.bossImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined),
     };
   }
   if (kind === "equipment") {
     return {
       image: item.iconUrl ? { uri: item.iconUrl } : config.itemImages[item.image],
-      fallbackImage: getCharmFallbackArtwork(item, config.itemImages) ?? config.itemImages[item.image],
+      fallbackImage: getCharmFallbackArtwork(item, config.itemImages) ?? config.itemImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined),
     };
   }
   const wikiArtwork = config.id === "silksong"
@@ -40,7 +40,7 @@ function homeArtwork(item, kind, config) {
     : undefined;
   return {
     image: item.iconUrl ? { uri: item.iconUrl } : getCollectibleArtwork(item, config.id, wikiArtwork),
-    fallbackImage: getCollectibleFallbackArtwork(item, config.id),
+    fallbackImage: getCollectibleFallbackArtwork(item, config.id) ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined),
   };
 }
 
