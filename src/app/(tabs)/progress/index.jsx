@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { Alert, Platform, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Platform, StyleSheet, View } from "react-native";
 
 import { AppText } from "../../../components/hollow/app-text";
 import { Button } from "../../../components/hollow/button";
