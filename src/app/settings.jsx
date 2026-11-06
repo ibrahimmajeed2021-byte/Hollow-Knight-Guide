@@ -1,4 +1,5 @@
 import { router, useFocusEffect } from "expo-router";
+import { Image } from "expo-image";
 import { useCallback } from "react";
 import { Pressable, StyleSheet, Switch, View } from "react-native";
 
@@ -12,16 +13,13 @@ import { useGame } from "../games/game-context";
 import { usePurchases } from "../purchases/PurchasesContext";
 import { useHaptics, useSettings } from "../settings/SettingsContext.jsx";
 import { previewSelectorSound, stopSound } from "../sound/game-sounds";
+import { palettes } from "../constants/hollow";
+import { themeCatalog } from "../themes/theme-catalog";
 
 const MODES = [
   { value: "light", label: "Light" },
   { value: "dark", label: "Dark" },
   { value: "system", label: "Automatic" },
-];
-const STYLES = [
-  { value: "default", label: "Default" },
-  { value: "hollowknight", label: "Hollow Knight" },
-  { value: "silksong", label: "Silksong" },
 ];
 const FONT_SIZES = [
   { value: "small", label: "Small" },
@@ -115,6 +113,43 @@ function Segmented({ options, value, onChange }) {
   );
 }
 
+function ThemeChoice({ theme, selected, isPremium, onChoose }) {
+  const { colors } = useSettings();
+  const preview = palettes[theme.id + "Dark"] ?? palettes.dark;
+  const locked = !isPremium && theme.id !== "default";
+  return (
+    <Pressable
+      onPress={onChoose}
+      accessibilityRole="button"
+      accessibilityLabel={theme.name + (locked ? ", Premium theme, locked" : selected ? ", selected" : ", apply theme")}
+      accessibilityState={{ selected }}
+      style={[
+        styles.themeChoice,
+        { backgroundColor: colors.card, borderColor: selected ? colors.accent : colors.border },
+        selected && styles.themeChoiceSelected,
+      ]}
+    >
+      <View style={[styles.themePreview, { backgroundColor: preview.background }]}>
+        {theme.backgroundAsset ? (
+          <Image source={theme.backgroundAsset} style={[StyleSheet.absoluteFill, { opacity: 0.46 }]} contentFit="cover" accessible={false} />
+        ) : null}
+        {theme.motifAsset ? (
+          <Image source={theme.motifAsset} style={styles.themePreviewMotif} contentFit="contain" accessible={false} />
+        ) : null}
+        <View style={[styles.themePreviewLine, { backgroundColor: preview.accent }]} />
+        <View style={[styles.themePreviewDot, { backgroundColor: preview.accent }]} />
+      </View>
+      <AppText style={styles.themeChoiceTitle} numberOfLines={2}>{theme.name}</AppText>
+      <AppText style={[styles.themeChoiceTagline, { color: colors.muted }]} numberOfLines={2}>
+        {theme.tagline}
+      </AppText>
+      <AppText style={[styles.themeChoiceStatus, { color: colors.accent }]}>
+        {selected ? "✓ Selected" : locked ? "🔒 Premium" : "Apply"}
+      </AppText>
+    </Pressable>
+  );
+}
+
 function ToggleRow({ label, hint, value, onChange }) {
   const { colors } = useSettings();
   return (
@@ -196,23 +231,36 @@ export default function SettingsScreen() {
           value={settings.mode}
           onChange={(mode) => update({ mode })}
         />
-        <AppText style={styles.rowLabel}>Style</AppText>
-        <Segmented
-          options={STYLES.map((style) => ({
-            ...style,
-            label: !isPremium && style.value !== "default"
-              ? `${style.label} 🔒`
-              : style.label,
-          }))}
-          value={settings.themeStyle}
-          onChange={(themeStyle) => {
-            if (!isPremium && themeStyle !== "default") {
-              router.push("/premium");
-              return;
-            }
-            update({ themeStyle });
-          }}
-        />
+        <AppText style={styles.rowLabel}>Theme</AppText>
+        <AppText style={[styles.hint, { color: colors.muted }]}>
+          Choose a Hallownest or Pharloom atmosphere. Themes recolour the
+          entire interface and add subtle artwork behind the guide. Premium
+          choices can also be used offline.
+        </AppText>
+        {["Both games", "Hollow Knight", "Silksong"].map((game) => (
+          <View key={game} style={styles.themeGroup}>
+            <AppText style={[styles.themeGroupTitle, { color: colors.text }]}>
+              {game}
+            </AppText>
+            <View style={styles.themeGrid}>
+              {themeCatalog.filter((theme) => theme.game === game).map((theme) => (
+                <ThemeChoice
+                  key={theme.id}
+                  theme={theme}
+                  selected={settings.themeStyle === theme.id}
+                  isPremium={isPremium}
+                  onChoose={() => {
+                    if (!isPremium && theme.id !== "default") {
+                      router.push("/premium");
+                      return;
+                    }
+                    update({ themeStyle: theme.id });
+                  }}
+                />
+              ))}
+            </View>
+          </View>
+        ))}
         <ToggleRow
           label="High contrast"
           hint="Stronger colours and borders for easier reading"
@@ -438,6 +486,39 @@ const styles = StyleSheet.create({
   rowLabel: { fontSize: 16 },
   hint: { fontSize: 13 },
   centered: { textAlign: "center", marginTop: 8 },
+  themeGroup: { marginTop: 10, gap: 8 },
+  themeGroupTitle: { fontSize: 16, fontWeight: "800" },
+  themeGrid: { flexDirection: "row", flexWrap: "wrap", gap: 10 },
+  themeChoice: {
+    width: "47%",
+    flexGrow: 1,
+    minWidth: 120,
+    padding: 10,
+    borderWidth: 1,
+    borderRadius: 14,
+    gap: 5,
+  },
+  themeChoiceSelected: { borderWidth: 2 },
+  themePreview: {
+    height: 94,
+    borderRadius: 9,
+    overflow: "hidden",
+    justifyContent: "flex-end",
+    padding: 8,
+  },
+  themePreviewMotif: {
+    position: "absolute",
+    height: 98,
+    width: 112,
+    right: 3,
+    bottom: -7,
+    opacity: 0.78,
+  },
+  themePreviewLine: { height: 4, width: "62%", borderRadius: 4, opacity: 0.9 },
+  themePreviewDot: { height: 8, width: 8, borderRadius: 4, marginTop: 4, opacity: 0.9 },
+  themeChoiceTitle: { fontSize: 15, fontWeight: "800" },
+  themeChoiceTagline: { fontSize: 12, lineHeight: 16, minHeight: 32 },
+  themeChoiceStatus: { fontSize: 12, fontWeight: "800", marginTop: 2 },
   segmented: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
   option: {
     borderWidth: 1,
