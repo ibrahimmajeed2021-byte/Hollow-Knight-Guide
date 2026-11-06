@@ -9,6 +9,7 @@ import { Screen } from "../../components/hollow/screen";
 import { Title } from "../../components/hollow/section-text";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { useGame } from "../../games/game-context";
+import { useOnlineAccess } from "../../network/online-access-context";
 import { selectorTracks, stopSound } from "../../sound/game-sounds";
 
 const FAVOURITES_KEY = "hollow-knight-guide:music-favourites";
@@ -23,6 +24,7 @@ function formatTime(seconds = 0) {
 export default function MusicScreen() {
   const { colors } = useSettings();
   const { gameId } = useGame();
+  const { blocked } = useOnlineAccess();
   const gameTracks = selectorTracks.filter((track) => track.id === (gameId ?? "hollow"));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [favourites, setFavourites] = useState([]);
@@ -32,6 +34,12 @@ export default function MusicScreen() {
   const [repeat, setRepeat] = useState(false);
   const player = useAudioPlayer(gameTracks[0].source);
   const status = useAudioPlayerStatus(player);
+
+  // An audio player can continue in the background, so stop it when
+  // a Free account loses connection rather than only covering the screen.
+  useEffect(() => {
+    if (blocked) player.pause();
+  }, [blocked, player]);
 
   useEffect(() => {
     // Keep the music playing when the app is backgrounded or the screen is locked.
