@@ -13,6 +13,7 @@ import { useGuidedMode } from "../premium/guided-context";
 import { buildSuggestedPlan, FEATURED_GOALS, listGoalEntries, getEntry } from "../premium/planner-logic.mjs";
 import { usePurchases } from "../purchases/PurchasesContext";
 import { useSettings } from "../settings/SettingsContext.jsx";
+import { layout, radius, space, type } from "../ui/design-system";
 
 function destination(kind, entry, gameId) {
   if (kind === "boss") return "/bosses";
@@ -238,19 +239,19 @@ export default function PlannerScreen() {
 const styles = StyleSheet.create({
   back: { alignSelf: "flex-start", marginHorizontal: 16, marginTop: 8 },
   button: { marginHorizontal: 16, marginTop: 16 },
-  panel: { marginHorizontal: 16, marginTop: 16, padding: 16, borderRadius: 16, borderWidth: 1, gap: 12 },
-  heading: { fontSize: 18, fontWeight: "800" },
+  panel: { marginHorizontal: layout.gutter, marginTop: space.lg, padding: layout.cardPadding, borderRadius: radius.card, borderWidth: 1, gap: space.md },
+  heading: { ...type.subheading },
   featuredGrid: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  goalOption: { padding: 10, borderWidth: 1, borderRadius: 12, minWidth: 130, flexGrow: 1, width: "46%", gap: 4 },
+  goalOption: { padding: space.md, borderWidth: 1, borderRadius: radius.control, minWidth: 130, minHeight: 68, flexGrow: 1, width: "46%", gap: space.xs },
   goalName: { fontSize: 15, fontWeight: "700" },
   goalHint: { fontSize: 12, lineHeight: 16 },
-  action: { borderWidth: 1, borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, alignSelf: "flex-start" },
+  action: { borderWidth: 1, borderRadius: radius.control, paddingHorizontal: space.md, paddingVertical: space.sm, minHeight: layout.touchTarget, justifyContent: "center", alignSelf: "flex-start" },
   link: { fontSize: 14, fontWeight: "700" },
   search: { borderWidth: 1, borderRadius: 10, padding: 12, minHeight: 48, fontSize: 16 },
   searchRow: { flexDirection: "row", alignItems: "center", gap: 12, borderBottomWidth: StyleSheet.hairlineWidth, paddingVertical: 9 },
   flex: { flex: 1 },
   help: { fontSize: 13, lineHeight: 20 },
-  step: { borderWidth: 1, borderRadius: 14, padding: 12, gap: 10 },
+  step: { borderWidth: 1, borderRadius: radius.control, padding: space.md, gap: space.md },
   stepHeader: { flexDirection: "row", gap: 10, alignItems: "center" },
   number: { fontSize: 20, fontWeight: "900", minWidth: 22 },
   stepName: { fontSize: 16, fontWeight: "800" },
