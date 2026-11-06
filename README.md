@@ -118,6 +118,38 @@ versions are fallback media. Audio has bundled offline fallbacks. An optional li
 manifest can select online audio through `api/media.json`, but do not publicly
 rehost copyrighted game recordings without distribution rights.
 
+## Visual consistency: Stage 2
+
+Stage 2 is a presentation and accessibility pass with no change to game data
+or purchase entitlements. The neutral `src/ui/design-system.js` defines
+shared spacing, corner radii, readable typography sizes, 48-point minimum
+control targets, standard motion durations and safe progress percentages.
+**Theme colours remain in SettingsContext**; no Free guide features are
+removed or Premium-only effects added to the core interface.
+
+Updated components include:
+
+- **Text, headings and controls:** one scale for titles and labels; the
+  existing user font-size preference continues to apply. Buttons, filter
+  chips and common links use larger minimum touch targets and press feedback.
+- **Cards:** Home dashboard, Progress and Premium Companion now use the same
+  reusable `SurfaceCard`; both games' boss, charm, tool and collectible
+  cards share tighter dimensions and clearer expanded-detail separation.
+- **Search and lists:** Bosses, Items, Quests and Collectibles use the same
+  informative `EmptyState` component when searches or filters have no match.
+- **Motion:** existing Reduce Motion settings still prevent entry-card
+  animation, and the progress bar uses clamped percentages with the shared
+  animation timing. High Contrast remains honoured by the core controls.
+- **Other screens:** Music, Settings, Premium, Guided Mode, the progression
+  planner and the customisation studio use consistent dimensions and headings.
+
+Test with `npm run test:ui-stage2`, plus the existing
+`npm run test:ui-stage1`, `npm run test:premium-companion`,
+`npm run test:guide` and `npm run test:progression`.
+These source checks do not compile JSX or replace testing in the installed
+iOS development client. Verify the normal Free and Premium modes in both
+games, light/dark themes, High Contrast, large text and Reduce Motion.
+
 ## Interface polish: Stage 1
 
 Home now prioritises overall guide progress, search and two next-step cards.
