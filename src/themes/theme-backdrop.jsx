@@ -1,5 +1,6 @@
 import { ApiArtworkImage } from "../components/hollow/api-artwork-image";
-import { StyleSheet, View } from "react-native";
+import { Animated, Easing, StyleSheet, View } from "react-native";
+import { useEffect, useRef } from "react";
 
 import { useGame } from "../games/game-context";
 import { useOnlineAccess } from "../network/online-access-context";
@@ -15,6 +16,23 @@ export function ThemeBackdrop() {
   const { mediaManifest } = useGame();
   const { status } = useOnlineAccess();
   const theme = resolveTheme(settings.themeStyle);
+  const pulse = useRef(new Animated.Value(1)).current;
+  const intensity = Math.max(0, Math.min(100, Number(settings.wallpaperStrength ?? 50))) / 50;
+
+  useEffect(() => {
+    if (settings.ambientMotion !== true || settings.reduceMotion || settings.highContrast) {
+      pulse.setValue(1);
+      return;
+    }
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulse, { toValue: 1.12, duration: 4400, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        Animated.timing(pulse, { toValue: 1, duration: 4400, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+      ]),
+    );
+    animation.start();
+    return () => animation.stop();
+  }, [pulse, settings.ambientMotion, settings.reduceMotion, settings.highContrast]);
 
   if (theme.id === "default" || settings.highContrast) return null;
 
@@ -24,17 +42,18 @@ export function ThemeBackdrop() {
 
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
-      <View
+      <Animated.View
         style={[styles.glow, {
           backgroundColor: theme.accent,
-          opacity: isDark ? 0.12 : 0.075,
+          opacity: (isDark ? 0.12 : 0.075) * intensity,
+          transform: [{ scale: pulse }],
         }]}
       />
-      {hasBackground ? (
+      {hasBackground && intensity > 0 ? (
         <ApiArtworkImage
           iconUrl={remote?.backgroundImageUrl}
           fallbackImage={theme.backgroundAsset}
-          style={[StyleSheet.absoluteFill, { opacity: isDark ? 0.19 : 0.13 }]}
+          style={[StyleSheet.absoluteFill, { opacity: (isDark ? 0.19 : 0.13) * intensity }]}
           contentFit="cover"
           cachePolicy="memory-disk"
           accessible={false}
@@ -43,20 +62,20 @@ export function ThemeBackdrop() {
       <View
         style={[styles.ray, {
           borderColor: theme.accent,
-          opacity: isDark ? 0.12 : 0.085,
+          opacity: (isDark ? 0.12 : 0.085) * intensity,
         }]}
       />
       <View
         style={[styles.rayOther, {
           borderColor: theme.accent,
-          opacity: isDark ? 0.08 : 0.055,
+          opacity: (isDark ? 0.08 : 0.055) * intensity,
         }]}
       />
-      {hasMotif ? (
+      {hasMotif && intensity > 0 ? (
         <ApiArtworkImage
           iconUrl={remote?.motifImageUrl}
           fallbackImage={theme.motifAsset}
-          style={[styles.motif, { opacity: isDark ? 0.14 : 0.1 }]}
+          style={[styles.motif, { opacity: (isDark ? 0.14 : 0.1) * intensity }]}
           contentFit="contain"
           cachePolicy="memory-disk"
           accessible={false}
