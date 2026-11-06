@@ -118,6 +118,47 @@ versions are fallback media. Audio has bundled offline fallbacks. An optional li
 manifest can select online audio through `api/media.json`, but do not publicly
 rehost copyrighted game recordings without distribution rights.
 
+## Usability and reliability: Stage 3
+
+Stage 3 focuses on navigation, testing and keeping the existing free guide
+reliable rather than adding more features.
+
+**Fixed universal Close:** A large, high-contrast **X** stays pinned in the
+top-right app header on Settings, Premium, Companion, Planner, Customisation,
+secondary progress pages, loadouts, privacy and other secondary screens.
+Unlike an in-page "Back" text link, it remains visible while scrolling.
+It returns to the previous screen when history exists, otherwise Home.
+On the six main guide tabs the same header position remains Settings, not X.
+The native tab bar hides automatically on every secondary route; main guide
+tabs keep their standard navigation. The redundant bottom Back on the
+Premium page has been removed.
+
+**Search and deep links:** Bosses, Items, Quests and Collectibles now provide
+an accessible one-tap clear control on iOS/Android/web. When a specific entry
+is opened from Home or the progression planner, any stale "completed only"
+filter that would hide it is reset. Existing category selection and journal
+keys remain unchanged.
+
+**Progress safety:** Saved per-game journals are hydrated before their
+interactive screens are shown, and rapid progress changes are written to
+AsyncStorage sequentially. Invalid saved shapes fall back to empty safe
+values without discarding well-formed notes or photos. Resetting progress
+now requires an explicit inline confirmation on both mobile and web and
+does not remove photo journal entries, notes or loadouts.
+
+**Free versus Premium offline:** Free accounts with no confirmed connection
+cannot briefly see cached content before the saved Premium entitlement has
+finished loading. Premium accounts verified on this device continue to work
+offline as before. The offline gate explains when saved Premium status is
+still being checked.
+
+Run `npm run test:qa-stage3` and the existing regression scripts. Source
+checks do not replace a successful Expo build or the device walkthrough.
+Manually test Home, Settings and the top X, game switching, quest/item
+deep links, photo and progress checklists, Free ads, Free offline
+restriction, Premium offline use, and accessibility at increased text size.
+No new native dependencies or server API endpoints are required.
+
 ## Visual consistency: Stage 2
 
 Stage 2 is a presentation and accessibility pass with no change to game data
