@@ -12,6 +12,8 @@ import { useGame } from "../../games/game-context";
 import { useJournal } from "../../journal/journal-context";
 import { useLoadouts } from "../../loadouts/loadouts-context";
 import { useSettings } from "../../settings/SettingsContext.jsx";
+import { resolveTheme } from "../../themes/theme-catalog";
+import { useOnlineAccess } from "../../network/online-access-context";
 import { sortMixedSilksongItems } from "../../data/progression-order";
 import { getCollectibleGuide } from "../../data/silksong-collectible-guides";
 import { getCollectibleArtwork } from "../../data/collectible-icons";
@@ -154,10 +156,20 @@ const navigateTo = (path, query) => {
 };
 
 export default function HomeScreen() {
-  const { colors, fontScale } = useSettings();
+  const { colors, fontScale, settings } = useSettings();
+  const { status: networkStatus } = useOnlineAccess();
   const { defeated, collected } = useJournal();
   const { loadouts } = useLoadouts();
-  const { config, dataStatus } = useGame();
+  const { config, dataStatus, mediaManifest } = useGame();
+  const activeTheme = resolveTheme(settings.themeStyle);
+  const customTheme = activeTheme.id !== "default";
+  const hostedTheme = networkStatus === "online"
+    ? mediaManifest?.themes?.[activeTheme.id] : null;
+  const homeBackground = customTheme ? activeTheme.backgroundAsset : config.loadingBackground;
+  const homeBackgroundUrl = customTheme
+    ? hostedTheme?.backgroundImageUrl : config.backgroundImageUrl;
+  const homeMotif = customTheme ? activeTheme.motifAsset : config.loadingImage;
+  const homeMotifUrl = customTheme ? hostedTheme?.motifImageUrl : config.heroImageUrl;
   const [query, setQuery] = useState("");
 
   const bosses = config.bosses;
@@ -272,13 +284,25 @@ export default function HomeScreen() {
         onPress={() => router.push("/progress")}
         accessibilityRole="button"
         accessibilityLabel={"Open overall progress, " + percent + " percent"}
-        style={({ pressed }) => [styles.hero, pressed && styles.pressed]}
+        style={({ pressed }) => [styles.hero, customTheme && { backgroundColor: colors.header }, pressed && styles.pressed]}
       >
-        {config.loadingBackground ? (
-          <ApiArtworkImage iconUrl={config.backgroundImageUrl} fallbackImage={config.loadingBackground} style={StyleSheet.absoluteFill} contentFit="cover" />
+        {homeBackground || homeBackgroundUrl ? (
+          <ApiArtworkImage
+            iconUrl={homeBackgroundUrl}
+            fallbackImage={homeBackground}
+            style={StyleSheet.absoluteFill}
+            contentFit="cover"
+          />
         ) : null}
-        <View style={[StyleSheet.absoluteFill, styles.heroDim]} />
-        <ApiArtworkImage iconUrl={config.heroImageUrl} fallbackImage={config.loadingImage} style={[styles.heroCharacter, { height: config.loadingImageSize.height * 1.25, width: config.loadingImageSize.width * 1.25 }]} contentFit="contain" />
+        <View style={[StyleSheet.absoluteFill, styles.heroDim, customTheme && { backgroundColor: "rgba(5,7,11,0.48)" }]} />
+        <ApiArtworkImage
+          iconUrl={homeMotifUrl}
+          fallbackImage={homeMotif}
+          style={[styles.heroCharacter, customTheme
+            ? { height: 205, width: 205 }
+            : { height: config.loadingImageSize.height * 1.25, width: config.loadingImageSize.width * 1.25 }]}
+          contentFit="contain"
+        />
         <View style={styles.heroContent}>
           <AppText style={styles.heroEyebrow}>YOUR FIELD JOURNAL · {config.tagline.toUpperCase()}</AppText>
           <AppText style={styles.heroTitle}>Your journey continues</AppText>
