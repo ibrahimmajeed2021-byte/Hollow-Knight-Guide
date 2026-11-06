@@ -1,9 +1,10 @@
 import Slider from "@react-native-community/slider";
 import React from "react";
-import { StyleSheet, Switch, Text, View } from "react-native";
+import { StyleSheet, Switch, View } from "react-native";
+import { AppText } from "./hollow/app-text";
 import { useSettings } from "../settings/SettingsContext";
 
-export default function LoadingSoundSetting() {
+export default function LoadingSoundSetting({ embedded = false }) {
   const context = useSettings() || {};
   const { settings = {}, update = () => {}, colors = {} } = context;
 
@@ -14,7 +15,7 @@ export default function LoadingSoundSetting() {
   const primaryColor = colors.primary || colors.accent || "#D4AF37";
   const textColor = colors.text || "#FFFFFF";
   const subtextColor = colors.subtext || colors.muted || "#A0A0A0";
-  const cardBg = colors.ca || colors.surface || "rgba(255, 255, 255, 0.05)";
+  const cardBg = colors.card || "rgba(255, 255, 255, 0.05)";
   const borderColor = colors.border || "rgba(255, 255, 255, 0.1)";
 
   const handleToggle = (value) => {
@@ -37,11 +38,11 @@ export default function LoadingSoundSetting() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: cardBg, borderColor }]}>
+    <View style={[styles.container, embedded && styles.embedded, { backgroundColor: embedded ? "transparent" : cardBg, borderColor }]}>
       <View style={styles.row}>
-        <Text style={[styles.label, { color: textColor }]}>
+        <AppText style={[styles.label, { color: textColor }]}>
           Loading Screen Sound
-        </Text>
+        </AppText>
         <Switch
           value={soundEnabled}
           onValueChange={handleToggle}
@@ -57,10 +58,10 @@ export default function LoadingSoundSetting() {
         ]}
       >
         <View style={styles.labelRow}>
-          <Text style={[styles.label, { color: textColor }]}>Volume</Text>
-          <Text style={[styles.valueText, { color: subtextColor }]}>
+          <AppText style={[styles.label, { color: textColor }]}>Volume</AppText>
+          <AppText style={[styles.valueText, { color: subtextColor }]}>
             {soundEnabled ? volume : 0}%
-          </Text>
+          </AppText>
         </View>
         <Slider
           style={styles.slider}
@@ -85,6 +86,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1,
   },
+  embedded: { marginVertical: 4, paddingHorizontal: 0, borderWidth: 0 },
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
