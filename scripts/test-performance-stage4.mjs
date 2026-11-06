@@ -50,6 +50,7 @@ const layout = read("src/app/_layout.jsx");
 assert.match(layout, /Image\.configureCache/);
 assert.match(layout, /maxMemoryCost: 64 \* 1024 \* 1024/);
 assert.match(layout, /maxDiskSize: 200 \* 1024 \* 1024/);
+assert.match(layout, /if \(state !== "active"\) stopSound\(\)/);
 
 // These existing behaviours must remain intact while optimising.
 assert.match(read("src/network/offline-access-gate.jsx"), /!blocked/);
