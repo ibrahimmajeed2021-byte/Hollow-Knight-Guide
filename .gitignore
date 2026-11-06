@@ -41,3 +41,6 @@ example
 # generated native folders
 /ios
 /android
+
+# generated public icons are staged when running npm run build:api
+/public/guide-icons/
