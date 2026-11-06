@@ -313,6 +313,8 @@ function SilksongItemsScreen() {
           const item = row.item;
           return (
             <EntryCard
+              spoilerKind="item"
+              spoilerEntry={item}
               image={item.iconUrl ? { uri: item.iconUrl } : config.itemImages[item.image]}
               fallbackImage={config.itemImages[item.image] ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
               name={item.name}
