@@ -13,6 +13,7 @@ import { Body, Title } from "../../../components/hollow/section-text";
 import { useTabInset } from "../../../hooks/use-tab-inset";
 import { useJournal } from "../../../journal/journal-context";
 import { getCollectibleGuide } from "../../../data/silksong-collectible-guides";
+import { getCollectibleFallbackArtwork } from "../../../data/entry-fallback-artwork";
 import { getCollectibleArtwork } from "../../../data/collectible-icons";
 import { useGame } from "../../../games/game-context";
 
@@ -125,6 +126,7 @@ export default function CollectiblesScreen() {
           return (
             <EntryCard
               image={getCollectibleArtwork(item, config.id, guide?.artworkUrl)}
+              fallbackImage={getCollectibleFallbackArtwork(item, config.id)}
               name={item.name}
               description={item.description ?? ""}
               summary={
