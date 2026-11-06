@@ -35,7 +35,6 @@ export function SearchFilter({
             placeholderTextColor={colors.muted}
             autoCorrect={false}
             autoCapitalize="none"
-            clearButtonMode="while-editing"
             returnKeyType="search"
             accessibilityLabel={placeholder}
             style={[
@@ -43,6 +42,18 @@ export function SearchFilter({
               { color: colors.text, fontSize: 16 * fontScale },
             ]}
           />
+          {typeof value === "string" && value.length > 0 && onChangeText ? (
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel="Clear search"
+              accessibilityHint="Show the full list using the current filters"
+              onPress={() => onChangeText("")}
+              hitSlop={6}
+              style={({ pressed }) => [styles.clearButton, pressed && styles.pressed]}
+            >
+              <AppText style={[styles.clearIcon, { color: colors.muted }]}>×</AppText>
+            </Pressable>
+          ) : null}
         </View>
       )}
       <ScrollView
@@ -96,8 +107,10 @@ const styles = StyleSheet.create({
     gap: space.sm,
     borderBottomWidth: 1,
   },
-  inputWrap: { borderWidth: 1, borderRadius: radius.control, paddingHorizontal: 14 },
-  input: { minHeight: layout.touchTarget, paddingVertical: space.sm },
+  inputWrap: { borderWidth: 1, borderRadius: radius.control, paddingLeft: 14, flexDirection: "row", alignItems: "center" },
+  input: { flex: 1, minWidth: 0, minHeight: layout.touchTarget, paddingVertical: space.sm },
+  clearButton: { width: layout.touchTarget, height: layout.touchTarget, alignItems: "center", justifyContent: "center" },
+  clearIcon: { fontSize: 25, lineHeight: 31, fontWeight: "500" },
   chips: { flexDirection: "row", gap: space.sm, paddingRight: layout.gutter },
   chip: {
     borderWidth: 1,
