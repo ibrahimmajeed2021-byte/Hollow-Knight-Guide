@@ -118,9 +118,7 @@ export default function ProgressScreen() {
           label={isSilksong ? "Tools & Crests collected" : "Charms collected"}
           done={itemDone}
           total={items.length}
-          onPress={() => isSilksong
-            ? router.push({ pathname: "/charms", params: { category: "equipment" } })
-            : router.push("/charms")}
+          onPress={() => router.push("/charms")}
         />
 
         {isSilksong && (
