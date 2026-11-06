@@ -28,6 +28,7 @@ const FADE_STEPS = 12;
 
 let current = null;
 let currentVolume = 0.8;
+let soundPlaybackAllowed = true;
 let latestRequest = 0;
 let audioReady = null;
 
@@ -69,6 +70,7 @@ function fadeOutAndRelease(player) {
 }
 
 async function play(source) {
+  if (!soundPlaybackAllowed) return false;
   const request = ++latestRequest;
   await prepareAudio();
   // A newer sound was requested while the audio mode was being set up.
@@ -93,6 +95,13 @@ async function play(source) {
 }
 
 // Fades out whatever is playing and cancels any sound still waiting to start.
+// A Free user who loses the guide-service connection must not be able to
+// restart selector or loading music beneath the connection-required overlay.
+export function setSoundPlaybackAllowed(allowed) {
+  soundPlaybackAllowed = allowed !== false;
+  if (!soundPlaybackAllowed) stopSound();
+}
+
 export function stopSound() {
   latestRequest += 1;
   if (current) {
