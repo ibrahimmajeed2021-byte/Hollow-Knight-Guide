@@ -17,6 +17,8 @@ import { HKFont } from "../constants/hollow";
 import { GameProvider, useGame } from "../games/game-context";
 import { OnlineAccessProvider } from "../network/online-access-context";
 import { OfflineAccessGate } from "../network/offline-access-gate";
+import { useOnlineAccess } from "../network/online-access-context";
+import { configureHostedAudio } from "../sound/game-sounds";
 import { JournalProvider } from "../journal/journal-context";
 import { LoadoutsProvider } from "../loadouts/loadouts-context";
 import { AdsProvider } from "../ads/AdsContext";
@@ -56,7 +58,12 @@ function AppShell() {
 }
 
 function GameData() {
-  const { config } = useGame();
+  const { config, mediaManifest } = useGame();
+  const { status } = useOnlineAccess();
+
+  useEffect(() => {
+    configureHostedAudio(mediaManifest?.audio, status === "online");
+  }, [mediaManifest, status]);
   return (
     <JournalProvider key={config.id} suffix={config.storageSuffix}>
       <LoadoutsProvider key={config.id} suffix={config.storageSuffix}>
