@@ -72,21 +72,23 @@ async function play(source) {
   const request = ++latestRequest;
   await prepareAudio();
   // A newer sound was requested while the audio mode was being set up.
-  if (request !== latestRequest) return;
+  if (request !== latestRequest) return false;
 
   if (current) {
     fadeOutAndRelease(current);
     current = null;
   }
-  if (!source || currentVolume === 0) return;
+  if (!source || currentVolume === 0) return false;
 
   try {
     const player = createAudioPlayer(source);
     player.volume = currentVolume;
     player.play();
     current = player;
+    return true;
   } catch {
     // Sound is decoration; never let it break the app.
+    return false;
   }
 }
 

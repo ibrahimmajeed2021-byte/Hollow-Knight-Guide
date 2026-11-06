@@ -17,8 +17,10 @@ import {
   stopSound,
 } from "../../sound/game-sounds";
 
-const HOLD_MS = 1050;
-const REDUCED_MOTION_HOLD_MS = 280;
+// Keep the loading theme audible before transitioning. Silent loading stays quick.
+const MUSIC_HOLD_MS = 3000;
+const QUICK_HOLD_MS = 800;
+const REDUCED_MOTION_QUICK_MS = 280;
 
 export function LoadingScreen() {
   const { settings } = useSettings();
@@ -39,30 +41,41 @@ export function LoadingScreen() {
     SplashScreen.hideAsync().catch(() => {});
   }, []);
 
-  // Keep the splash short and don't dismiss it before the saved game has loaded.
-  // A reduced-motion preference avoids unnecessary waiting and animations.
+  // Start the hold only AFTER the audio player has been set up and playback
+  // requested. This stops iOS audio initialization from eating into the intro.
+  // Reduce motion shortens animations, but must not cut enabled audio short.
   useEffect(() => {
     if (!loaded) return;
-    const timer = setTimeout(
-      () => setVisible(false),
-      reduce ? REDUCED_MOTION_HOLD_MS : HOLD_MS,
-    );
-    return () => clearTimeout(timer);
-  }, [loaded, reduce]);
-
-  // Apply volume changes immediately, including muting the sound when disabled.
-  useEffect(() => {
-    const volume = settings.loadingSoundEnabled
-      ? (settings.loadingSoundVolume ?? 80) / 100
-      : 0;
+    let cancelled = false;
+    let timer;
+    const soundEnabled = settings.loadingSoundEnabled !== false
+      && (settings.loadingSoundVolume ?? 80) > 0;
+    const volume = soundEnabled ? (settings.loadingSoundVolume ?? 80) / 100 : 0;
     setSoundVolume(volume);
-  }, [settings.loadingSoundEnabled, settings.loadingSoundVolume]);
 
-  // Wait for `loaded` so a remembered game doesn't flash the random launch sound first.
-  useEffect(() => {
-    if (!loaded) return;
-    playLoadingSound(launch ? launchPick : gameId);
-  }, [loaded, launch, launchPick, gameId]);
+    const quickMs = reduce ? REDUCED_MOTION_QUICK_MS : QUICK_HOLD_MS;
+    // Even if loading sound is disabled, request playback with volume zero
+    // so a previous selector track is faded out on game selection.
+    playLoadingSound(launch ? launchPick : gameId)
+      .then((started) => {
+        if (cancelled) return;
+        timer = setTimeout(
+          () => setVisible(false),
+          soundEnabled && started ? MUSIC_HOLD_MS : quickMs,
+        );
+      })
+      .catch(() => {
+        if (!cancelled) timer = setTimeout(() => setVisible(false), quickMs);
+      });
+
+    return () => {
+      cancelled = true;
+      if (timer) clearTimeout(timer);
+    };
+  }, [
+    loaded, launch, launchPick, gameId, reduce,
+    settings.loadingSoundEnabled, settings.loadingSoundVolume,
+  ]);
 
   // The game picker sits under this overlay, so its music starts once the launch screen is gone.
   useEffect(() => {
