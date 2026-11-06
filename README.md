@@ -118,6 +118,36 @@ versions are fallback media. Audio has bundled offline fallbacks. An optional li
 manifest can select online audio through `api/media.json`, but do not publicly
 rehost copyrighted game recordings without distribution rights.
 
+## Interface polish: Stage 1
+
+Home now prioritises overall guide progress, search and two next-step cards.
+A compact third shortcut still opens the current game's collectibles or
+Silksong quests. Loadouts stay accessible through a single toolkit row.
+Both Free and Premium show one quiet **Companion** entry, replacing the
+previous three independent Premium shortcut buttons.
+
+The dedicated `/companion` hub keeps Premium's guidance, planner and
+customisation together and shows existing goal progress when applicable.
+For Free users, it explains the value of the paid experience **without**
+hiding or degrading the full guide. Locked Premium tools lead to the
+existing RevenueCat paywall; purchase and restore behaviour is unchanged.
+
+Settings is now organised into five discoverable accordion categories:
+**Appearance & themes**, **Accessibility & feedback**, **Audio**,
+**Guide preferences**, and **Data & support**. They start collapsed,
+and the full theme gallery expands only when requested. All earlier settings,
+audio controls, backups, privacy options and switch-game navigation remain,
+with a confirmation tap before resetting preferences.
+
+The paywall groups paid benefits into three plain-language areas and clearly
+states which content stays free. No new native dependencies or public API
+endpoints were added, and the existing progress/storage keys are unchanged.
+
+Run `npm run test:ui-stage1` for structural checks; finish verification on
+the device for both Hollow Knight and Silksong in Free and Premium previews.
+This script checks files and navigation contracts but does **not** compile JSX
+or replace a device visual test.
+
 ## Premium companion: guided exploration, planner and customisation
 
 Three optional Premium features are available from **Settings → Premium
