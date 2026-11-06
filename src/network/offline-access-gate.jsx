@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ActivityIndicator, Pressable, StyleSheet, View } from "react-native";
 import { AppText } from "../components/hollow/app-text";
 import { useOnlineAccess } from "./online-access-context";
-import { stopSound } from "../sound/game-sounds";
+import { setSoundPlaybackAllowed } from "../sound/game-sounds";
 import { useSettings } from "../settings/SettingsContext.jsx";
 
 // Absolute overlay sits above the game picker, splash transition and tabs.
@@ -12,7 +12,7 @@ export function OfflineAccessGate() {
   const { colors } = useSettings();
 
   useEffect(() => {
-    if (blocked) stopSound();
+    setSoundPlaybackAllowed(!blocked);
   }, [blocked]);
 
   if (!blocked) return null;
