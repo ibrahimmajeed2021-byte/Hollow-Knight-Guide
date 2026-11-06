@@ -117,10 +117,40 @@ const licensedAudioUrls = (group) =>
       .filter(([, url]) => typeof url === "string" && /^https:\/\//.test(url)),
   );
 
+// Theme backgrounds live behind the same static media API as the guide art.
+// Each URL is staged in public/guide-icons; the app retains bundled copies
+// so Premium themes remain available offline. New theme IDs require an app
+// update, but their image URLs can be changed through media.json afterward.
+const themeAssetPaths = {
+  hollowknight: ["assets/hollow/CityOfTears.png", "assets/hollow/Knight.png"],
+  cityOfTears: ["assets/hollow/CityOfTears.png", "assets/hollow/bosses/SoulMaster.png"],
+  voidheart: [null, "assets/hollow/charms/VoidHeart.png"],
+  godhome: [null, "assets/hollow/bosses/Radiance.png"],
+  greenpath: [null, "assets/hollow/bosses/MassiveMossCharger.png"],
+  crystalPeak: [null, "assets/hollow/bosses/CrystalGuardian.png"],
+  whitePalace: [null, "assets/hollow/bosses/HollowKnight.png"],
+  silksong: ["assets/hollow/silksong/MossGrotto.png", "assets/hollow/silksong/Hornet.png"],
+  citadelOfSong: [null, "assets/hollow/silksong/bosses/GrandMotherSilk.png"],
+  mossGrotto: ["assets/hollow/silksong/MossGrotto.png", "assets/hollow/silksong/bosses/MossMotherRuinedChapel.png"],
+  deepDocks: [null, "assets/hollow/silksong/bosses/LaceDeepDocks.png"],
+  bilewater: [null, "assets/hollow/silksong/bosses/GroaltheGreat.png"],
+  songclave: [null, "assets/hollow/silksong/bosses/GarmondandZaza.png"],
+};
+const themeMedia = Object.fromEntries(
+  Object.entries(themeAssetPaths).map(([id, [background, motif]]) => [
+    id,
+    {
+      ...(background ? { backgroundImageUrl: iconApi.asset(background) } : {}),
+      ...(motif ? { motifImageUrl: iconApi.asset(motif) } : {}),
+    },
+  ]),
+);
+
 // Lightweight API media manifest controls large app artwork without making
 // it part of the JavaScript bundle. Local copies remain for Premium offline.
 write("media.json", {
-  schemaVersion: 1,
+  schemaVersion: 2,
+  themes: themeMedia,
   audio: {
     loading: licensedAudioUrls(audioSourceData.loading),
     tracks: licensedAudioUrls(audioSourceData.tracks),
