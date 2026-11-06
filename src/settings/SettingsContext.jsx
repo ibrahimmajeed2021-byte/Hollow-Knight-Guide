@@ -80,6 +80,7 @@ export function SettingsProvider({ children }) {
           cardDensity: "comfortable",
           showArtwork: true,
           wallpaperStrength: 50,
+          ambientMotion: false,
           homeSections: defaultSettings.homeSections,
           selectorMusicTrack:
             (settings.selectorMusicTrack ?? 0) < 2
