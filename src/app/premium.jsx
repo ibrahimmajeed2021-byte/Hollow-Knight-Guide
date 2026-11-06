@@ -197,7 +197,7 @@ export default function PremiumScreen() {
           <AppText style={{ color: colors.accent }}>Privacy notice</AppText>
         </Pressable>
         <Pressable onPress={() => router.back()} accessibilityRole="button" style={styles.back}>
-          <AppText style={{ color: colors.accent }}>Back to settings</AppText>
+          <AppText style={{ color: colors.accent }}>Back</AppText>
         </Pressable>
       </View>
     </Screen>
