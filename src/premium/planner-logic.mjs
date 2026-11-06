@@ -70,6 +70,20 @@ export function getEntry(config, ref) {
   return all.find(({ kind, entry }) => kind + ":" + entry.name === ref) ?? null;
 }
 
+// Supplement curated chains with direct names found in the live API's
+// "requires" field. Text-based clues are suggestions, never definitive locks.
+export function directRequirements(config, found) {
+  const requires = String(found?.entry?.requires || "").toLowerCase();
+  if (!requires) return [];
+  return listGoalEntries(config)
+    .filter(({ kind, entry }) =>
+      !(kind === found.kind && entry.name === found.entry.name) &&
+      entry.name.length >= 8 && requires.includes(entry.name.toLowerCase()),
+    )
+    .slice(0, 5)
+    .map(({ kind, entry }) => kind + ":" + entry.name);
+}
+
 export function buildSuggestedPlan(config, goal, defeated, collected) {
   if (!config || !goal?.name || !goal?.kind) return [];
   const routes = SUGGESTED_PREPARATIONS[config.id] || {};
@@ -78,9 +92,10 @@ export function buildSuggestedPlan(config, goal, defeated, collected) {
   const visit = (ref, depth = 0) => {
     if (visited.has(ref) || depth > 18) return;
     visited.add(ref);
-    for (const requirement of routes[ref] || []) visit(requirement, depth + 1);
     const found = getEntry(config, ref);
     if (!found) return;
+    const linked = [...new Set([...(routes[ref] || []), ...directRequirements(config, found)])];
+    for (const requirement of linked) visit(requirement, depth + 1);
     output.push({
       kind: found.kind,
       entry: found.entry,
