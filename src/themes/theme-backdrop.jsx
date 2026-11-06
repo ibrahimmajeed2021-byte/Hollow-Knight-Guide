@@ -1,6 +1,6 @@
 import { ApiArtworkImage } from "../components/hollow/api-artwork-image";
-import { Animated, Easing, StyleSheet, View } from "react-native";
-import { useEffect, useRef } from "react";
+import { Animated, AppState, Easing, StyleSheet, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
 
 import { useGame } from "../games/game-context";
 import { useOnlineAccess } from "../network/online-access-context";
@@ -11,16 +11,27 @@ import { resolveTheme } from "./theme-catalog";
 // readable in both light and dark mode, and high contrast disables decoration.
 // The online art URLs are controlled by api/media.json; bundled copies make
 // Premium themes available when completely offline.
-export function ThemeBackdrop() {
+export function ThemeBackdrop({ active = true }) {
   const { colors, settings, isDark } = useSettings();
   const { mediaManifest } = useGame();
   const { status } = useOnlineAccess();
   const theme = resolveTheme(settings.themeStyle);
   const pulse = useRef(new Animated.Value(1)).current;
+  const [appActive, setAppActive] = useState(() =>
+    AppState.currentState !== "background" && AppState.currentState !== "inactive"
+  );
+
+  useEffect(() => {
+    const listener = AppState.addEventListener("change", (state) => {
+      setAppActive(state === "active");
+    });
+    return () => listener.remove();
+  }, []);
   const intensity = Math.max(0, Math.min(100, Number(settings.wallpaperStrength ?? 50))) / 50;
 
   useEffect(() => {
-    if (theme.id === "default" || settings.ambientMotion !== true || settings.reduceMotion || settings.highContrast) {
+    if (!active || !appActive || theme.id === "default" || settings.ambientMotion !== true || settings.reduceMotion || settings.highContrast) {
+      pulse.stopAnimation();
       pulse.setValue(1);
       return;
     }
@@ -32,7 +43,7 @@ export function ThemeBackdrop() {
     );
     animation.start();
     return () => animation.stop();
-  }, [pulse, theme.id, settings.ambientMotion, settings.reduceMotion, settings.highContrast]);
+  }, [pulse, active, appActive, theme.id, settings.ambientMotion, settings.reduceMotion, settings.highContrast]);
 
   if (theme.id === "default" || settings.highContrast) return null;
 
