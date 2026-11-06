@@ -19,7 +19,7 @@ const OnlineAccessContext = createContext({
 // A failed server request is reported as "can't connect" rather than assuming
 // the user deliberately disabled Wi-Fi.
 export function OnlineAccessProvider({ children }) {
-  const { isPremium, ready: purchasesReady, entitlementCacheReady } = usePurchases();
+  const { isPremium, entitlementCacheReady } = usePurchases();
   const [status, setStatus] = useState("checking");
   const [checking, setChecking] = useState(true);
   const inFlight = useRef(false);
@@ -63,9 +63,10 @@ export function OnlineAccessProvider({ children }) {
     };
   }, [retry]);
 
-  const verifiedPremium = purchasesReady && entitlementCacheReady && isPremium;
-  const blocked = purchasesReady && entitlementCacheReady &&
-    !verifiedPremium && status !== "online";
+  const verifiedPremium = entitlementCacheReady && isPremium;
+  // The cache is read before deciding whether to lock a Premium subscriber.
+  // A free user cannot browse cached guide data during a connection check.
+  const blocked = entitlementCacheReady && !verifiedPremium && status !== "online";
 
   const value = useMemo(() => ({
     status,
