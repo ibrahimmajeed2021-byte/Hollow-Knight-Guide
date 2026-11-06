@@ -125,6 +125,8 @@ export default function CollectiblesScreen() {
           const isTask = ["wishes", "objectives", "godhome", "trials", "dreamers", "milestones"].includes(item.group);
           return (
             <EntryCard
+              spoilerKind="collectible"
+              spoilerEntry={item}
               image={item.iconUrl ? { uri: item.iconUrl } : getCollectibleArtwork(item, config.id, guide?.artworkUrl)}
               fallbackImage={getCollectibleFallbackArtwork(item, config.id) ?? (item.iconFallbackUrl ? { uri: item.iconFallbackUrl } : undefined)}
               name={item.name}
