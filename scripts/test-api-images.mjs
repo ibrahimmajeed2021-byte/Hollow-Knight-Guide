@@ -37,6 +37,14 @@ function checkUrl(url, label) {
   }
 }
 
+// The app's loading screen and Home use the same API media manifest.
+const media = JSON.parse(readFileSync(join(apiDir, "media.json"), "utf8"));
+for (const gameId of ["hollow", "silksong"]) {
+  const game = media.games?.[gameId];
+  checkUrl(game?.heroImageUrl, "media " + gameId + " hero");
+  checkUrl(game?.backgroundImageUrl, "media " + gameId + " background");
+}
+
 for (const collection of collections) {
   const list = JSON.parse(readFileSync(join(apiDir, collection), "utf8"));
   assert.ok(Array.isArray(list) && list.length, collection + " must contain items");
