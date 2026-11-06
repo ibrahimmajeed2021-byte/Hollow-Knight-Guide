@@ -3,7 +3,23 @@ import { NativeTabs } from "expo-router/native-tabs";
 import { useGame } from "../games/game-context";
 import { isTabBarHidden } from "../hooks/use-tab-inset";
 import { useSettings } from "../settings/SettingsContext.jsx";
+// Each game's native navigator must have a fixed set of tabs for its
+// entire lifetime. Expo NativeTabs cannot add or hide triggers dynamically
+// without resetting its navigation state.
 export default function AppTabs() {
+  const { config } = useGame();
+  return config.id === "silksong" ? <SilksongTabs /> : <HollowTabs />;
+}
+
+function HollowTabs() {
+  return <GuideTabs showQuests={false} />;
+}
+
+function SilksongTabs() {
+  return <GuideTabs showQuests />;
+}
+
+function GuideTabs({ showQuests }) {
   const { colors } = useSettings();
   const pathname = usePathname();
   const { config } = useGame();
@@ -44,15 +60,15 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
-      {/* Keep the native tab list stable when switching guides. Dynamically
-          adding/removing triggers can break native navigation on iOS. */}
-      <NativeTabs.Trigger name="quests" hidden={config.id !== "silksong"}>
-        <NativeTabs.Trigger.Label>Quests</NativeTabs.Trigger.Label>
-        <NativeTabs.Trigger.Icon
-          sf={{ default: "list.bullet.clipboard", selected: "checklist" }}
-          md="assignment"
-        />
-      </NativeTabs.Trigger>
+      {showQuests ? (
+        <NativeTabs.Trigger name="quests">
+          <NativeTabs.Trigger.Label>Quests</NativeTabs.Trigger.Label>
+          <NativeTabs.Trigger.Icon
+            sf={{ default: "list.bullet.clipboard", selected: "checklist" }}
+            md="assignment"
+          />
+        </NativeTabs.Trigger>
+      ) : null}
 
       <NativeTabs.Trigger name="music">
         <NativeTabs.Trigger.Label>Music</NativeTabs.Trigger.Label>
