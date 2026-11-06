@@ -10,6 +10,7 @@ const REQUEST_TIMEOUT_MS = 6500;
 const OnlineAccessContext = createContext({
   status: "checking",
   canUseOffline: false,
+  verifyingAccess: true,
   blocked: false,
   checking: true,
   retry: async () => {},
@@ -77,6 +78,7 @@ export function OnlineAccessProvider({ children }) {
     status,
     checking,
     canUseOffline: verifiedPremium,
+    verifyingAccess: !entitlementCacheReady,
     blocked,
     retry,
   }), [status, checking, verifiedPremium, blocked, retry]);
