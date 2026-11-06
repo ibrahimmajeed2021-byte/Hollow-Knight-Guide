@@ -5,6 +5,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useGame } from "../../games/game-context";
 import { useHaptics, useSettings } from "../../settings/SettingsContext";
 import { AppText } from "./app-text";
+import { layout, space, type } from "../../ui/design-system";
 
 export function AppHeader() {
   const { top } = useSafeAreaInsets();
@@ -26,7 +27,7 @@ export function AppHeader() {
         accessibilityRole="button"
         accessibilityLabel={`${config.guideTitle}. Tap to switch game`}
         hitSlop={8}
-        style={styles.sideAction}
+        style={({ pressed }) => [styles.sideAction, pressed && styles.pressedAction]}
       >
         <AppText style={[styles.actionIcon, { color: colors.headerText }]}>⇄</AppText>
       </Pressable>
@@ -50,22 +51,23 @@ export function AppHeader() {
 const styles = StyleSheet.create({
   container: {
     minHeight: 58,
-    paddingHorizontal: 12,
-    paddingBottom: 9,
+    paddingHorizontal: space.sm,
+    paddingBottom: space.sm,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
   sideAction: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: layout.touchTarget,
+    height: layout.touchTarget,
+    borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
   },
+  pressedAction: { opacity: 0.7 },
   actionIcon: { fontSize: 23, fontWeight: "500" },
   titleWrap: { flex: 1, alignItems: "center", paddingHorizontal: 8, gap: 1 },
-  title: { fontSize: 19, fontWeight: "700", letterSpacing: 0.2, textAlign: "center" },
+  title: { ...type.subheading, letterSpacing: 0.2, textAlign: "center" },
   subtitle: { fontSize: 9, fontWeight: "700", letterSpacing: 2, opacity: 0.72 },
 });
