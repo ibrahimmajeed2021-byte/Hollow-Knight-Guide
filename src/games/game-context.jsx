@@ -133,7 +133,7 @@ export function GameProvider({ children }) {
       source: online ? "online" : found.length ? "cached" : "bundled",
       at: found.reduce((latest, s) => Math.max(latest, s.at ?? 0), 0) || null,
     };
-    return { gameId, loaded, config, dataStatus, selectGame, clearGame };
+    return { gameId, loaded, config, mediaManifest, dataStatus, selectGame, clearGame };
   }, [gameId, loaded, remote, sources, mediaManifest, selectGame, clearGame]);
   return <GameContext.Provider value={value}>{children}</GameContext.Provider>;
 }
