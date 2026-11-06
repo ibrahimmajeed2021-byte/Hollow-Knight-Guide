@@ -384,7 +384,7 @@ export default function SettingsScreen() {
           open={expanded === "audio"}
           onPress={() => toggleCategory("audio")}
         >
-      <LoadingSoundSetting />
+      <LoadingSoundSetting embedded />
 
       <Section title="Game selector music">
         <ToggleRow
@@ -517,7 +517,7 @@ export default function SettingsScreen() {
             : "Using the data bundled with the app."}
         </AppText>
       </Section>
-      <BackupSection />
+      <BackupSection embedded />
       <Section title="About & support">
         <AppText style={[styles.hint, { color: colors.muted }]}>
           Read about this unofficial companion, view its source credits,
