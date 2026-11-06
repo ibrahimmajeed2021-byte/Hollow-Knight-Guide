@@ -7,7 +7,7 @@ import { HKFont } from "../../constants/hollow";
 import { useHaptics, useSettings } from "../../settings/SettingsContext.jsx";
 import { AppText } from "./app-text";
 
-function EntryCardBase({ image, name, summary, description, children }) {
+function EntryCardBase({ image, fallbackImage, name, summary, description, children }) {
   const { colors, settings } = useSettings();
   const triggerHaptic = useHaptics();
   const [expanded, setExpanded] = useState(settings.startExpanded);
@@ -15,7 +15,14 @@ function EntryCardBase({ image, name, summary, description, children }) {
   const imageKey = typeof image === "number"
     ? String(image)
     : image?.uri ?? JSON.stringify(image ?? null);
+  const fallbackImageKey = typeof fallbackImage === "number"
+    ? String(fallbackImage)
+    : fallbackImage?.uri ?? JSON.stringify(fallbackImage ?? null);
+  const [failedFallbackKey, setFailedFallbackKey] = useState(null);
   const showArtwork = !!image && failedImageKey !== imageKey;
+  const showFallbackArtwork = !showArtwork && !!fallbackImage &&
+    failedFallbackKey !== fallbackImageKey;
+  const displayedImage = showArtwork ? image : showFallbackArtwork ? fallbackImage : null;
 
   const toggle = () => {
     if (!settings.reduceMotion) LayoutAnimation.easeInEaseOut();
@@ -38,14 +45,17 @@ function EntryCardBase({ image, name, summary, description, children }) {
         accessibilityState={{ expanded }}
         style={styles.top}
       >
-        {showArtwork ? (
+        {displayedImage ? (
           <Image
-            source={image}
+            source={displayedImage}
             style={styles.image}
             contentFit="contain"
             cachePolicy="memory-disk"
             recyclingKey={name}
-            onError={() => setFailedImageKey(imageKey)}
+            onError={() => {
+              if (showArtwork) setFailedImageKey(imageKey);
+              else setFailedFallbackKey(fallbackImageKey);
+            }}
             accessible={false}
           />
         ) : (
