@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 
 import { HKFont } from '../../constants/hollow';
+import { type, layout } from '../../ui/design-system';
 import { AppText } from './app-text';
 
 export function Title({ style, ...props }) {
@@ -13,17 +14,16 @@ export function Body({ style, ...props }) {
 
 const styles = StyleSheet.create({
   title: {
+    ...type.title,
     fontFamily: HKFont,
-    fontSize: 30,
     textAlign: 'center',
     marginTop: 8,
-    paddingHorizontal: 16,
+    paddingHorizontal: layout.gutter,
   },
   body: {
-    fontSize: 16,
-    lineHeight: 24,
+    ...type.body,
     textAlign: 'center',
     marginTop: 12,
-    paddingHorizontal: 20,
+    paddingHorizontal: layout.gutter,
   },
 });
