@@ -159,7 +159,7 @@ function SettingsCategory({ title, subtitle, symbol, open, onPress, children }) 
         accessibilityHint={open ? "Collapse settings category" : "Expand settings category"}
         accessibilityState={{ expanded: open }}
         onPress={onPress}
-        style={styles.categoryHeader}
+        style={({ pressed }) => [styles.categoryHeader, pressed && { opacity: 0.82 }]}
       >
         <View style={[styles.categorySymbol, { backgroundColor: colors.background, borderColor: colors.border }]}>
           <AppText style={[styles.categoryGlyph, { color: colors.accent }]}>{symbol}</AppText>
