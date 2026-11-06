@@ -6,18 +6,25 @@ import { useGame } from "../../games/game-context";
 import { useHaptics, useSettings } from "../../settings/SettingsContext";
 import { AppText } from "./app-text";
 import { layout, space, type } from "../../ui/design-system";
+import { closeDestination, isSecondaryGuideRoute } from "../../navigation/route-policy.mjs";
 
 export function AppHeader() {
   const { top } = useSafeAreaInsets();
   const { colors } = useSettings();
   const triggerHaptic = useHaptics();
   const { config, clearGame } = useGame();
-  const onSettings = usePathname() === "/settings";
+  const pathname = usePathname();
+  const canClose = isSecondaryGuideRoute(pathname);
+  const onSettings = pathname === "/settings";
 
-  const pressSettings = () => {
+  const pressRightAction = () => {
     triggerHaptic();
-    if (onSettings) router.back();
-    else router.push("/settings");
+    if (!canClose) {
+      router.push("/settings");
+      return;
+    }
+    if (closeDestination(router.canGoBack()) === "back") router.back();
+    else router.replace("/");
   };
 
   return (
@@ -36,13 +43,24 @@ export function AppHeader() {
         <AppText style={[styles.subtitle, { color: colors.headerText }]}>FIELD GUIDE</AppText>
       </View>
       <Pressable
-        onPress={pressSettings}
+        onPress={pressRightAction}
         hitSlop={8}
         accessibilityRole="button"
-        accessibilityLabel={onSettings ? "Close settings" : "Settings"}
-        style={styles.sideAction}
+        accessibilityLabel={onSettings ? "Close settings" : canClose ? "Close this screen" : "Open settings"}
+        accessibilityHint={canClose ? "Return to the previous screen, or Home" : "Open appearance and guide preferences"}
+        style={({ pressed }) => [
+          styles.sideAction,
+          canClose && {
+            borderWidth: 1.5,
+            borderColor: colors.headerText,
+            backgroundColor: "rgba(255,255,255,0.12)",
+          },
+          pressed && styles.pressedAction,
+        ]}
       >
-        <AppText style={[styles.actionIcon, { color: colors.headerText }]}>{onSettings ? "×" : "⚙"}</AppText>
+        <AppText style={[canClose ? styles.closeIcon : styles.actionIcon, { color: colors.headerText }]}>
+          {canClose ? "×" : "⚙"}
+        </AppText>
       </Pressable>
     </View>
   );
@@ -67,6 +85,7 @@ const styles = StyleSheet.create({
   },
   pressedAction: { opacity: 0.7 },
   actionIcon: { fontSize: 23, fontWeight: "500" },
+  closeIcon: { fontSize: 30, lineHeight: 38, fontWeight: "700", textAlign: "center" },
   titleWrap: { flex: 1, minWidth: 0, alignItems: "center", paddingHorizontal: 8, gap: 1 },
   title: { ...type.subheading, letterSpacing: 0.2, textAlign: "center" },
   subtitle: { fontSize: 9, fontWeight: "700", letterSpacing: 2, opacity: 0.72 },
