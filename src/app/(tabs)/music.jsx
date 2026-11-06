@@ -10,7 +10,7 @@ import { Title } from "../../components/hollow/section-text";
 import { useSettings } from "../../settings/SettingsContext.jsx";
 import { useGame } from "../../games/game-context";
 import { useOnlineAccess } from "../../network/online-access-context";
-import { selectorTracks, stopSound } from "../../sound/game-sounds";
+import { selectorTracks, sourceForTrack, stopSound } from "../../sound/game-sounds";
 
 const FAVOURITES_KEY = "hollow-knight-guide:music-favourites";
 
@@ -23,8 +23,8 @@ function formatTime(seconds = 0) {
 
 export default function MusicScreen() {
   const { colors } = useSettings();
-  const { gameId } = useGame();
-  const { blocked } = useOnlineAccess();
+  const { gameId, mediaManifest } = useGame();
+  const { blocked, status: connectionStatus } = useOnlineAccess();
   const gameTracks = selectorTracks.filter((track) => track.id === (gameId ?? "hollow"));
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [favourites, setFavourites] = useState([]);
@@ -32,7 +32,9 @@ export default function MusicScreen() {
   const [showFavourites, setShowFavourites] = useState(false);
   const [shuffle, setShuffle] = useState(false);
   const [repeat, setRepeat] = useState(false);
-  const player = useAudioPlayer(gameTracks[0].source);
+  const trackSource = (track) =>
+    sourceForTrack(track, mediaManifest?.audio, connectionStatus === "online");
+  const player = useAudioPlayer(trackSource(gameTracks[0]));
   const status = useAudioPlayerStatus(player);
 
   // An audio player can continue in the background, so stop it when
@@ -68,9 +70,18 @@ export default function MusicScreen() {
   }, [repeat, player]);
 
   useEffect(() => {
-    player.replace(gameTracks[0].source);
+    player.replace(trackSource(gameTracks[0]));
     setSelectedIndex(0);
   }, [gameId]);
+
+  // If a Premium user loses connectivity while streaming an authorised API
+  // track, switch back to the bundled recording so playback remains available.
+  useEffect(() => {
+    if (connectionStatus !== "online" && !blocked) {
+      const local = gameTracks[selectedIndex]?.source;
+      if (local) player.replace(local);
+    }
+  }, [connectionStatus, blocked]);
   const selectedTrack = gameTracks[selectedIndex];
   const duration = status.duration || 0;
   const currentTime = status.currentTime || 0;
@@ -92,7 +103,7 @@ export default function MusicScreen() {
   function playTrack(index) {
     const nextIndex = Math.max(0, Math.min(gameTracks.length - 1, index));
     if (nextIndex !== selectedIndex) {
-      player.replace(gameTracks[nextIndex].source);
+      player.replace(trackSource(gameTracks[nextIndex]));
       setSelectedIndex(nextIndex);
     }
     activateLockScreenControls(gameTracks[nextIndex]);
